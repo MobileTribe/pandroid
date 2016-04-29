@@ -1,0 +1,31 @@
+buildscript {
+    apply from: file('support.gradle')
+
+
+    repositories {
+        maven {
+            url  "http://dl.bintray.com/mobiletribe/maven"
+        }
+        jcenter()
+    }
+    dependencies {
+
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "com.neenbedankt.gradle.plugins:android-apt:$aptPluginVersion"
+        classpath 'com.leroymerlin.plugins:delivery-plugin:2.0.0-BETA4'
+    }
+}
+
+
+allprojects {
+
+    repositories {
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+
+    }
+
+}
+
+
+

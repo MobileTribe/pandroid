@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.leroymerlin.pandroid.ui.animation.view.AnimatedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/animation_root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/animation_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/navigation_animation"
+            android:layout_marginLeft="20dp"
+            android:paddingLeft="20dp"
+            android:textColor="@color/pandroid_red"
+            android:textSize="@dimen/xlarge_text" />
+
+
+        <TextView
+            android:id="@+id/animation_resize"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@color/pandroid_red"
+            android:gravity="center"
+            android:text="@string/animation_resize"
+            android:textColor="@color/white"
+            android:textSize="@dimen/xlarge_text" />
+
+        <TextView
+            android:id="@+id/animation_rotate"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@color/pandroid_green"
+            android:gravity="center"
+            android:text="@string/animation_rotate"
+            android:textColor="@color/white"
+            android:textSize="@dimen/xlarge_text" />
+
+        <Button
+            android:id="@+id/animation_btn_material"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/animation_open_material" />
+
+        <ImageView
+            android:id="@+id/animation_iv_material"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pandroid_ic_launcher" />
+
+        <com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout
+            android:id="@+id/animation_circular"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:clipOut="true"
+            app:revealRadius="100dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/pandroid_gray_dark" />
+
+            <Button
+                android:id="@+id/animation_test_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+
+            <Button
+                android:id="@+id/animation_test_btn1"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="right" />
+
+            <Button
+                android:id="@+id/animation_test_btn2"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom" />
+
+            <Button
+                android:id="@+id/animation_test_btn3"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom|right" />
+
+
+        </com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout>
+    </LinearLayout>
+</com.leroymerlin.pandroid.ui.animation.view.AnimatedScrollView>

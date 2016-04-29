@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <color name="pandroid_green">#7CB342</color>
+    <color name="pandroid_green_transparent">#907cb342</color>
+    <color name="pandroid_green_dark">#6D993A</color>
+
+
+    <color name="pandroid_red">#f32e2e</color>
+    <color name="pandroid_red_transparent">#90f32e2e</color>
+    <color name="pandroid_red_dark">#d92929</color>
+
+
+    <color name="pandroid_orange">#fe6600</color>
+    <color name="pandroid_orange_transparent">#90fe6600</color>
+    <color name="pandroid_orange_dark">#e35b00</color>
+
+    <color name="pandroid_blue">#4285F4</color>
+    <color name="pandroid_blue_transparent">#904285F4</color>
+    <color name="pandroid_blue_dark">#3b79db</color>
+    <color name="pandroid_blue_grey">#263238</color>
+
+    <color name="pandroid_gray_dark_transparent">#90212121</color>
+    <color name="pandroid_gray_transparent">#90E0E0E0</color>
+    <color name="pandroid_gray_darkest">#212121</color>
+    <color name="pandroid_gray_dark">#757575</color>
+    <color name="pandroid_gray_light_dark">#9E9E9E</color>
+    <color name="pandroid_gray">#C4C4C4</color>
+    <color name="pandroid_gray_light">#E0E0E0</color>
+    <color name="pandroid_gray_lightest">#EDEDED</color>
+
+    <color name="pandroid_white_transparent">#CCFFFFFF</color>
+
+
+    <color name="text_light">#FFFFFF</color>
+    <color name="text_dark">#757575</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white">#00FFFFFF</color>
+
+</resources>

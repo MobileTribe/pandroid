@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Pandroid démo</string>
+
+    <string name="error_gms_not_available">Les services Google play ne sont pas disponible</string>
+
+    <string name="wiki_scanner">todo</string>
+
+    <string name="navigation_events">Bus d\'événements</string>
+    <string name="navigation_scanner">Scanner</string>
+    <string name="navigation_rest">Réseau</string>
+    <string name="navigation_animation">Animation</string>
+    <string name="navigation_list">QuickHeader - ListView</string>
+    <string name="navigation_recycler">RecyclerView</string>
+
+    <string name="event_title">Exemple Bus d\'événement</string>
+    <string name="event_send_object_string">Envoyer le texte</string>
+    <string name="event_text_to_send">Message à envoyer</string>
+    <string name="event_send_to">Envoyer au 2e fragment</string>
+    <string name="event_open_second_fragment">Ouvrir le deuxième fragment</string>
+
+
+    <string name="animation_resize">Touch to resize</string>
+    <string name="animation_rotate">Touch to rotate</string>
+    <string name="animation_open_material">Open Matérial Fragment</string>
+
+
+    <string name="scanner_permission_camera_rationale">L\'accès à la camera est nécessaire pour la détection</string>
+
+
+    <string name="list_header">HEADER</string>
+    <string name="list_header_listview">HEADER LISTVIEW</string>
+    <string name="list_header_scrollview">HEADER SCROLLVIEW</string>
+    <string name="list_header_disable">Désactiver le header</string>
+    <string name="list_header_enable">Activer le header</string>
+    <string name="list_header_show">Afficher le header</string>
+    <string name="list_header_hide">Afficher à 0.5</string>
+
+
+
+</resources>

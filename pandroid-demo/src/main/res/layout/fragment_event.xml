@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.leroymerlin.pandroid.ui.animation.view.AnimatedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/large_text"
+        android:text="@string/event_title" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/event_text_to_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/event_text_to_send" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/event_send_localy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_send_object_string" />
+
+    <Button
+        android:id="@+id/event_send_to"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_send_to" />
+
+    <Button
+        android:id="@+id/event_open_second_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_open_second_fragment" />
+
+    <TextView
+        android:id="@+id/event_receiver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</com.leroymerlin.pandroid.ui.animation.view.AnimatedLinearLayout>

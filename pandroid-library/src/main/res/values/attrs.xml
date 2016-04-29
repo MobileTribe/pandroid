@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ProgressWheel">
+        <attr name="progressIndeterminate" format="boolean" />
+        <attr name="barColor" format="color" />
+        <attr name="rimColor" format="color" />
+        <attr name="rimWidth" format="dimension" />
+        <attr name="spinSpeed" format="float" />
+        <attr name="barSpinCycleTime" format="integer" />
+        <attr name="circleRadius" format="dimension" />
+        <attr name="fillRadius" format="boolean" />
+        <attr name="barWidth" format="dimension" />
+        <attr name="linearProgress" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CircularFrameLayout">
+        <attr name="clipOut" format="boolean" />
+        <attr name="centerX" format="dimension" />
+        <attr name="centerY" format="dimension" />
+        <attr name="revealRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="PandroidScannerView">
+        <attr name="scannerLayout" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MaterialTransitionLayout">
+        <attr name="revealLayout" format="reference" />
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
+
+    <set android:ordering="together">
+
+
+        <objectAnimator
+            android:duration="@integer/medium_anim_speed"
+            android:propertyName="scaleX"
+            android:valueTo="0.8f"
+            android:valueType="floatType" />
+        <objectAnimator
+            android:duration="0"
+            android:propertyName="scaleY"
+            android:valueTo="0.8f"
+            android:valueType="floatType" />
+
+        <objectAnimator
+            android:duration="0"
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:propertyName="xFraction"
+            android:valueFrom="1f"
+            android:valueTo="1f"
+            android:valueType="floatType" />
+
+    </set>
+
+
+    <set android:ordering="together">
+
+
+        <objectAnimator
+            android:duration="@integer/medium_anim_speed"
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:propertyName="xFraction"
+            android:valueFrom="1f"
+            android:valueTo="0f"
+            android:valueType="floatType" />
+
+    </set>
+
+
+    <set android:ordering="together">
+
+
+        <objectAnimator
+            android:duration="@integer/medium_anim_speed"
+            android:propertyName="scaleX"
+            android:valueTo="1f"
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:valueType="floatType" />
+        <objectAnimator
+            android:duration="@integer/medium_anim_speed"
+            android:propertyName="scaleY"
+            android:valueTo="1"
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:valueType="floatType" />
+
+
+    </set>
+
+</set>
+
+

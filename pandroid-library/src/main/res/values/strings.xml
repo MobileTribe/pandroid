@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pandroid</string>
+    <string name="drawer_open">Ouvrir le menu</string>
+    <string name="drawer_close">Fermer le menu</string>
+</resources>

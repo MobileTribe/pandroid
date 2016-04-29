@@ -1,0 +1,24 @@
+apply plugin: 'com.android.library'
+apply plugin: 'delivery'
+
+android {
+    compileSdkVersion Integer.parseInt(androidSdkVersion)
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(androidMinSdkVersion)
+        targetSdkVersion Integer.parseInt(androidSdkVersion)
+        versionCode Integer.parseInt(versionId)
+        versionName version
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../pandroid-library/pandroid-proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

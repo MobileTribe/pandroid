@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+apply from: 'dagger.gradle'
+
+apply from: file('../delivery.gradle')
+
+android {
+    compileSdkVersion Integer.parseInt(androidSdkVersion)
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(androidMinSdkVersion)
+        targetSdkVersion Integer.parseInt(androidSdkVersion)
+        versionCode Integer.parseInt(pandroidVersionId)
+        versionName pandroidVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), './pandroid-proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+
+
+dependencies {
+
+    //Core
+    compile project(':pandroid-java')
+    apt project(':pandroid-compiler')
+    provided project(':pandroid-annotations')
+    compile 'com.jakewharton:butterknife:8.0.1'
+
+    compile "com.android.support:support-v4:$librarySupportVersion"
+    compile "com.android.support:appcompat-v7:$librarySupportVersion"
+    compile "com.android.support:cardview-v7:$librarySupportVersion"
+    compile "com.android.support:gridlayout-v7:$librarySupportVersion"
+    compile "com.android.support:palette-v7:$librarySupportVersion"
+    compile "com.android.support:recyclerview-v7:$librarySupportVersion"
+    compile "com.android.support:support-v13:$librarySupportVersion"
+    compile "com.android.support:design:$librarySupportVersion"
+
+
+    //Test
+    testCompile 'junit:junit:4.12'
+    testCompile "org.robolectric:robolectric:3.0"
+
+
+    //Support to simulate plugin work
+    //Optional library have to be declared in pandroid.gradle
+    optionalLibs.each{
+        libDep ->
+            provided(libDep){
+                transitive = true;
+            }
+    }
+    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+    apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
+
+    <set android:ordering="together">
+
+        <objectAnimator
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:duration="@integer/medium_anim_speed"
+            android:propertyName="scaleX"
+            android:valueFrom="1f"
+            android:valueTo="0.8f"
+            android:valueType="floatType" />
+
+        <objectAnimator
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:duration="@integer/medium_anim_speed"
+            android:propertyName="scaleY"
+            android:valueFrom="1f"
+            android:valueTo="0.8f"
+            android:valueType="floatType" />
+    </set>
+    <set android:ordering="together">
+
+        <objectAnimator
+            android:duration="@integer/medium_anim_speed"
+            android:interpolator="@android:anim/decelerate_interpolator"
+            android:propertyName="xFraction"
+            android:valueFrom="0f"
+            android:valueTo="-1.0f"
+            android:valueType="floatType" />
+    </set>
+</set>
+
+
