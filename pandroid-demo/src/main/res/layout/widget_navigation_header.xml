@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="?attr/colorPrimary"
+    android:drawableStart="@drawable/pandroid_ic_launcher"
+    android:gravity="center"
+    android:padding="@dimen/content_spacing"
+    android:text="@string/app_name"
+    android:textColor="@color/white"
+    android:textSize="@dimen/large_text"
+    android:textStyle="bold" />

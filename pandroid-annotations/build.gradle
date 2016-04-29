@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+apply from: file('../delivery.gradle')
+
+dependencies {
+    compile project(':pandroid-java')
+}
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7

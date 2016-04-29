@@ -1,0 +1,26 @@
+Properties properties = new Properties()
+properties.load(new FileInputStream(file('./pandroid-library/pandroid.properties')))
+properties.each { prop ->
+    ext.set(prop.key, prop.value)
+}
+
+ext.optionalLibs = [
+        "com.google.android.gms:play-services-vision:$libraryGmsVersion", //PandroidScannerView
+
+        "com.google.android.gms:play-services-analytics:$libraryGmsVersion", //GoogleAnalyticsManager
+
+        "com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar", //SuperToastManagerImpl
+
+        "com.github.bumptech.glide:glide:$libraryGlideVersion", //GlidePictureManagerImpl
+
+        "com.crashlytics.sdk.android:crashlytics:$libraryCrashlyticsVersion@aar", //CrashlyticsLogger
+
+        "com.jakewharton:butterknife:$libraryButterknifeVersion", //ButterknifeLifecycleDelegate
+
+        "com.github.frankiesardo:icepick:$libraryIcepickVersion",//IcepickLifecycleDelegate
+
+        "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion", //Retrofit
+        "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion",
+        "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion"
+]
+

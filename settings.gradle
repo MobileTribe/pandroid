@@ -1,0 +1,2 @@
+include  ':pandroid-plugin', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java', ':pandroid-demo', ':pandroid-library'
+//':pandroid-test'

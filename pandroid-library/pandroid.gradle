@@ -1,0 +1,177 @@
+dependencies {
+    apt "com.leroymerlin.pandroid:pandroid-compiler:$pandroidVersion"
+    compile "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
+    provided "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
+}
+
+//tag::Proguard[]
+android {
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    buildTypes {
+        all {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'build/pandroid/pandroid-proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+        }
+    }
+
+}
+
+//end::Proguard[]
+
+
+pandroid {
+
+    configurators {
+
+        "com.jakewharton:butterknife" { // ButterknifeLifecycleDelegate
+            gradle {
+                dependencies {
+                    compile "com.jakewharton:butterknife:$libraryButterknifeVersion"
+                    apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+
+                }
+            }
+        }
+        "com.github.frankiesardo:icepick" { // IcepickLifecycleDelegate
+            gradle {
+                dependencies {
+                    compile "com.github.frankiesardo:icepick:$libraryIcepickVersion"
+                    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+                }
+            }
+        }
+        "com.squareup.retrofit2:retrofit" { //Retrofit
+            gradle {
+                dependencies {
+                    compile "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion"
+                    compile "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion"
+                    compile "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion"
+                }
+            }
+        }
+        "com.google.android.gms:play-services-vision" { //PandroidScannerView
+            gradle {
+                dependencies {
+                    compile "com.google.android.gms:play-services-vision:$libraryGmsVersion"
+                }
+            }
+            manifest {
+                '''
+     <application>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode,face" />
+     </application>
+'''
+            }
+        }
+        "com.google.android.gms:play-services-analytics" { //GoogleAnalyticsManager
+            gradle {
+                /*
+    Add this part in your build.gradle
+    //tag::GoogleAnalytics[]
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+    classpath 'com.google.gms:google-services:2.0.0-beta6'
+    }
+}
+    //end::GoogleAnalytics[]
+                */
+
+                dependencies {
+                    compile "com.google.android.gms:play-services-analytics:$libraryGmsVersion"
+                }
+                if (plugins.hasPlugin("com.google.gms.google-services"))
+                    apply plugin: 'com.google.gms.google-services'
+            }
+
+            manifest {
+                '''
+    <application>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
+     </application>
+'''
+            }
+        }
+        "com.github.johnpersano:supertoasts" { //SuperToastManagerImpl
+            gradle {
+                dependencies {
+                    compile "com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar"
+                }
+            }
+        }
+        "com.github.bumptech.glide:glide" { //GlidePictureManagerImpl
+            gradle {
+                dependencies {
+                    compile "com.github.bumptech.glide:glide:$libraryGlideVersion"
+                }
+            }
+        }
+        "com.crashlytics.sdk.android:crashlytics" { //CrashlyticsLogger
+            gradle {
+                /*
+    Add this part in your build.gradle
+//tag::Crashlytics[]
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.21.5'
+    }
+}
+//end::Crashlytics[]
+
+                */
+                repositories {
+                    maven { url "https://maven.fabric.io/public" }
+                }
+                dependencies {
+                    compile("com.crashlytics.sdk.android:crashlytics:$libraryCrashlyticsVersion@aar") {
+                        transitive true
+                    }
+                }
+                if (!plugins.hasPlugin("io.fabric"))
+                    apply plugin: "io.fabric"
+
+            }
+            manifest {
+                params ->
+                    '''
+    <application>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="''' + params[0] + '''" />
+     </application>
+'''
+            }
+        }
+
+    }
+
+}

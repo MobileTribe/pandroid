@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--tag::Toast[]-->
+    <declare-styleable name="ToastAppearance">
+        <attr name="toastTextColor" format="color" />
+        <attr name="toastBackground" format="color" />
+    </declare-styleable>
+
+    <style name="Toast">
+        <item name="toastTextColor">@color/white</item>
+        <item name="toastBackground">@color/pandroid_green</item>
+    </style>
+
+    <style name="Toast.Error">
+        <item name="toastBackground">@color/pandroid_red</item>
+    </style>
+
+    <style name="Toast.Warm">
+        <item name="toastBackground">@color/pandroid_orange</item>
+    </style>
+    <!--end::Toast[]-->
+
+</resources>

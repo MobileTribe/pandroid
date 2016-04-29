@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navigation_event_bus"
+            android:checked="false"
+            android:icon="@drawable/pandroid_ic_launcher"
+            android:title="@string/navigation_events" />
+        <item
+            android:id="@+id/navigation_scanner"
+            android:checked="false"
+            android:title="@string/navigation_scanner" />
+        <item
+            android:id="@+id/navigation_rest"
+            android:checked="false"
+            android:title="@string/navigation_rest" />
+
+        <item
+            android:id="@+id/navigation_list"
+            android:checked="false"
+            android:title="@string/navigation_list" />
+
+        <item
+            android:id="@+id/navigation_recycler"
+            android:checked="false"
+            android:title="@string/navigation_recycler" />
+
+        <item
+            android:id="@+id/navigation_animation"
+            android:checked="false"
+            android:title="@string/navigation_animation" />
+
+    </group>
+</menu>

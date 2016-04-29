@@ -1,0 +1,67 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply from: file('../delivery.gradle')
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+    compile project(':pandroid-java')
+
+    compile 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+    compile "com.neenbedankt.gradle.plugins:android-apt:$aptPluginVersion"
+
+    testCompile 'junit:junit:4.11'
+    testCompile "com.android.tools.build:gradle:$androidPluginVersion"
+
+
+}
+
+task(copyLocalProperties, type: Copy) {
+    from('../local.properties')
+    into('src/test/resources/android-app')
+}
+
+def filesToCopy = ['../pandroid-version.properties',
+                   '../pandroid-library/pandroid.gradle',
+                   '../pandroid-library/dagger.gradle',
+                   '../pandroid-library/pandroid.properties',
+                   '../pandroid-library/pandroid-proguard-rules.pro']
+
+task(copyPandroidGradle, type: Copy) {
+    from(filesToCopy)
+    into('build/pandroid')
+}
+classes.finalizedBy copyPandroidGradle
+classes.finalizedBy copyLocalProperties
+
+
+jar {
+    from(filesToCopy)
+}
+
+
+
+
+task pandroidInstall(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+    project(it)
+}.collect { it.getTasksByName('install', false) });
+install.dependsOn pandroidInstall
+
+
+task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+    project(it)
+}.collect { it.getTasksByName('uploadArtifacts', false) });
+uploadArchives.dependsOn pandroidUploadArchives
+
+
+task showClasspath << {
+}
+
+task showVersion << {
+    println buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.moduleVersion
+}
+

@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+apply from: '../pandroid-library/dagger.gradle'
+
+apply from: file('../delivery.gradle')
+
+android {
+    compileSdkVersion Integer.parseInt(androidSdkVersion)
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(androidMinSdkVersion)
+        targetSdkVersion Integer.parseInt(androidSdkVersion)
+        versionCode Integer.parseInt(pandroidVersionId)
+        versionName pandroidVersion
+    }
+    buildTypes {
+        all {
+            buildConfigField "String", "BASE_URL_PRODUCT", '"http://jsonplaceholder.typicode.com/"'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../pandroid-library/pandroid-proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.sothree.slidinguppanel:library:3.2.1'
+}
+
+
+
+
+dependencies {
+    apt project(':pandroid-compiler')
+    compile project(':pandroid-library')
+    provided project(':pandroid-annotations')
+
+
+
+    //Support to simulate plugin work
+    compile optionalLibs
+    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+    apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+
+}
+
+

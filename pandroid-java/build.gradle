@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+apply from: file('../delivery.gradle')
+
+configurations {
+    provided
+    //compile.extendsFrom provided
+}
+
+dependencies {
+    provided 'com.google.android:android:4.1.1.4'
+}
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7

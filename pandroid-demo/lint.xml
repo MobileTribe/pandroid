@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Change the severity of hardcoded strings to "error" -->
+    <issue id="HardcodedText" severity="error" />
+    <issue id="GradleDynamicVersion" severity="warning" />
+    <issue id="UnusedIds" severity="warning" />
+    <issue id="EasterEgg" severity="warning" />
+
+    <issue id="InvalidPackage">
+        <ignore path="**/okio*.jar" />
+        <ignore regexp=".*retrofit.*" />
+    </issue>
+</lint>
