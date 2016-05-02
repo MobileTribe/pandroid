@@ -1,9 +1,6 @@
 package com.leroymerlin.pandroid.net;
 
 import android.text.TextUtils;
-import android.util.Log;
-
-import com.leroymerlin.pandroid.app.PandroidConfig;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -13,9 +10,6 @@ import java.util.Map;
  * Created by florian on 09/12/15.
  */
 public class NetworkException extends Exception {
-
-    private static final String TAG = "NetworkException";
-
 
     private final String url;
     private final int statusCode;
@@ -46,12 +40,29 @@ public class NetworkException extends Exception {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Wasp Error: ");
-        if (getCause().getMessage() != null) {
-            builder.append(", Message:").append(getCause().getMessage());
+        builder.append("<--- ERROR ").append(statusCode).append(" ").append(url).append("\n");
+        builder.append("Cause -").append(getCause()).append("\n");
+        builder.append("Message - " + "[").append(getErrorMessage()).append("]").append("\n");
+
+        if (!headers.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+                builder.append("Header - [").append(entry.getKey()).append(": ");
+                for (String e : entry.getValue()) {
+                    builder.append(e).append(" ,");
+                }
+                builder.append("]").append("\n");
+            }
         }
-        builder.append("Status Code: ").append(statusCode)
-                .append("Url ").append(url);
+
+        String bodyString = "";
+        try {
+            bodyString = new String(body, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            bodyString = "Unable to parse error body to UTF-8 String";
+        }
+
+        builder.append(TextUtils.isEmpty(bodyString) ? "Body - no body" : "Body - " + bodyString).append("\n");
+        builder.append("<--- END " + "(Size: ").append(body.length).append(" bytes - Network time: ").append(networkTime).append(" ms)");
         return builder.toString();
     }
 
@@ -61,34 +72,5 @@ public class NetworkException extends Exception {
         else
             return new String(body);
 
-    }
-
-    public void logWaspError() {
-
-        if (PandroidConfig.DEBUG) {
-
-            Log.d(TAG, "<--- ERROR " + statusCode + " " + url);
-            Log.d(TAG, "Cause -" + getCause());
-            Log.d(TAG, "Message - " + "[" + getErrorMessage() + "]");
-            if (!headers.isEmpty()) {
-                for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-                    String l = "Header - [" + entry.getKey() + ": ";
-                    for (String e : entry.getValue()) {
-                        l += e + " ,";
-                    }
-                    Log.d(TAG, l + "]");
-
-                }
-            }
-
-            String bodyString = "";
-            try {
-                bodyString = new String(body, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                bodyString = "Unable to parse error body!!!!!";
-            }
-            Log.d(TAG, TextUtils.isEmpty(bodyString) ? "Body - no body" : "Body - " + bodyString);
-            Log.d(TAG, "<--- END " + "(Size: " + body.length + " bytes - Network time: " + networkTime + " ms)");
-        }
     }
 }
