@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
-
-apply from: file('../delivery.gradle')
+apply plugin: 'delivery'
 
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
