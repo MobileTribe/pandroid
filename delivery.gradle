@@ -1,36 +1,6 @@
 apply plugin: 'delivery'
 
 
-def variantHandler = { variant ->
-    def name = variant.buildType.name
-    if (name.equals('release')) {
-        def task = project.tasks.create "sources${variant.name.capitalize()}Jar", Jar
-        task.dependsOn variant.javaCompile
-        task.from variant.javaCompile.destinationDir
-        artifacts.add('archives', task);
-    }
-}
-if (project.plugins.hasPlugin("com.android.application")) {
-    android.applicationVariants.all variantHandler
-
-} else if (project.plugins.hasPlugin("com.android.library")) {
-    android.libraryVariants.all variantHandler
-} else {
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from sourceSets.main.allJava;
-    }
-    artifacts {
-        archives sourcesJar
-    }
-}
-
-
-
-
-
-
 delivery {
-    archiveRepositories project.ext.properties.containsKey('bintrayRepositories') ? project.ext.bintrayRepositories : {
-    }
+    archiveRepositories = project.ext.properties.containsKey('bintrayRepositories') ? project.ext.bintrayRepositories : {}
 }
