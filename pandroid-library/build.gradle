@@ -32,8 +32,6 @@ dependencies {
     compile project(':pandroid-java')
     apt project(':pandroid-compiler')
     provided project(':pandroid-annotations')
-    compile 'com.jakewharton:butterknife:8.0.1'
-
     compile "com.android.support:support-v4:$librarySupportVersion"
     compile "com.android.support:appcompat-v7:$librarySupportVersion"
     compile "com.android.support:cardview-v7:$librarySupportVersion"

@@ -57,11 +57,3 @@ task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler
 }.collect { it.getTasksByName('uploadArtifacts', false) });
 uploadArchives.dependsOn pandroidUploadArchives
 
-
-task showClasspath << {
-}
-
-task showVersion << {
-    println buildscript.configurations.classpath.resolvedConfiguration.firstLevelModuleDependencies.moduleVersion
-}
-
