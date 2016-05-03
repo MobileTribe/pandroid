@@ -1,0 +1,68 @@
+image:./pandroid-doc/assets/logo.png[Pandroid,120,120,float="right",align="center"]
+
+= Pandroid 2
+:hardbreaks:
+
+
+image:https://api.bintray.com/packages/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/images/download.svg[link="https://bintray.com/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/_latestVersion"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+
+
+
+## Note
+
+Pandroid is a mobile archetype used for Android projects. It suggest a architecture for your mobile app and help you handle common problematic you meet in Android development.
+
+To discover what the panda can do, please see the link:./pandroid-doc/html/Tutorial.html[tutorial part] of this wiki.
+
+
+This library was originaly used by Leroy Merlin France mobile teams to develop all their Android applications.
+In february 2015 Pandroid 1 was release for LM internal team. A year later the archetype needed a major refactor to improv the developer experiences. We decided to release and open Pandroid 2
+A presentation is available about the road we traveled : https://prezi.com/xyuwjyycsbsh/mobile-archetype-pandroid-2/
+
+## Setup project
+
+Pandroid dependencies are handled automatically by a single gradle plugin. +
+All you have to do is to add this plugin to your module *build.gradle*
+
+[source,groovy]
+----
+
+buildscript {
+    repositories{
+        jcenter()
+    }
+    dependencies {
+        classpath "com.leroymerlin.pandroid:pandroid-plugin:LAST_VERSION"
+    }
+}
+
+apply plugin: 'com.leroymerlin.pandroid'
+
+----
+
+WARNING: If you update pandroid plugin it is strongly recommanded to clean your project. Files in build/pandroid have to be deleted to be updated
+
+
+## Here we go!
+
+To learn how to use the library, please read link:./pandroid-doc/html/Tutorial.html[tutorial part] of this wiki. +
+A demo project is also available in the *pandroid-demo* module of the repository.
+
+Please remember that Pandroid is an *open source* project : we count on you to maintain the panda ! +
+Do not hesitate to participate by sharing your questions, bug fixes or improvements. +
+Be part of it!
+
+
+## License
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

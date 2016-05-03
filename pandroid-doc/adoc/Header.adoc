@@ -1,0 +1,13 @@
+:sourcesDir: ./../../
+:javaDir: {sourcesDir}pandroid-java/
+:javaJava: {javaDir}src/main/java/com/leroymerlin/pandroid/
+:libDir: {sourcesDir}pandroid-library/
+:libJava: {libDir}src/main/java/com/leroymerlin/pandroid/
+:libRes: {libDir}src/main/res/
+:demoDir: {sourcesDir}pandroid-demo/
+:demoJava: {demoDir}src/main/java/com/leroymerlin/pandroid/demo/
+:demoRes: {demoDir}src/main/res/
+:pluginDir: {sourcesDir}pandroid-plugin/
+:assetsDir: ./../assets/
+:numbered:
+:toc: left
