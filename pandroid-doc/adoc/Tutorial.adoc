@@ -1,0 +1,752 @@
+include::./Header.adoc[]
+
+= Tutorial
+Pandroid v{pandroidVersion}, {generationDate}
+
+== Basics
+
+
+=== Architecture
+
+One of the main goals of Pandroid archetype is to help you organise your project and share a common vision/architecture with other developers. +
+"Why bother ? Because I understand my code and I work faster like that."
+True, but I'm sure you had to make a changes on an application of another developer and it looked like a mess. Yet it was a piece of art for him.
+What a waste of time to refactor the code of the others because you just don't understand it. Neither share the same practices...
+Most of the time all of that is just a matter of perspective. With Pandroid we try to share the same vision and understand each others much more faster.
+
+
+To illustrate this lets take a look at this schema:
+
+
+
+[[bad_architecture]]
+.Frequent bad architecture
+image::{assetsDir}archi/bad_archi.png[Bad architecture,652,262,align="center"]
+
+
+In most applications, when nothing is done to organize the code, it could look like this.
+Libraries are used in a lot of classes. We don't know which classes are used to run a functionality or another.
+If I am asked to change my application structure, I could be in a big trouble because all of my screens which are linked to each others : I would have to extract my functionalities from my UI. And if I need to change a library for another one... I'm just screwed.
+
+
+In order to resolve all of these issues, Pandroid proposes a modular architecture
+
+
+[[good_architecture]]
+.Pandroid modular architecture
+image::{assetsDir}archi/good_archi.png[Bad architecture,652,330,align="center"]
+
+With this architecture, none of my screens knows another. They send and listen events in order to work together.
+A responsive UI isn't an issue anymore !
+It is quite easy to replace a library, component or anything by another without impacting all our screens because libraries are hidden behind an abstract manager interface.
+I can identify which part of the code is responsible of a functionality and thus it's really easy to test it.
+
+
+=== Dagger
+
+To perform our library abstraction and deal with all of our managers, Pandroid uses Dagger 2 which is a powerful Dependencies Injection Library.
+
+TIP: The official documentation is available http://google.github.io/dagger[here].
+
+=== Event Bus
+
+Pandroid uses a EventBusManager to share informations between screens. The main idea is to avoid screens
+interdependencies. Activities and fragments stay independents in order to be more flexible with UI changes.
+
+Pandroid offers a simple and powerful implementation of EventBusManager. This implementation works with
+a gradle plugin which generates code and simplifies your life.
+
+Let's see how it works:
+
+*Send a simple Object*
+
+[source,java]
+----
+include::{demoJava}main/event/EventFragment.java[tags=sendSimpleEvent]
+----
+
+*Send a simple Object*
+
+[source,java]
+----
+include::{demoJava}main/event/EventFragment.java[tags=sendTaggedEvent]
+
+include::{demoJava}main/event/EventSecondFragment.java[tags=sendTaggedEvent]
+
+----
+
+*Delivery policy*
+
+[source,java]
+----
+include::{javaJava}event/EventBusManager.java[tags=deliveryPolicy]
+
+----
+
+
+TIP: link::{demoJava}main/event/EventFragment.java[This example] is available in the link::{demoDir}[demo project]
+
+
+
+
+
+== Panda style
+
+NOTE: This part is about the Pandroid pattern and some of the core functionalities.
+
+=== Plugin configuration
+
+To avoid expansive compilation or multidex issues, Pandroid has some optional libraries that you will have
+to configure before any usage. If you forget to specify the optional library, you will get an error displaying "no class found exception"
+
+
+To add the needed dependencies you have to declare it in the pandroid extension of your project
+
+[source,java]
+----
+pandroid{
+    library('libName') { //Regex matching declared configurator will bring the dependency
+        manifestConfig 'param1', 'param2', 'param3'  //needed configuration in manifest
+    }
+}
+----
+
+The plugin is using configurators in order to extract the librairies' configurations from Pandroid, the plugin is using configurators.
+It allows you to modify the gradle's configuration and the manifest of your app when the plugin is applied.
+
+To see default configurators, take a look at this link::../../{libDir}pandroid.gradle[pandroid.gradle].
+
+Here is an example:
+[source,java]
+----
+pandroid{
+    configurators{
+        'name.of.my.lib' {
+            gradle {
+            //This part will be applyed on your build.gradle
+                dependencies {
+                   compile ('name.of.my.lib:version')
+                }
+            manifest {
+            //This part will be merged to your manifest
+                    params ->
+                        '''
+        <application>
+            <meta-data
+                android:name="my.lib.ApiKey"
+                android:value="''' + params[0] + '''" />
+        </application>
+    '''
+    }
+}
+----
+
+WARNING: Some of the libraries need plugins in order to work (Analytics, Crashlytics, ...).
+You will have to configure the plugin classpath by yourself because pandroid can't resolve it
+
+TIP: All configuration files applied to your project can be found in the pandroid folder in your build folder
+
+
+=== PandroidApplication
+
+Your application has to extend PandroidApplication in order to:
+
+* Initialize PandroidConfig with the app's BuildConfig. This class allows the library to know if your app
+is in DEBUG mode. (To enable Logger for example)
+
+WARNING: If your application changes his package name for some flavors, you have to override the _getBuildConfig()_ method
+in order to give the good BuildConfig class
+
+* Initialize the logger. See link:#_logger[Logger part] to know how to customize it.
+
+* Handle Dagger component injection. Pandroid classes will inject their manager using the PandroidApplication.
+You can give a custom base component by overriding _createBaseComponent()_
+
+[source,java]
+----
+include::{demoJava}/DemoApplication.java[tags=createBaseComponent]
+----
+
+=== PandroidModule/Component
+
+To work properly, PandroidActivity/PandroidFragment needs managers created by the BaseComponent. That is why PandroidApplication provides this BaseComponent. To simplify your life, your
+Application Component can extend the BaseComponent in order to be injected automatically in every PandroidActivity/PandroidFragment. The PandroidModule needed by this base component provides the context, a logger, the EventBus and an initialized OkHttpClient.Builder.
+
+
+=== PandroidActivity
+
+PandroidActivity is the base activity you should extend in a Pandroid application.
+This activity handles the following points :
+
+- Dagger injection & LifecycleDelegate initialization
+
+[source,java]
+----
+include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityInjection]
+----
+
+- onResume Helper
+
+[source,java]
+----
+include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityResume]
+----
+
+- Back pressed behavior
+
+[source,java]
+----
+include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityBack]
+----
+
+- Provides a receiver that will be attached/detached from your application by the EventBusLifeCycleDelegate
+
+[source,java]
+----
+include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityReceivers]
+----
+
+=== PandroidFragment
+
+PandroidFragment is the base fragment you should extend in a Pandroid application.
+This Fragment handles the same points than a PandroidActivity.
+
+==== Open Fragment
+
+To open a fragment, you are encouraged to use the event bus. All you have to do is to send a FragmentOpener event
+and... that's it ! A custom event receiver named FragmentEventReceiver will handle the new fragment for you.
+
+[source,java]
+----
+include::{demoJava}/main/MainActivity.java[tags=FragmentReceivers]
+----
+
+==== Fragment arguments
+
+If you use FragmentEventReceiver to open your fragment, you are already giving arguments to your fragment. In fact, when
+you use _startFragment(...)_, the method will create a FragmentOpener which has two jobs :
+
+- It will be used to filter
+ the event and find the right receiver
+
+- It is in charge of building your fragment instance.
+
+By building a custom FragmentOpener, you will be able to send parameters to your fragment.
+ If your opener is parcelable it will be saved as parcelable to the fragment, otherwise, it will be serialized.
+
+To sum up here is an example:
+
+- Send an event
+
+[source,java]
+----
+include::{demoJava}main/anim/AnimationFragment.java[tags=FragmentWithOpener]
+----
+
+- FragmentOpener
+
+[source,java]
+----
+include::{demoJava}main/anim/MaterialOpener.java[tags=FragmentWithOpener]
+----
+
+- Manage an event (MainActivity.java)
+
+[source,java]
+----
+include::{demoJava}main/MainActivity.java[tags=FragmentWithOpener]
+----
+
+- Get arguments
+
+[source,java]
+----
+include::{demoJava}main/anim/MaterialFragment.java[tags=FragmentWithOpener]
+----
+
+=== Lifecycle Delegate
+
+Lifecycle delegates are listeners that are following the lifecycle of an activity or a fragment.
+They are handled by the PandroidDelegate you find in a PandroidActivity/Fragment.
+They are used to extract and share behaviors without any heritage.
+
+To understand what we could do with them take a look at this example
+
+
+[source,java]
+----
+include::{libJava}app/delegate/impl/IcepickLifecycleDelegate.java[tags=LifecycleDelegate]
+----
+
+By default PandroidLifecycleDelegate is create in your PandroidApplication.
+
+[source,java]
+----
+include::{libJava}/PandroidApplication.java[tags=PandroidBaseLifecycleDelegate]
+----
+NOTE: you could override this method to bring new behavior to all activity and fragment.
+
+
+=== Logger
+
+A powerful logger is a very important part of your development. A logger can become your best friend to identify bugs remotely.
+But keep in mind that your logger has to be properly configured to avoid any security vulnerability or debugging mess.
+
+To help you with that, Pandroid proposes a PandroidLogger that you can get by singleton but that you are encouraged
+ to inject with the BaseComponent of your PandroidApplication to get more flexibility.
+This Logger is a LogWrapper which means it can wrap any logger you need.
+In your PandroidApplication, the LogcatLogger is added by default to your loggerWrapper.
+
+
+[source,java]
+----
+include::{libJava}PandroidApplication.java[tags=Logger]
+----
+
+==== Crashlytics
+
+Crashlytics is an optional library in pandroid.
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+include::{libDir}pandroid.gradle[tags=Crashlytics]
+
+pandroid
+{
+    dependencies{
+        library ("crashlytics"){
+            manifestConfig "YOUR_CRASHLYTICS_API_KEY"
+        }
+    }
+}
+
+----
+
+- add the CrashlyticsLogger to the logWrapper
+
+[source,java]
+----
+// this logger is configured to be activated when the BuildConfig.DEBUG is false
+// you can override this behaviour
+logWrapper.addLogger(new CrashlyticsLogger(this));
+----
+
+
+== Security
+
+=== Proguard
+
+Pandroid helps you to use Proguard. The Pandroid plugin brings the pandroid-proguard-rules.pro in the pandroid build folder.
+By default, the Android plugin is configured to use this file
+
+[source,groovy]
+----
+include::{libDir}pandroid.gradle[tags=Proguard]
+----
+
+WARNING: Make sure that your application does not overwrite the proguard's configuration
+
+=== Encryption Manager
+
+To help you encrypt critical data, Pandroid provides a CryptoManager implementation: RsaAesCryptoManager. This manager provides two ways to encrypt/decrypt datas: symmetric using AES and asymmetric using RSA.
+
+WARNING: None of these encryption methods are unbreakable. Keep in mind that the best way to keep data safe on the phone is probably not to keep them.
+
+=== Secure Key
+
+Pandroid extension provide tools to encrypt your critical keys. This encryption is based on the app signing configuration. Make sure your application is properly configure.
+
+- to encrypt your key
+
+[source,java]
+----
+pandroid{
+    productFlavors{
+        all{
+            secureField "YOUR_KEY_NAME", "YOUR_KEY"
+        }
+        prod {
+            secureField "YOUR_KEY_NAME", "YOUR_PROD_KEY"
+        }
+    }
+}
+----
+
+- to decrypt your key
+
+[source,java]
+----
+
+//your secure field will be add to BuildConfig with the prefix SECURE_
+String decryptKey = PandroidConfig.getSecureField(context, BuildConfig.SECURE_YOUR_KEY_NAME)
+//...
+
+----
+
+
+== Network
+
+=== TrustManager / KeyManager
+
+If you need to add custom TrustManager or KeyManager, you can override the PandroidModule methods in your application Class.
+
+An example is available in DemoApplication.
+
+[source,java]
+----
+include::{demoJava}DemoApplication.java[tags=certificat]
+----
+
+=== Delegate
+
+To perform async calls, Pandroid provides a generic delegate that you can use.
+[source,java]
+----
+include::{libJava}future/ActionDelegate.java[]
+----
+
+To help you avoid errors during a view update once your activity or fragment has been released, Pandroid provides
+CancellableActionDelegate and NetActionDelegate. Those classes have the ability to be cancelled to ignore the async result.
+These delegates can be registered to your PandroidActivity/PandroidFragment in order to be cancelled automatically during the onPause.
+
+[source,java]
+----
+include::{demoJava}main/rest/RestFragment.java[tags=Retrofit]
+----
+=== Retrofit
+
+Pandroid provides the Retrofit library.
+Retrofit is a library used to perform REST webservice requests in a simple way.
+
+TIP: See http://square.github.io/retrofit/[official documentation] to use Retrofit
+
+.You can initialize your service with the provided client builder.
+
+[source,java]
+----
+include::{demoJava}DemoModule.java[tags=Retrofit]
+----
+
+.PandroidCall allows you to use Pandroid ActionDelegate.
+
+[source,java]
+----
+include::{demoJava}globals/review/ReviewManagerImpl.java[tags=Retrofit]
+----
+
+
+
+==== Mock
+
+If your service uses the PandroidCallAdapterFactory, you can use the Mock annotation to simulate network calls.
+The mock has to be enabled during the declaration of your PandroidCallAdapterFactory.
+
+[source,java]
+----
+include::{demoJava}globals/review/ReviewService.java[tags=Retrofit]
+----
+=== Picture
+
+Pandroid provides a PictureManager to help you extract your image library from your code.
+PictureManager allows you to associate an image (with its URL) to an ImageView
+Options are available such as adding a placeholder image or a delegate method (listener) to perform processing when loading the image.
+
+==== Glide
+
+Glide is an optional library. To use it you need to add the dependency to the Pandroid dependencies in your build.gradle file.
+
+
+.Installation
+
+- Build.gradle
+
+[source,java]
+----
+pandroid{
+    dependencies{
+        library 'glide'
+    }
+}
+----
+
+- Module
+
+[source,java]
+----
+include::{demoJava}/DemoModule.java[tags=Glide]
+----
+
+- Inject it
+
+[source,java]
+----
+include::{demoJava}main/rest/RestFragment.java[tags=Glide]
+----
+
+
+== User interface
+
+=== Animation
+
+[source,java]
+----
+include::{javaJava}event/EventBusManager.java[tags=deliveryPolicy]
+----
+
+All these animations can be found in the Pandroid Demo under the animation section. They will be described in their apparition order while running the application.
+
+==== ResizeView
+
+The simplest method to perform a resize animation on an element. You just call the method with the targeted View as one of the arguments, along with the new size and animation duration.
+
+[source,java]
+----
+ResizeAnimation.create(resizeView).height( X ).width( Y ).duration( T ).startAnimation();
+----
+
+==== RotateView
+
+This method works in a similar way that ResizeView and allows to perform a 3D rotation on an object, like flipping a coin.
+
+[source,java]
+----
+Rotate3dAnimation rotate3dAnimation = new Rotate3dAnimation(180, 360, Rotate3dAnimation.CENTER.CENTER,
+        DeviceUtils.dpToPx(getActivity(), 100), false);
+rotate3dAnimation.setRotationAxis(Rotate3dAnimation.AXIS.Y);
+rotate3dAnimation.setDuration(1000);
+rotateView.startAnimation(rotate3dAnimation);
+----
+
+==== Material Framgent
+
+This one might be the most interesting animation in the demo, because used in another way. It allows to use a semi-automatic animation between 2 different Views (that could be in different screens ?).
+To do this we have to provide in an Opener the required arguments, from an ImageView for example, like sizing or position...
+
+[source,java]
+----
+ViewInfosContainer ivInfos = new ViewInfosContainer(ivMaterial, view);
+ViewInfosContainer tvInfos = new ViewInfosContainer(tvTitle, view);
+sendEvent(new MaterialOpener(ivInfos, tvInfos));
+----
+
+Material fragment will be in charge of fetching the position of the first view and create an animation to transition with the second one.
+
+[source,java]
+----
+materialTransitionLayout.addAnimation(mOpener.ivInfos, R.id.material_iv);
+materialTransitionLayout.addAnimation(mOpener.tvInfos, R.id.material_tv);
+materialTransitionLayout.setRevealCenter(R.id.material_iv); //Optional Method
+materialTransitionLayout.open();
+----
+
+==== CircularFrameLayout
+
+This animation, last in the Pandroid  demo allows to display all the objects and create an animation that finishes on a single visible object.
+In order to do this, we only have to set the same listener to our 4 Buttons:
+
+[source,java]
+----
+view.findViewById(R.id.animation_test_btn).setOnClickListener(circularClickListener);
+----
+
+Then update the listener to provide the animation to perform.
+Puis de modifier notre listener pour lui donner l'animation à réaliser.
+ As shown here, test if the base object is the single one displayed, then perform the animation to make the others visible.
+ Or chose the selected button as the center and perform the animation again.
+
+[source,java]
+----
+if (circularFrameLayout.isClipOutEnable()) {
+    circularFrameLayout.open(animatorListener);
+} else {
+    circularFrameLayout.setCenter(v.getX() + v.getWidth() / 2, v.getY() + v.getHeight() / 2);
+    circularFrameLayout.animateToRadius(v.getWidth(), getResources().getInteger(R.integer.anim_speed), animatorListener);
+}
+----
+
+=== List
+
+
+Pandroid provides an adapter for ListView and RecyclerView.
+Both of them have the same pattern : you have to provide a HolderFactory and your adapter is responsible of the data list.
+These adapters help you with items gestures and animations
+See demo's examples
+
+[source,java]
+----
+include::{demoJava}/main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
+----
+
+=== List header
+
+A view is available to have a QuickHeader. This header can be used with ListView ScrollView and RecyclerView.
+See ListViewFragment in the demo
+
+[source,xml]
+----
+include::{demoRes}/layout/fragment_listview.xml[tags=QuickHeaderLayout]
+----
+
+=== Toast
+
+Pandroid allows you to customize Android Toast notifications thanks to a dedicated ToastManager. With this manager, you can change the style of your toasts by choosing among 3 styles :
+
+[source,xml]
+----
+include::{libRes}/values/styles.xml[tags=Toast]
+----
+
+If needed, you can declare your own style.
+
+You can also add a ToastListener to know when the toast is dismissed or clicked.
+
+It's possible to make a more advanced toast by adding an image, a button, or even a loader to it.
+
+==== Supertoast
+Supertoast is optional, to use it you need to add the dependency to the Pandroid dependencies in your module build.gradle file :
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+pandroid{
+    dependencies {
+        library "supertoast"
+    }
+}
+----
+
+You can inject the manager with dagger to use it in your classes, don't forget to provide it in your app module class :
+
+[source,java]
+----
+include::{demoJava}DemoModule.java[tags=provideToastManager]
+----
+
+The ToastManager interface exposes a list of methods to display toasts, here is an example of a simple error styled toast :
+
+[source,java]
+----
+include::{demoJava}/main/rest/RestFragment.java[tags=toastUsageExample]
+----
+
+
+=== Scanner
+
+==== Vision
+
+Vision is an optional Google Play Services library. You will have to declare it in the Pandroid extension.
+Pandroid provides a PandroidScannerView to integrate the library
+
+TIP: The official documentation is available https://developers.google.com/vision/[here].
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+pandroid{
+    dependencies {
+        library "vision"
+    }
+}
+----
+
+- usage (ScannerFragment.java)
+
+[source,java]
+----
+include::{demoJava}/main/scanner/ScannerFragment.java[tags=Vision]
+----
+
+
+=== Custom Views
+
+.ProgressWheel
+
+A custom Lollipop loader is available to create beautiful loading screens.
+
+
+== Storage
+
+=== Preferences
+
+To store preferences, a ConfigurationManager is available to abstract any storage library.
+
+.SharedPrefConfigurationManager
+
+This implementation of ConfigurationManager uses Android SharePreferences to store your object. If needed,
+the manager can serialize your object to string with GSON.
+
+=== Loader
+
+To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation link::http://developer.android.com/guide/components/loaders.html[here]
+To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.
+
+[source,java]
+----
+include::{demoJava}/main/rest/RestFragment.java[tags=Loader]
+----
+
+== Analytics
+
+=== Google Analytics
+
+Google Analytics is an optional library.
+
+.Installation
+
+You need to add the dependency in your build.gradle
+
+[source,java]
+----
+
+include::{libDir}/pandroid.gradle[tags=GoogleAnalytics]
+
+pandroid {
+    dependencies {
+        library 'analytics'
+    }
+}
+----
+
+Finally, in your module, you can provided Analytics Manager and configure your tracker.
+
+[source,java]
+----
+include::{demoJava}DemoModule.java[tags=provideAnalyticsManager]
+----
+
+WARNING: GMS services now require a *google-services.json* configuration file. Please refer to the official documentation
+
+
+== Tests
+
+Coming soon
+
+== Utils
+
+Here are all the static classes you usually need in your projects
+
+.DeviceUtils
+
+Get info on the device, convert pixel to dp or open/close the keyboard.
+
+.IoUtils
+
+Provide copy file method, read data from assets.
+
+.NetworkUtils
+
+This class helps you check network stats, get the current IP, disable/enable WIFI, ...
+
+.SystemUtils
+
+Help you with all the Android OS stuff (run command, check root, uninstall App)
