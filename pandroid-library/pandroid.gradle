@@ -10,13 +10,16 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+
     buildTypes {
         all {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'build/pandroid/pandroid-proguard-rules.pro'
         }
-        release {
-            minifyEnabled true
+        if(!plugins.hasPlugin("com.android.library")){
+            release {
+                minifyEnabled true
+            }
         }
     }
 
