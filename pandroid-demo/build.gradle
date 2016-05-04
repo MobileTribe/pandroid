@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'delivery'
 
+
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
     buildToolsVersion androidBuildToolsVersion
@@ -28,19 +29,13 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
-}
 
 
-
-
-dependencies {
+    //Support to simulate plugin work
     apt project(':pandroid-compiler')
     compile project(':pandroid-library')
     provided project(':pandroid-annotations')
 
-
-
-    //Support to simulate plugin work
     compile optionalLibs
     provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
     apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
@@ -48,3 +43,17 @@ dependencies {
 }
 
 
+
+
+delivery {
+    signingProperties {
+        all {
+            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_dev.properties")
+        }
+        release {
+            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_prod.properties")
+        }
+
+    }
+
+}
