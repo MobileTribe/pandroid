@@ -11,6 +11,12 @@
         android:padding="@dimen/large_text"
         android:text="@string/event_title" />
 
+    <Button
+        android:id="@+id/event_send_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_send_tag" />
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

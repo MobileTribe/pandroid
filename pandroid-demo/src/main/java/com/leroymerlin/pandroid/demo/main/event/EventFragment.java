@@ -24,6 +24,7 @@ import butterknife.OnClick;
 public class EventFragment extends PandroidFragment<FragmentOpener> {
 
 
+    private static final String EVENT_TAG = "EVENT_TAG.Clicked";
     @Inject
     ToastManager toastManager;
 
@@ -35,6 +36,11 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_event, container, false);
+    }
+
+    @OnClick(R.id.event_send_tag)
+    public void sendTag() {
+        eventBusManager.send(null, EVENT_TAG); // send a string object with no tag
     }
 
     //tag::sendSimpleEvent[]
@@ -54,6 +60,11 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
     @OnClick(R.id.event_open_second_fragment)
     public void openSecondFragment() {
         startFragment(EventSecondFragment.class);
+    }
+
+    @EventReceiver(value = EVENT_TAG)
+    public void receiveLocalTag() {
+        toastManager.makeToast(getActivity(), "message with tag " + EVENT_TAG + " received", null);
     }
 
     //tag::sendSimpleEvent[]

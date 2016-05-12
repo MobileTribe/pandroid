@@ -202,7 +202,11 @@ public class EventBusManagerImpl implements EventBusManager {
             } else {
                 builder.append("receiversTag : ").append(messageTag);
             }
-            builder.append("\n").append("data : ").append(data.getClass().getSimpleName()).append(" : ").append(data.toString());
+            if (data != null)
+                builder.append("\n").append("data : ").append(data.getClass().getSimpleName()).append(" : ").append(data.toString());
+            else
+                builder.append("\n").append("data : ").append("null");
+
             return builder.toString();
         }
 
