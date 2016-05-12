@@ -17,6 +17,7 @@
     <string name="event_text_to_send">Message à envoyer</string>
     <string name="event_send_to">Envoyer au 2e fragment</string>
     <string name="event_open_second_fragment">Ouvrir le deuxième fragment</string>
+    <string name="event_send_tag">Envoyer avec un tag</string>
 
 
     <string name="animation_resize">Touch to resize</string>
@@ -34,7 +35,6 @@
     <string name="list_header_enable">Activer le header</string>
     <string name="list_header_show">Afficher le header</string>
     <string name="list_header_hide">Afficher à 0.5</string>
-
 
 
 </resources>

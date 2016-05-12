@@ -94,14 +94,35 @@ public class EventBusProcessor {
                     }
                     tagInitBlockBuilder.add(")");
                     List<? extends VariableElement> params = e.getParameters();
-                    if (params.size() != 1) {
-                        log(processingEnvironment, getFullName(e) + " should have 1 parameter, have " + params.size(), Diagnostic.Kind.ERROR);
+                    if (params.size() > 1) {
+                        log(processingEnvironment, getFullName(e) + " should have 1 or no parameter, have " + params.size(), Diagnostic.Kind.ERROR);
                     }
 
-                    TypeName parameterTypeName = ClassName.get(params.get(0).asType());
-                    if (parameterTypeName instanceof ParameterizedTypeName) { // remove <T> from typeName for instanceOf
-                        parameterTypeName = ((ParameterizedTypeName) parameterTypeName).rawType;
+                    TypeName parameterTypeName = null;
+
+                    if (params.size() == 1) {
+                        parameterTypeName = ClassName.get(params.get(0).asType());
+                        if (parameterTypeName instanceof ParameterizedTypeName) { // remove <T> from typeName for instanceOf
+                            parameterTypeName = ((ParameterizedTypeName) parameterTypeName).rawType;
+                        }
                     }
+
+                    MethodSpec.Builder receiverMethodBuilder = MethodSpec.methodBuilder(EventBusReceiver_MethodHandle.getName()).addAnnotation(Override.class).addModifiers(Modifier.PUBLIC).returns(TypeName.BOOLEAN)
+                            .addParameter(EventBusReceiver_MethodHandle.getParameterTypes()[0], "data");
+
+
+                    if (parameterTypeName != null) {
+                        receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null && data instanceof $T)", parameterTypeName.box())
+                                .addStatement("weakReference.get()." + getMethodName(e) + "(($T) data)", parameterTypeName);
+                    } else {
+                        receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null)")
+                                .addStatement("weakReference.get()." + getMethodName(e) + "()");
+                    }
+                    receiverMethodBuilder.addStatement("return true")
+                            .endControlFlow()
+                            .addStatement("return false");
+
+                    MethodSpec receiverMethod = receiverMethodBuilder.build();
 
                     TypeSpec eventBusReceiverClass = TypeSpec.anonymousClassBuilder("")
                             .addSuperinterface(EventBusManager.EventBusReceiver.class)
@@ -110,16 +131,7 @@ public class EventBusProcessor {
                                     MethodSpec.methodBuilder(EventBusReceiver_MethodTags.getName()).addAnnotation(Override.class).addModifiers(Modifier.PUBLIC).returns(EventBusReceiver_MethodTags.getReturnType())
                                             .addStatement("return tags").build())
 
-                            .addMethod(
-                                    MethodSpec.methodBuilder(EventBusReceiver_MethodHandle.getName()).addAnnotation(Override.class).addModifiers(Modifier.PUBLIC).returns(TypeName.BOOLEAN)
-                                            .addParameter(EventBusReceiver_MethodHandle.getParameterTypes()[0], "data")
-                                            .beginControlFlow("if(weakReference.get() != null && data instanceof $T)", parameterTypeName.box())
-                                            .addStatement("weakReference.get()." + getMethodName(e) + "(($T) data)", parameterTypeName)
-                                            .addStatement("return true")
-                                            .endControlFlow()
-                                            .addStatement("return false")
-                                            .build()
-                            )
+                            .addMethod(receiverMethod)
                             .build();
 
                     getMethodBuilder.addStatement("add($L)", eventBusReceiverClass);
