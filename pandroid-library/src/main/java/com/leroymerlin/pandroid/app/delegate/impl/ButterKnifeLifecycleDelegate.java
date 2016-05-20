@@ -12,7 +12,7 @@ import butterknife.Unbinder;
 /**
  * Created by florian on 10/02/16.
  */
-public class ButterKnifeLifecycleDelegate extends SimpleLifecycleDelegate {
+public class ButterKnifeLifecycleDelegate extends SimpleLifecycleDelegate<Object> {
     private Unbinder unbinder;
 
     @Override
