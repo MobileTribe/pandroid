@@ -11,7 +11,7 @@ import icepick.Icepick;
  * Created by florian on 10/02/16.
  */
 //tag::LifecycleDelegate[]
-public class IcepickLifecycleDelegate extends SimpleLifecycleDelegate {
+public class IcepickLifecycleDelegate extends SimpleLifecycleDelegate<Object> {
 
     @Override
     public void onCreateView(Object target, View view, Bundle savedInstanceState) {

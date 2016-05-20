@@ -6,16 +6,16 @@ import android.view.View;
 /**
  * Created by florian on 10/02/16.
  */
-public interface LifecycleDelegate {
+public interface LifecycleDelegate<T> {
 
 
-    void onCreateView(Object target, View view, Bundle savedInstanceState);
+    void onCreateView(T target, View view, Bundle savedInstanceState);
 
-    void onResume(Object target);
+    void onResume(T target);
 
-    void onPause(Object object);
+    void onPause(T target);
 
-    void onSaveView(Object target, Bundle outState);
+    void onSaveView(T target, Bundle outState);
 
-    void onDestroyView(Object target);
+    void onDestroyView(T target);
 }

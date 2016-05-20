@@ -8,7 +8,7 @@ import com.leroymerlin.pandroid.app.ResumeState;
 /**
  * Created by florian on 10/02/16.
  */
-public class SimpleLifecycleDelegate implements LifecycleDelegate {
+public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
 
 
     protected Bundle savedInstanceState;
@@ -17,7 +17,7 @@ public class SimpleLifecycleDelegate implements LifecycleDelegate {
     protected boolean viewCreated;
 
     @Override
-    public void onCreateView(Object target, View view, Bundle savedInstanceState) {
+    public void onCreateView(T target, View view, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         onCreate = true;
         viewCreated = true;
@@ -26,7 +26,7 @@ public class SimpleLifecycleDelegate implements LifecycleDelegate {
     }
 
     @Override
-    public void onResume(Object target) {
+    public void onResume(T target) {
         resumeState = ResumeState.VIEW_RESTORED;
         if (onCreate && savedInstanceState == null) { //firstStart
             resumeState = ResumeState.FIRST_START;
@@ -37,16 +37,16 @@ public class SimpleLifecycleDelegate implements LifecycleDelegate {
     }
 
     @Override
-    public void onPause(Object object) {
+    public void onPause(T object) {
 
     }
 
     @Override
-    public void onSaveView(Object target, Bundle outState) {
+    public void onSaveView(T target, Bundle outState) {
     }
 
     @Override
-    public void onDestroyView(Object target) {
+    public void onDestroyView(T target) {
         viewCreated = false;
     }
 
