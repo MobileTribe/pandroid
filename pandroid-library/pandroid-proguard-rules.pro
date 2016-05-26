@@ -36,9 +36,6 @@
 }
 -dontwarn com.leroymerlin.pandroid.**
 
-# CRASHLYTICS
--keep class com.crashlytics.** { *; }
-
 #ICEPICK
 -dontwarn icepick.**
 -keep class **$$Icicle { *; }
