@@ -55,6 +55,9 @@ Please remember that Pandroid is an *open source* project : we count on you to m
 Do not hesitate to participate by sharing your questions, bug fixes or improvements. +
 Be part of it!
 
+## Partner
+
+image:./pandroid-doc/assets/partner/lm.jpg[Leroy Merlin,120,120]
 
 ## License
 
