@@ -13,6 +13,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
+ * Implementation of AnalyticsManager for GoogleAnalytics
+ *
  * Created by florian on 06/11/14.
  */
 public class GoogleAnalyticsManager implements AnalyticsManager {
@@ -20,11 +22,9 @@ public class GoogleAnalyticsManager implements AnalyticsManager {
     private static final String TAG = "GoogleAnalyticsManager";
 
     private GoogleAnalytics mAnalytics;
-    HashMap<String, com.google.android.gms.analytics.Tracker> mTrackers = new HashMap<>();
-
-    LogWrapper logWrapper;
-
-    final Context context;
+    private HashMap<String, com.google.android.gms.analytics.Tracker> mTrackers = new HashMap<>();
+    protected LogWrapper logWrapper;
+    protected final Context context;
 
     @Inject
     public GoogleAnalyticsManager(Context context) {
@@ -96,14 +96,14 @@ public class GoogleAnalyticsManager implements AnalyticsManager {
     /**
      * init a new event builder
      *
-     * @return
+     * @return a new EventBuilder
      */
     @Override
     public EventBuilder newEventBuilder() {
-        return new AnalyticsEventBuilder();
+        return new AnalyticsEventBuilder(mTrackers);
     }
 
-    protected class AnalyticsTrackerBuilder extends TrackerBuilder {
+    private class AnalyticsTrackerBuilder extends TrackerBuilder {
 
         @Override
         public Tracker build() {
@@ -112,7 +112,7 @@ public class GoogleAnalyticsManager implements AnalyticsManager {
                 @Override
                 public void create() {
                     if (!mTrackers.containsKey(name)) {
-                        com.google.android.gms.analytics.Tracker t = null;
+                        com.google.android.gms.analytics.Tracker t;
                         if (resources != null) {
                             t = getAnalytics().newTracker(resources);
                         } else {
@@ -138,8 +138,14 @@ public class GoogleAnalyticsManager implements AnalyticsManager {
         }
     }
 
-    protected class AnalyticsEventBuilder extends EventBuilder {
+    private static class AnalyticsEventBuilder extends EventBuilder {
 
+
+        private final HashMap<String, com.google.android.gms.analytics.Tracker> mTrackers;
+
+        AnalyticsEventBuilder(HashMap<String, com.google.android.gms.analytics.Tracker> trackers) {
+            this.mTrackers = trackers;
+        }
 
         @Override
         public Event build() {
@@ -198,55 +204,31 @@ public class GoogleAnalyticsManager implements AnalyticsManager {
                     }
                 }
 
-                private HitBuilders.EventBuilder addDimensions(HitBuilders.EventBuilder builder) {
-                    if (dimensions != null) {
-                        for (Map.Entry<Integer, String> entry : dimensions.entrySet()) {
-                            builder.setCustomDimension(entry.getKey(), entry.getValue());
+                private <T> T addDimensions(T builder) {
+                    for (Map.Entry<Object, Object> entry : params.entrySet()) {
+                        if (entry.getKey() instanceof Integer && entry.getValue() instanceof String) {
+                            if (builder instanceof HitBuilders.EventBuilder) {
+                                ((HitBuilders.EventBuilder) builder).setCustomDimension((Integer) entry.getKey(), (String) entry.getValue());
+                            } else if (builder instanceof HitBuilders.TimingBuilder) {
+                                ((HitBuilders.TimingBuilder) builder).setCustomDimension((Integer) entry.getKey(), (String) entry.getValue());
+                            } else if (builder instanceof HitBuilders.ScreenViewBuilder) {
+                                ((HitBuilders.ScreenViewBuilder) builder).setCustomDimension((Integer) entry.getKey(), (String) entry.getValue());
+                            }
                         }
                     }
                     return builder;
                 }
 
-                private HitBuilders.EventBuilder addMetrics(HitBuilders.EventBuilder builder) {
-                    if (metrics != null) {
-                        for (Map.Entry<Integer, Float> entry : metrics.entrySet()) {
-                            builder.setCustomMetric(entry.getKey(), entry.getValue());
-                        }
-                    }
-                    return builder;
-                }
-
-                private HitBuilders.TimingBuilder addMetrics(HitBuilders.TimingBuilder builder) {
-                    if (metrics != null) {
-                        for (Map.Entry<Integer, Float> entry : metrics.entrySet()) {
-                            builder.setCustomMetric(entry.getKey(), entry.getValue());
-                        }
-                    }
-                    return builder;
-                }
-
-                private HitBuilders.TimingBuilder addDimensions(HitBuilders.TimingBuilder builder) {
-                    if (dimensions != null) {
-                        for (Map.Entry<Integer, String> entry : dimensions.entrySet()) {
-                            builder.setCustomDimension(entry.getKey(), entry.getValue());
-                        }
-                    }
-                    return builder;
-                }
-
-                private HitBuilders.ScreenViewBuilder addMetrics(HitBuilders.ScreenViewBuilder builder) {
-                    if (metrics != null) {
-                        for (Map.Entry<Integer, Float> entry : metrics.entrySet()) {
-                            builder.setCustomMetric(entry.getKey(), entry.getValue());
-                        }
-                    }
-                    return builder;
-                }
-
-                private HitBuilders.ScreenViewBuilder addDimensions(HitBuilders.ScreenViewBuilder builder) {
-                    if (dimensions != null) {
-                        for (Map.Entry<Integer, String> entry : dimensions.entrySet()) {
-                            builder.setCustomDimension(entry.getKey(), entry.getValue());
+                private <T> T addMetrics(T builder) {
+                    for (Map.Entry<Object, Object> entry : params.entrySet()) {
+                        if (entry.getKey() instanceof Integer && entry.getValue() instanceof Float) {
+                            if (builder instanceof HitBuilders.EventBuilder) {
+                                ((HitBuilders.EventBuilder) builder).setCustomMetric((Integer) entry.getKey(), (Float) entry.getValue());
+                            } else if (builder instanceof HitBuilders.TimingBuilder) {
+                                ((HitBuilders.TimingBuilder) builder).setCustomMetric((Integer) entry.getKey(), (Float) entry.getValue());
+                            } else if (builder instanceof HitBuilders.ScreenViewBuilder) {
+                                ((HitBuilders.ScreenViewBuilder) builder).setCustomMetric((Integer) entry.getKey(), (Float) entry.getValue());
+                            }
                         }
                     }
                     return builder;
