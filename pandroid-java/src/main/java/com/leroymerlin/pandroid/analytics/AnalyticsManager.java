@@ -1,8 +1,6 @@
 package com.leroymerlin.pandroid.analytics;
 
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Created by florian on 06/11/14.
@@ -84,8 +82,7 @@ public interface AnalyticsManager {
         protected String variable;
         protected boolean newSession;
         protected String action;
-        protected Map<Integer, String> dimensions = new Hashtable<>();
-        protected Map<Integer, Float> metrics = new Hashtable<>();
+        protected HashMap<Object,Object> params = new HashMap<>();
 
 
         public EventBuilder setCategory(String category) {
@@ -134,15 +131,11 @@ public interface AnalyticsManager {
             return this;
         }
 
-        public EventBuilder addDimension(int dimensionsKey, String value) {
-            this.dimensions.put(dimensionsKey, value);
+        public EventBuilder addParam(Object key, Object value) {
+            this.params.put(key, value);
             return this;
         }
 
-        public EventBuilder addMetric(int metricKey, float value) {
-            metrics.put(metricKey, value);
-            return this;
-        }
 
         public abstract Event build();
 
