@@ -48,10 +48,9 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
-        pandroidApplication.inject(this);
         //initialize PandroidDelegate
         pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
-
+        pandroidDelegate.onInit(this);
         if (getArguments() != null && getArguments().containsKey(FragmentOpener.ARG_OPENER)) {
             mOpener = (T) getArguments().get(FragmentOpener.ARG_OPENER);
         }
@@ -68,7 +67,7 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pandroidDelegate.onCreateView(this,view, savedInstanceState);
+        pandroidDelegate.onCreateView(this, view, savedInstanceState);
     }
 
     @Override
