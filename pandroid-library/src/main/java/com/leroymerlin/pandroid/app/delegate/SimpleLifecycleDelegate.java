@@ -17,6 +17,11 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
     protected boolean viewCreated;
 
     @Override
+    public void onInit(T target) {
+
+    }
+
+    @Override
     public void onCreateView(T target, View view, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         onCreate = true;

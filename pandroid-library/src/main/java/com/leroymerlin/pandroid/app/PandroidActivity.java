@@ -42,12 +42,10 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Inject dagger base component
         PandroidApplication pandroidApplication = PandroidApplication.get(this);
-        pandroidApplication.inject(this);
-
         //initialize PandroidDelegate with the default from PandroidApplication
         pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
+        pandroidDelegate.onInit(this);
         //end::PandroidActivityInjection[]
 
     }

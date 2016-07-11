@@ -48,10 +48,9 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
-        pandroidApplication.inject(this);
         //initialize PandroidDelegate
         pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
-
+        pandroidDelegate.onInit(this);
         if (getArguments() != null && getArguments().containsKey(FragmentOpener.ARG_OPENER)) {
             mOpener = (T) getArguments().get(FragmentOpener.ARG_OPENER);
         }
