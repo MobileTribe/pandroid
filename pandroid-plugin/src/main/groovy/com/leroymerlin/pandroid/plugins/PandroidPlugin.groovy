@@ -10,10 +10,13 @@ import org.slf4j.LoggerFactory
 class PandroidPlugin implements Plugin<Project> {
 
     static final String PANDROID_GROUP = "pandroid"
+    static final String PROP_FILE = 'pandroid-version.properties'
     Logger logger = LoggerFactory.getLogger('PandroidPlugin')
 
+    def pluginVersion
+
     def gradleFiles = [
-            'pandroid-version.properties',
+            PROP_FILE,
             'pandroid.properties',
             'dagger.gradle',
             'pandroid.gradle',
@@ -24,6 +27,15 @@ class PandroidPlugin implements Plugin<Project> {
 
     def void apply(Project project) {
         this.project = project;
+
+
+        if (!project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()) {
+            Properties properties = new Properties()
+            properties.load(project.zipTree(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).matching {
+                include PROP_FILE
+            }.singleFile.newInputStream());
+            pluginVersion = properties.getProperty("pandroidVersion")
+        }
 
         project.extensions.create('pandroid', PandroidPluginExtension, project, this)
 
@@ -53,7 +65,17 @@ class PandroidPlugin implements Plugin<Project> {
 
 
     File getEmbededFile(String fileName) {
-        File file = new File(project.buildDir, "pandroid/$fileName");
+        File pandroidFolder = new File(project.buildDir, "pandroid");
+        if (pluginVersion) {
+            File lockFile = new File(pandroidFolder, ".pandroid-" + pluginVersion);
+            if (!lockFile.exists() && pandroidFolder.exists()) {
+                logger.info("new version detected => delete old pandroid folder")
+                pandroidFolder.deleteDir()
+            }
+            pandroidFolder.mkdirs();
+            lockFile.createNewFile();
+        }
+        File file = new File(pandroidFolder, fileName);
         logger.info("file: $file")
         if (!file.exists()) {
             file.parentFile.mkdirs()
@@ -67,7 +89,7 @@ class PandroidPlugin implements Plugin<Project> {
     }
 
     public void applyPropertiesOnProject(File file) {
-        if(!file.exists())
+        if (!file.exists())
             return
         Properties properties = new Properties();
         properties.load(new FileInputStream(file))
