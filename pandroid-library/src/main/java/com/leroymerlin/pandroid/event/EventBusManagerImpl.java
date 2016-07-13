@@ -45,7 +45,7 @@ public class EventBusManagerImpl implements EventBusManager {
 
         for (int i = receivers.size() - 1; i >= 0; i--) {
             EventBusReceiver receiver = receivers.get(i);
-            if (message.messageTag == null || (receiver.getTags() != null && receiver.getTags().contains(message.messageTag))) {
+            if ((message.messageTag == null && (receiver.getTags() == null || receiver.getTags().isEmpty())) || (receiver.getTags() != null && receiver.getTags().contains(message.messageTag))) {
                 if (receiver.handle(message.data)) {
                     message.setDelivered();
                 }
