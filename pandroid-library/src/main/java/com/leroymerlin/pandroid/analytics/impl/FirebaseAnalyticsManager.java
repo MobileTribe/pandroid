@@ -31,14 +31,12 @@ public class FirebaseAnalyticsManager extends AnalyticsManager.AnalyticsProcesso
 
     @Override
     public void processParam(HashMap<String, Object> params) {
-
-
         Bundle bundle = new Bundle();
         for (Map.Entry<String, Object> set : params.entrySet()) {
-            if (!set.getKey().equals(EVENT_TYPE)) {
+            if (!set.getKey().equals(Event.TYPE)) {
                 if (set.getKey().startsWith("user")) {
-                    if (set.getKey().equals(USER_ID)) {
-                        mFirebaseAnalytics.setUserId(USER_ID);
+                    if (set.getKey().equals(Param.USER_ID)) {
+                        mFirebaseAnalytics.setUserId(Param.USER_ID);
                     } else {
                         mFirebaseAnalytics.setUserProperty(set.getKey(), String.valueOf(set.getValue()));
                     }
@@ -49,8 +47,8 @@ public class FirebaseAnalyticsManager extends AnalyticsManager.AnalyticsProcesso
         }
 
         String eventName = "event";
-        if (params.containsKey(EVENT_TYPE)) {
-            eventName = String.valueOf(params.get(EVENT_TYPE));
+        if (params.containsKey(Event.TYPE)) {
+            eventName = String.valueOf(params.get(Event.TYPE));
         }
         mFirebaseAnalytics.logEvent(eventName, bundle);
     }

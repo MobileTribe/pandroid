@@ -9,23 +9,33 @@ import java.util.LinkedHashMap;
 public interface AnalyticsManager {
 
 
+    class Event {
+        public static class Type {
+            public static final String ACTION = "action";
+            public static final String SCREEN = "screen";
+            public static final String TIMER = "timer";
+            protected Type(){}
+        }
 
-    String EVENT_TYPE = "event_type";
+        public static final String TYPE = "type";
+        public static final String CATEGORY = "category";
+        public static final String VARIABLE = "variable";
+        public static final String ACTION = "action";
+        public static final String LABEL = "label";
+        public static final String VALUE = "value";
+        public static final String DURATION = "duration";
+        protected Event() {
+        }
+    }
 
-    String EVENT_CATEGORY = "event_category";
-    String EVENT_VARIABLE = "event_variable";
-    String EVENT_ACTION = "event_action";
-    String EVENT_LABEL = "event_label";
-    String EVENT_VALUE = "event_value";
-    String EVENT_DURATION = "event_duration";
-
-    String USER_ID = "user_id";
-
-    String NAVIGATION_PATH = "navigation_path";
-    String HISTORY = "history";
-    String NEW_SESSION = "new_session";
-    String SCREEN_NAME = "screen_name";
-    String SUBJECT_OBJECT = "subject_object";
+    class Param {
+        public static final String USER_ID = "user_id";
+        public static final String NAVIGATION_PATH = "navigation_path";
+        public static final String HISTORY = "history";
+        public static final String NEW_SESSION = "new_session";
+        public static final String SUBJECT_OBJECT = "subject_object";
+        protected Param(){}
+    }
 
     AnalyticsTracker track();
 

@@ -55,9 +55,9 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
 
         for (Tracker tracker : mTrackers) {
 
-            boolean session = params.containsKey(NEW_SESSION);
-            if (params.containsKey(SCREEN_NAME)) {
-                tracker.setScreenName(params.get(SCREEN_NAME).toString());
+            boolean session = params.containsKey(Param.NEW_SESSION);
+            if (Event.Type.SCREEN.equals(params.get(Event.TYPE))) {
+                tracker.setScreenName(params.get(Event.LABEL).toString());
                 // Send a screen view.
                 HitBuilders.ScreenViewBuilder screenViewBuilder = new HitBuilders.ScreenViewBuilder();
                 screenViewBuilder = addMetrics(screenViewBuilder, params);
@@ -69,12 +69,12 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                 tracker.send(screenViewBuilder.build());
             }
 
-            if (params.containsKey(EVENT_CATEGORY) && params.containsKey(EVENT_VARIABLE) && params.containsKey(EVENT_LABEL) && params.containsKey(EVENT_DURATION)) {
+            if (Event.Type.TIMER.equals(params.get(Event.TYPE))) {
                 HitBuilders.TimingBuilder timingBuilder = new HitBuilders.TimingBuilder()
-                        .setCategory(String.valueOf(params.get(EVENT_CATEGORY)))
-                        .setValue((Long) params.get(EVENT_VALUE))
-                        .setVariable((String) params.get(EVENT_VARIABLE))
-                        .setLabel(String.valueOf(params.get(EVENT_LABEL)));
+                        .setCategory(String.valueOf(params.get(Event.CATEGORY)))
+                        .setValue((Long) params.get(Event.LABEL))
+                        .setVariable((String) params.get(Event.VARIABLE))
+                        .setLabel(String.valueOf(params.get(Event.LABEL)));
                 timingBuilder = addMetrics(timingBuilder, params);
                 timingBuilder = addDimensions(timingBuilder, params);
                 if (session) {
@@ -84,13 +84,13 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                 tracker.send(timingBuilder.build());
             }
 
-            if (params.containsKey(EVENT_CATEGORY) && params.containsKey(EVENT_VARIABLE) && params.containsKey(EVENT_LABEL) && params.containsKey(EVENT_ACTION)) {
+            if (Event.Type.ACTION.equals(params.get(Event.TYPE))) {
 
                 HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder()
-                        .setCategory(String.valueOf(params.get(EVENT_CATEGORY)))
-                        .setValue((Long) params.get(EVENT_VALUE))
-                        .setAction((String) params.get(EVENT_ACTION))
-                        .setLabel(String.valueOf(params.get(EVENT_LABEL)));
+                        .setCategory(String.valueOf(params.get(Event.CATEGORY)))
+                        .setValue((Long) params.get(Event.VALUE))
+                        .setAction((String) params.get(Event.ACTION))
+                        .setLabel(String.valueOf(params.get(Event.LABEL)));
                 eventBuilder = addMetrics(eventBuilder, params);
                 eventBuilder = addDimensions(eventBuilder, params);
                 if (session) {
