@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,13 +36,16 @@ import butterknife.BindView;
  */
 public class ScannerFragment extends PandroidFragment<FragmentOpener> {
 
-    private static final int RC_HANDLE_CAMERA_PERM = 100;
+    public static final int RC_HANDLE_CAMERA_PERM = 100;
     private static final String TAG = "ScannerFragment";
     @BindView(R.id.scanner_psv)
     PandroidScannerView pandroidScannerView;
 
     @BindView(R.id.scanner_wv)
     WebView wvInfos;
+
+    @BindView(R.id.sliding_layout)
+    View panel;
 
     @Inject
     ToastManager toastManager;
@@ -65,9 +69,8 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
         } else {
             requestCameraPermission();
         }
-
-        wvInfos.loadUrl(getString(R.string.wiki_scanner));
-
+        wvInfos.getSettings().setJavaScriptEnabled(true);
+        wvInfos.loadUrl("https://htmlpreview.github.io/?https://github.com/MobileTribe/pandroid/blob/master/pandroid-doc/html/Tutorial.html#scanner");
     }
 
     /**
@@ -195,16 +198,16 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
 
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+        if (!FragmentCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(getActivity(), permissions, RC_HANDLE_CAMERA_PERM);
+            FragmentCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
             return;
         }
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(getActivity(), permissions,
+                FragmentCompat.requestPermissions(ScannerFragment.this, permissions,
                         RC_HANDLE_CAMERA_PERM);
             }
         };

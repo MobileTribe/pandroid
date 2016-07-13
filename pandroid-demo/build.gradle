@@ -29,7 +29,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.sothree.slidinguppanel:library:3.2.1'
+    compile 'com.sothree.slidinguppanel:library:3.3.0'
 
 
     //Support to simulate plugin work
