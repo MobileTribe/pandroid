@@ -78,7 +78,7 @@ public class EventUnitTest {
     public void testEventSync() throws Exception {
         eventBusManager.registerReceiver(taggedListener);
         String test = "testEventSync";
-        eventBusManager.send(test);
+        eventBusManager.send(test, GOOD_FILTER);
         Assert.assertEquals(test, resultObject);
     }
 
@@ -108,8 +108,8 @@ public class EventUnitTest {
         eventBusManager.registerReceiver(wrongListener);
         eventBusManager.registerReceiver(taggedListener);
         String test = "testListenerTag";
-        eventBusManager.sendSync(test);
-        Assert.assertEquals(resultObject, test);
+        eventBusManager.sendSync(test, null, EventBusManager.DeliveryPolicy.UNCHECKED);
+        Assert.assertNotSame(resultObject, test);
 
         test = "testListenerTag_GOOD_FILTER";
         eventBusManager.sendSync(test, "GOOD_FILTER");
@@ -120,7 +120,7 @@ public class EventUnitTest {
     @Test
     public void testDeliveryPolicyDefault() {
         String test = "testDeliveryPolicyDefault";
-        eventBusManager.sendSync(test);
+        eventBusManager.sendSync(test, GOOD_FILTER);
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertEquals(resultObject, test);
         eventBusManager.unregisterReceiver(taggedListener);
