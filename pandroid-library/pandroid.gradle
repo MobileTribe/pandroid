@@ -16,7 +16,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'build/pandroid/pandroid-proguard-rules.pro'
         }
-        if(!plugins.hasPlugin("com.android.library")){
+        if (!plugins.hasPlugin("com.android.library")) {
             release {
                 minifyEnabled true
             }
@@ -77,27 +77,50 @@ pandroid {
 '''
             }
         }
-        "com.google.android.gms:play-services-analytics" { //GoogleAnalyticsManager
-            gradle {
-                /*
-    Add this part in your build.gradle
-    //tag::GoogleAnalytics[]
+
+        "com.google.firebase:firebase-core" {
+            /*
+Add this part in your build.gradle
+//tag::FirebaseAnalytics[]
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-    classpath 'com.google.gms:google-services:2.0.0-beta6'
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
+//apply the plugin at the end of your build.gradle to avoid error
+apply plugin 'com.google.gms.google-services'
+//end::FirebaseAnalytics[]
+*/
+            gradle {
+                dependencies {
+                    compile "com.google.firebase:firebase-analytics:$libraryGmsVersion"
+                }
+            }
+        }
+        "com.google.android.gms:play-services-analytics" { //GoogleAnalyticsManager
+            gradle {
+                /*
+Add this part in your build.gradle
+//tag::GoogleAnalytics[]
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:3.0.0'
+    }
+}
+//apply the plugin at the end of your build.gradle to avoid error
+apply plugin 'com.google.gms.google-services'
     //end::GoogleAnalytics[]
                 */
 
                 dependencies {
                     compile "com.google.android.gms:play-services-analytics:$libraryGmsVersion"
                 }
-                if (plugins.hasPlugin("com.google.gms.google-services"))
-                    apply plugin: 'com.google.gms.google-services'
             }
 
             manifest {

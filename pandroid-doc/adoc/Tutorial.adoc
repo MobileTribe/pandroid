@@ -712,7 +712,7 @@ include::{libDir}/pandroid.gradle[tags=GoogleAnalytics]
 
 pandroid {
     dependencies {
-        library 'analytics'
+        library 'play-services-analytics'
     }
 }
 ----
@@ -722,6 +722,25 @@ Finally, in your module, you can provided Analytics Manager and configure your t
 [source,java]
 ----
 include::{demoJava}DemoModule.java[tags=provideAnalyticsManager]
+----
+
+=== Firebase Analytics
+
+Firebase Analytics is an optional library.
+
+.Installation
+
+You need to add the dependency in your build.gradle
+[source,java]
+----
+
+include::{libDir}/pandroid.gradle[tags=FirebaseAnalytics]
+
+pandroid {
+    dependencies {
+        library 'firebase-analytics'
+    }
+}
 ----
 
 WARNING: GMS services now require a *google-services.json* configuration file. Please refer to the official documentation

@@ -8,6 +8,7 @@ android {
     buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
+        applicationId "com.leroymerlin.pandroid.demo"
         minSdkVersion Integer.parseInt(androidMinSdkVersion)
         targetSdkVersion Integer.parseInt(androidSdkVersion)
         versionCode Integer.parseInt(pandroidVersionId)
