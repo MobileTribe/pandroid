@@ -3,8 +3,6 @@
 
     <string name="error_gms_not_available">Les services Google play ne sont pas disponible</string>
 
-    <string name="wiki_scanner">todo</string>
-
     <string name="navigation_events">Bus d\'événements</string>
     <string name="navigation_scanner">Scanner</string>
     <string name="navigation_rest">Réseau</string>
