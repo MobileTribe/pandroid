@@ -118,9 +118,9 @@ public class EventUnitTest {
 
 
     @Test
-    public void testDeliveryPolicyDefault() {
+    public void testDeliveryPolicyAtLeastOne() {
         String test = "testDeliveryPolicyDefault";
-        eventBusManager.sendSync(test, GOOD_FILTER);
+        eventBusManager.sendSync(test, GOOD_FILTER, EventBusManager.DeliveryPolicy.AT_LEAST_ONE );
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertEquals(resultObject, test);
         eventBusManager.unregisterReceiver(taggedListener);
@@ -150,7 +150,7 @@ public class EventUnitTest {
     @Test
     public void testDeliveryPolicyUnchecked() {
         String test = "testDeliveryPolicyUnchecked";
-        eventBusManager.sendSync(test, null, EventBusManager.DeliveryPolicy.UNCHECKED);
+        eventBusManager.sendSync(test, null);
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertNotSame(resultObject, test);
     }

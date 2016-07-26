@@ -60,7 +60,7 @@ public class EventBusManagerImpl implements EventBusManager {
 
     @Override
     public String send(final Object data, String messageTag) {
-        return send(data, messageTag, DeliveryPolicy.AT_LEAST_ONE);
+        return send(data, messageTag, DeliveryPolicy.UNCHECKED);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class EventBusManagerImpl implements EventBusManager {
 
     @Override
     public String sendSync(Object data, String messageTag) {
-        return sendSync(data, messageTag, DeliveryPolicy.AT_LEAST_ONE);
+        return sendSync(data, messageTag, DeliveryPolicy.UNCHECKED);
     }
 
     @Override
