@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 import com.pandroid.annotations.EventReceiver;
@@ -53,7 +54,7 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
     //tag::sendTaggedEvent[]
     @OnClick(R.id.event_send_to)
     public void sendToSecondFragment() {
-        eventBusManager.send(tvMessage.getText().toString(), EventSecondFragment.TAG);
+        eventBusManager.send(tvMessage.getText().toString(), EventSecondFragment.TAG, EventBusManager.DeliveryPolicy.AT_LEAST_ONE);
     }
     //end::sendTaggedEvent[]
 
