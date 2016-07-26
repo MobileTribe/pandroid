@@ -85,7 +85,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
     @Override
     public void registerDelegate(CancellableActionDelegate delegate) {
         this.delegates.add(delegate);
-        if (!viewCreated) {
+        if (!viewExist) {
             delegate.cancel();
         }
     }
