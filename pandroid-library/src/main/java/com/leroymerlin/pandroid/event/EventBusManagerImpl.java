@@ -30,21 +30,23 @@ public class EventBusManagerImpl implements EventBusManager {
         return instance;
     }
 
-    private void checkBox() {
+    private void checkBox(List<EventBusReceiver> eventBusReceivers) {
         synchronized (box) {
             for (int i = box.size() - 1; i >= 0; i--) {
-                deliverMessage(box.get(i));
+                deliverMessage(box.get(i), eventBusReceivers);
                 if (box.get(i).isDelivered())
                     box.remove(i);
             }
         }
     }
 
-
     private void deliverMessage(Message message) {
+        deliverMessage(message, receivers);
+    }
 
-        for (int i = receivers.size() - 1; i >= 0; i--) {
-            EventBusReceiver receiver = receivers.get(i);
+    private void deliverMessage(Message message, List<EventBusReceiver> eventBusReceivers) {
+        for (int i = eventBusReceivers.size() - 1; i >= 0; i--) {
+            EventBusReceiver receiver = eventBusReceivers.get(i);
             if ((message.messageTag == null && (receiver.getTags() == null || receiver.getTags().isEmpty())) || (receiver.getTags() != null && receiver.getTags().contains(message.messageTag))) {
                 if (receiver.handle(message.data)) {
                     message.setDelivered();
@@ -52,6 +54,7 @@ public class EventBusManagerImpl implements EventBusManager {
             }
         }
     }
+
 
     @Override
     public String send(Object data) {
@@ -153,7 +156,7 @@ public class EventBusManagerImpl implements EventBusManager {
     @Override
     public void registerReceivers(List<EventBusReceiver> eventBusReceivers) {
         this.receivers.addAll(eventBusReceivers);
-        checkBox();
+        checkBox(eventBusReceivers);
     }
 
     @Override

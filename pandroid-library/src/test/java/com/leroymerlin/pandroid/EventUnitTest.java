@@ -145,6 +145,24 @@ public class EventUnitTest {
         resultObject = null;
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertNotSame(resultObject, test);
+
+        //check event not delivered twice to the same receiver
+        eventBusManager.sendSync(test, GOOD_FILTER, EventBusManager.DeliveryPolicy.UNLIMITED);
+        resultObject = null;
+        eventBusManager.registerReceiver(new EventBusManager.EventBusReceiver() {
+            @Override
+            public List<String> getTags() {
+                return null;
+            }
+
+            @Override
+            public boolean handle(Object data) {
+                return false;
+            }
+        });
+        Assert.assertNotSame(resultObject, test);
+
+
     }
 
     @Test
