@@ -58,4 +58,4 @@ task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler
 uploadArchives.dependsOn pandroidUploadArchives
 
 commitBranch.dependsOn project(':pandroid-doc').getTasksByName('asciidoctor', false);
-commitBranch.mustRunAfter project(':pandroid-doc').getTasksByName('asciidoctor', false)
+project(':pandroid-doc').getTasksByName('asciidoctor', false)[0].mustRunAfter updateVersionsFile
