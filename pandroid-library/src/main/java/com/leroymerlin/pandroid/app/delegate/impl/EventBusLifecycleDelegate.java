@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Created by florian on 10/02/16.
  */
-public class EventBusLifecycleDelegate implements LifecycleDelegate {
+public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
 
     private static final String TAG = "EventBusLifecycleDelegate";
     protected final EventBusManager eventBusManager;
@@ -29,6 +29,11 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate {
 
     public EventBusLifecycleDelegate(EventBusManager eventBusManager) {
         this.eventBusManager = eventBusManager;
+    }
+
+    @Override
+    public void onInit(Object target) {
+
     }
 
     @Override

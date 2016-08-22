@@ -8,6 +8,7 @@ ext.optionalLibs = [
         "com.google.android.gms:play-services-vision:$libraryGmsVersion", //PandroidScannerView
 
         "com.google.android.gms:play-services-analytics:$libraryGmsVersion", //GoogleAnalyticsManager
+        "com.google.firebase:firebase-analytics:$libraryGmsVersion", // Firebase Analytics
 
         "com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar", //SuperToastManagerImpl
 
@@ -21,6 +22,6 @@ ext.optionalLibs = [
 
         "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion", //Retrofit
         "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion",
-        "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion"
+        "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion",
 ]
 

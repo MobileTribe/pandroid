@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.demo;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.android.gms.analytics.Tracker;
 import com.leroymerlin.pandroid.analytics.AnalyticsManager;
 import com.leroymerlin.pandroid.analytics.impl.GoogleAnalyticsManager;
 import com.leroymerlin.pandroid.app.PandroidConfig;
@@ -65,9 +66,9 @@ public class DemoModule {
         String AnalyticsGaId = "YOUR_ANALYTICS_GA_ID";
 
         if (!TextUtils.isEmpty(AnalyticsGaId)) {
-            googleAnalyticsManager.addTracker(
-                    googleAnalyticsManager.newTrackerBuilder().enableAutoTracking(true).setId(AnalyticsGaId).setName("MainTracker").build()
-            );
+            Tracker tracker = googleAnalyticsManager.getAnalytics().newTracker(AnalyticsGaId);
+            tracker.enableAutoActivityTracking(true);
+            googleAnalyticsManager.getTrackers().add(tracker);
         }
         return googleAnalyticsManager;
     }

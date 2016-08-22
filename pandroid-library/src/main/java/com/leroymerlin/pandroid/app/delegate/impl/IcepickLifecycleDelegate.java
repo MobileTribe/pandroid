@@ -21,7 +21,7 @@ public class IcepickLifecycleDelegate extends SimpleLifecycleDelegate<Object> {
 
     @Override
     public void onSaveView(Object target, Bundle outState) {
-        if (viewCreated)
+        if (viewExist)
             Icepick.saveInstanceState(target, outState);
     }
 }

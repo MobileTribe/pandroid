@@ -6,6 +6,7 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
+import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.ButterKnifeLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.EventBusLifecycleDelegate;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
+
 
 /**
  * Created by florian on 04/12/15.
@@ -77,7 +79,7 @@ public class PandroidApplication extends Application {
             }
         } catch (Exception e) {
             logWrapper.e(TAG, e);
-            throw new RuntimeException("Can't inject in " + obj.getClass()+ "  with your BaseComponent ", e);
+            throw new RuntimeException("Can't inject in " + obj.getClass() + "  with your BaseComponent ", e);
         }
     }
 
@@ -141,6 +143,7 @@ public class PandroidApplication extends Application {
      */
     public PandroidDelegate createBasePandroidDelegate() {
         PandroidDelegate pandroidDelegate = new PandroidDelegate();
+        pandroidDelegate.addLifecycleDelegate(new DaggerDelegate());
         pandroidDelegate.addLifecycleDelegate(new EventBusLifecycleDelegate(eventBusManager));
         try {
             Class.forName(ButterKnife.class.getName());

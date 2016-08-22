@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         app:umanoPanelHeight="?attr/actionBarSize"
-        app:umanoShadowHeight="4dp">
+        app:umanoShadowHeight="4dp"
+        app:umanoScrollableView="@+id/scanner_wv">
 
 
         <com.leroymerlin.pandroid.ui.scanner.PandroidScannerView
@@ -34,10 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/DemoToolbar"
-                app:title="test"/>
+                app:title="documentation"/>
 
             <WebView
-                android:id="@+id/scanner_wv"
+                android:id="@id/scanner_wv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </LinearLayout>
