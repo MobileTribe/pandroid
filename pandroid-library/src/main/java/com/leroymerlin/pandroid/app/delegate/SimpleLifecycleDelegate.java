@@ -12,28 +12,31 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
 
 
     protected Bundle savedInstanceState;
-    protected boolean onCreate;
     protected ResumeState resumeState;
-    protected boolean viewCreated;
+    protected boolean viewExist;
+    protected boolean newInstance;
+
+    @Override
+    public void onInit(T target) {
+        newInstance = true;
+
+    }
 
     @Override
     public void onCreateView(T target, View view, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
-        onCreate = true;
-        viewCreated = true;
-
-
+        viewExist = true;
     }
 
     @Override
     public void onResume(T target) {
         resumeState = ResumeState.VIEW_RESTORED;
-        if (onCreate && savedInstanceState == null) { //firstStart
+        if (savedInstanceState == null && newInstance) { //firstStart
             resumeState = ResumeState.FIRST_START;
-        } else if (onCreate) { //rotation
+        } else if (newInstance) { //rotation
             resumeState = ResumeState.ROTATION;
         }
-        onCreate = false;
+        newInstance = false;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
 
     @Override
     public void onDestroyView(T target) {
-        viewCreated = false;
+        viewExist = false;
     }
 
 }

@@ -57,3 +57,9 @@ task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler
 }.collect { it.getTasksByName('uploadArtifacts', false) });
 uploadArchives.dependsOn pandroidUploadArchives
 
+/*
+afterEvaluate{
+    getTasksByName('updateVersionsFile', false)[0].dependsOn += project(':pandroid-doc').getTasksByName('asciidoctor', false);
+}
+
+*/

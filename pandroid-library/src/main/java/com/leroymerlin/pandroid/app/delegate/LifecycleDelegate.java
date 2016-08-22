@@ -8,6 +8,7 @@ import android.view.View;
  */
 public interface LifecycleDelegate<T> {
 
+    void onInit(T target);
 
     void onCreateView(T target, View view, Bundle savedInstanceState);
 

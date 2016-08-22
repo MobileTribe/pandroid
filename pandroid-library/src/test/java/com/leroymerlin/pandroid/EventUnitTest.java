@@ -78,7 +78,7 @@ public class EventUnitTest {
     public void testEventSync() throws Exception {
         eventBusManager.registerReceiver(taggedListener);
         String test = "testEventSync";
-        eventBusManager.send(test);
+        eventBusManager.send(test, GOOD_FILTER);
         Assert.assertEquals(test, resultObject);
     }
 
@@ -108,8 +108,8 @@ public class EventUnitTest {
         eventBusManager.registerReceiver(wrongListener);
         eventBusManager.registerReceiver(taggedListener);
         String test = "testListenerTag";
-        eventBusManager.sendSync(test);
-        Assert.assertEquals(resultObject, test);
+        eventBusManager.sendSync(test, null, EventBusManager.DeliveryPolicy.UNCHECKED);
+        Assert.assertNotSame(resultObject, test);
 
         test = "testListenerTag_GOOD_FILTER";
         eventBusManager.sendSync(test, "GOOD_FILTER");
@@ -118,9 +118,9 @@ public class EventUnitTest {
 
 
     @Test
-    public void testDeliveryPolicyDefault() {
+    public void testDeliveryPolicyAtLeastOne() {
         String test = "testDeliveryPolicyDefault";
-        eventBusManager.sendSync(test);
+        eventBusManager.sendSync(test, GOOD_FILTER, EventBusManager.DeliveryPolicy.AT_LEAST_ONE );
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertEquals(resultObject, test);
         eventBusManager.unregisterReceiver(taggedListener);
@@ -145,12 +145,30 @@ public class EventUnitTest {
         resultObject = null;
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertNotSame(resultObject, test);
+
+        //check event not delivered twice to the same receiver
+        eventBusManager.sendSync(test, GOOD_FILTER, EventBusManager.DeliveryPolicy.UNLIMITED);
+        resultObject = null;
+        eventBusManager.registerReceiver(new EventBusManager.EventBusReceiver() {
+            @Override
+            public List<String> getTags() {
+                return null;
+            }
+
+            @Override
+            public boolean handle(Object data) {
+                return false;
+            }
+        });
+        Assert.assertNotSame(resultObject, test);
+
+
     }
 
     @Test
     public void testDeliveryPolicyUnchecked() {
         String test = "testDeliveryPolicyUnchecked";
-        eventBusManager.sendSync(test, null, EventBusManager.DeliveryPolicy.UNCHECKED);
+        eventBusManager.sendSync(test, null);
         eventBusManager.registerReceiver(taggedListener);
         Assert.assertNotSame(resultObject, test);
     }

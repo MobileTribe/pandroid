@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.0-BETA2-SNAPSHOT, Tue May 03 14:33:56 CEST 2016">
+<meta name="author" content="Pandroid v2.0.0-BETA4-SNAPSHOT, Wed Jul 13 14:37:11 CEST 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.0-BETA2-SNAPSHOT, Tue May 03 14:33:56 CEST 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.0-BETA4-SNAPSHOT, Wed Jul 13 14:37:11 CEST 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -570,6 +570,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#analytics">7. Analytics</a>
 <ul class="sectlevel2">
 <li><a href="#google-analytics">7.1. Google Analytics</a></li>
+<li><a href="#firebase-analytics">7.2. Firebase Analytics</a></li>
 </ul>
 </li>
 <li><a href="#tests">8. Tests</a></li>
@@ -903,12 +904,10 @@ This activity handles the following points :</p>
     <span class="annotation">@Override</span>
     <span class="directive">protected</span> <span class="type">void</span> onCreate(Bundle savedInstanceState) {
         <span class="local-variable">super</span>.onCreate(savedInstanceState);
-        <span class="comment">//Inject dagger base component</span>
         PandroidApplication pandroidApplication = PandroidApplication.get(<span class="local-variable">this</span>);
-        pandroidApplication.inject(<span class="local-variable">this</span>);
-
         <span class="comment">//initialize PandroidDelegate with the default from PandroidApplication</span>
-        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();</code></pre>
+        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
+        pandroidDelegate.onInit(<span class="local-variable">this</span>);</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1147,7 +1146,7 @@ They are used to extract and share behaviors without any heritage.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">IcepickLifecycleDelegate</span> <span class="directive">extends</span> SimpleLifecycleDelegate {
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">IcepickLifecycleDelegate</span> <span class="directive">extends</span> SimpleLifecycleDelegate&lt;<span class="predefined-type">Object</span>&gt; {
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onCreateView(<span class="predefined-type">Object</span> target, <span class="predefined-type">View</span> view, Bundle savedInstanceState) {
@@ -1176,6 +1175,7 @@ They are used to extract and share behaviors without any heritage.</p>
      */</span>
     <span class="directive">public</span> PandroidDelegate createBasePandroidDelegate() {
         PandroidDelegate pandroidDelegate = <span class="keyword">new</span> PandroidDelegate();
+        pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> DaggerDelegate());
         pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> EventBusLifecycleDelegate(eventBusManager));
         <span class="keyword">try</span> {
             <span class="predefined-type">Class</span>.forName(ButterKnife.class.getName());
@@ -1302,7 +1302,7 @@ By default, the Android plugin is configured to use this file</p>
             minifyEnabled <span class="predefined-constant">false</span>
             proguardFiles getDefaultProguardFile(<span class="string"><span class="delimiter">'</span><span class="content">proguard-android.txt</span><span class="delimiter">'</span></span>), <span class="string"><span class="delimiter">'</span><span class="content">proguard-rules.pro</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">build/pandroid/pandroid-proguard-rules.pro</span><span class="delimiter">'</span></span>
         }
-        <span class="keyword">if</span>(!plugins.hasPlugin(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.android.library</span><span class="delimiter">&quot;</span></span>)){
+        <span class="keyword">if</span> (!plugins.hasPlugin(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.android.library</span><span class="delimiter">&quot;</span></span>)) {
             release {
                 minifyEnabled <span class="predefined-constant">true</span>
             }
@@ -2111,13 +2111,15 @@ To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.</p>
         jcenter()
     }
     dependencies {
-    classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:2.0.0-beta6</span><span class="delimiter">'</span></span>
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.0.0</span><span class="delimiter">'</span></span>
     }
 }
+<span class="comment">//apply the plugin at the end of your build.gradle to avoid error</span>
+apply plugin <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms.google-services</span><span class="delimiter">'</span></span>
 
 pandroid {
     dependencies {
-        library <span class="string"><span class="delimiter">'</span><span class="content">analytics</span><span class="delimiter">'</span></span>
+        library <span class="string"><span class="delimiter">'</span><span class="content">play-services-analytics</span><span class="delimiter">'</span></span>
     }
 }</code></pre>
 </div>
@@ -2135,12 +2137,42 @@ pandroid {
         <span class="predefined-type">String</span> AnalyticsGaId = <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_ANALYTICS_GA_ID</span><span class="delimiter">&quot;</span></span>;
 
         <span class="keyword">if</span> (!TextUtils.isEmpty(AnalyticsGaId)) {
-            googleAnalyticsManager.addTracker(
-                    googleAnalyticsManager.newTrackerBuilder().enableAutoTracking(<span class="predefined-constant">true</span>).setId(AnalyticsGaId).setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">MainTracker</span><span class="delimiter">&quot;</span></span>).build()
-            );
+            Tracker tracker = googleAnalyticsManager.getAnalytics().newTracker(AnalyticsGaId);
+            tracker.enableAutoActivityTracking(<span class="predefined-constant">true</span>);
+            googleAnalyticsManager.getTrackers().add(tracker);
         }
         <span class="keyword">return</span> googleAnalyticsManager;
     }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="firebase-analytics">7.2. Firebase Analytics</h3>
+<div class="paragraph">
+<p>Firebase Analytics is an optional library.</p>
+</div>
+<div class="paragraph">
+<div class="title">Installation</div>
+<p>You need to add the dependency in your build.gradle</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.0.0</span><span class="delimiter">'</span></span>
+    }
+}
+<span class="comment">//apply the plugin at the end of your build.gradle to avoid error</span>
+apply plugin <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms.google-services</span><span class="delimiter">'</span></span>
+
+pandroid {
+    dependencies {
+        library <span class="string"><span class="delimiter">'</span><span class="content">firebase-analytics</span><span class="delimiter">'</span></span>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -2193,7 +2225,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-03 14:23:51 CEST
+Last updated 2016-07-13 09:57:31 CEST
 </div>
 </div>
 </body>

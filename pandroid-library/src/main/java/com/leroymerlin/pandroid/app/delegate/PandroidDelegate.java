@@ -31,6 +31,14 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
     }
 
     @Override
+    public void onInit(Object target) {
+        super.onInit(target);
+        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+            lifecycleDelegate.onInit(target);
+        }
+    }
+
+    @Override
     public void onCreateView(Object target, View view, Bundle savedInstanceState) {
         super.onCreateView(target, view, savedInstanceState);
         for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
@@ -77,7 +85,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
     @Override
     public void registerDelegate(CancellableActionDelegate delegate) {
         this.delegates.add(delegate);
-        if (!viewCreated) {
+        if (!viewExist) {
             delegate.cancel();
         }
     }
