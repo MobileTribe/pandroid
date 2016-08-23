@@ -48,7 +48,7 @@ public class SuperToastManagerImpl implements ToastManager {
     }
 
     protected void applyStyle(SuperActivityToast toast, Activity activity, int style) {
-        if(style==0){
+        if (style == 0) {
             style = R.style.Toast;
         }
         TypedArray attributes = activity.obtainStyledAttributes(style, R.styleable.ToastAppearance);
@@ -219,4 +219,8 @@ public class SuperToastManagerImpl implements ToastManager {
         };
     }
 
+    @Override
+    public void stopAllToast() {
+        SuperToast.cancelAllSuperToasts();
+    }
 }
