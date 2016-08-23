@@ -48,6 +48,8 @@ public interface ToastManager {
 
     public ToastBuilder builder();
 
+    public void stopAllToast();
+
     public interface ToastNotifier {
         public void setProgress(int progress);
 
