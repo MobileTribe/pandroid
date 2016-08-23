@@ -5,5 +5,5 @@ package com.leroymerlin.pandroid.future;
  */
 public interface ProgressListener {
 
-    public void onProgress(int percent);
+    void onProgress(int percent);
 }
