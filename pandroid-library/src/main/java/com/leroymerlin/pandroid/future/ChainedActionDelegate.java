@@ -49,6 +49,14 @@ public class ChainedActionDelegate<R> extends CancellableActionDelegate<R> {
     }
 
     public ActionStarter finish(ActionDelegate<R> actionDelegate) {
+        if(delegates instanceof CancellableActionDelegate){
+            ((CancellableActionDelegate) delegates).addCancelListener(new CancelListener() {
+                @Override
+                public void onCancel() {
+                    ChainedActionDelegate.this.cancel();
+                }
+            });
+        }
         delegates.add(actionDelegate);
         return new ActionStarter() {
             @Override
