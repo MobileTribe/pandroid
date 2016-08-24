@@ -38,7 +38,7 @@ public abstract class CancellableActionDelegate<T> implements ProgressActionDele
 
     @Override
     public void onSuccess(T result) {
-        if (!cancel) {
+        if (!isCancelled()) {
             success(result);
         } else {
             logWrapper.d(TAG, "Action cancelled: Result ignored");
@@ -53,7 +53,7 @@ public abstract class CancellableActionDelegate<T> implements ProgressActionDele
 
     @Override
     public void onError(Exception e) {
-        if (!cancel) {
+        if (!isCancelled()) {
             error(e);
         } else {
             logWrapper.d(TAG, "Action cancelled: Error ignored", e);
