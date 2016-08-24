@@ -31,15 +31,27 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
     private final LogWrapper logWrapper;
     Handler handler;
     private boolean mockEnable;
+    private PandroidErrorFormatter errorFormatter;
 
     public static PandroidCallAdapterFactory create(Context context, LogWrapper logWrapper) {
         return new PandroidCallAdapterFactory(context, logWrapper);
+    }
+
+    public static PandroidCallAdapterFactory create(Context context, LogWrapper logWrapper, PandroidErrorFormatter errorFormatter) {
+        return new PandroidCallAdapterFactory(context, logWrapper, errorFormatter);
     }
 
     private PandroidCallAdapterFactory(Context context, LogWrapper logWrapper) {
         handler = new Handler();
         this.context = context;
         this.logWrapper = logWrapper;
+    }
+
+    private PandroidCallAdapterFactory(Context context, LogWrapper logWrapper, PandroidErrorFormatter errorFormatter) {
+        handler = new Handler();
+        this.context = context;
+        this.logWrapper = logWrapper;
+        this.errorFormatter = errorFormatter;
     }
 
     public void setMockEnable(boolean mockEnable) {
@@ -188,7 +200,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    delegate.onError(e);
+                                    delegate.onError(errorFormatter != null ?  errorFormatter.format(e) : e);
                                 }
                             });
                         }
