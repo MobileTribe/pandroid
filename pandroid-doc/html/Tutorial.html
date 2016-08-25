@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.0-BETA4-SNAPSHOT, Wed Jul 13 14:37:11 CEST 2016">
+<meta name="author" content="Pandroid v2.0.0-BETA5-SNAPSHOT, Thu Aug 25 14:26:17 CEST 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.0-BETA4-SNAPSHOT, Wed Jul 13 14:37:11 CEST 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.0-BETA5-SNAPSHOT, Thu Aug 25 14:26:17 CEST 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -677,7 +677,7 @@ a gradle plugin which generates code and simplifies your life.</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@OnClick</span>(R.id.event_send_to)
     <span class="directive">public</span> <span class="type">void</span> sendToSecondFragment() {
-        eventBusManager.send(tvMessage.getText().toString(), EventSecondFragment.TAG);
+        eventBusManager.send(tvMessage.getText().toString(), EventSecondFragment.TAG, EventBusManager.DeliveryPolicy.AT_LEAST_ONE);
     }
 
     <span class="annotation">@EventReceiver</span>({TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">toto</span><span class="delimiter">&quot;</span></span>}) <span class="comment">//Generate provider with a tag to filter event</span>
@@ -1014,6 +1014,7 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
                 .addFragment(RestFragment.class)
                 .addFragment(ListViewFragment.class)
                 .addFragment(RecyclerViewFragment.class)
+                .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
         );
         receivers.add(<span class="keyword">new</span> FragmentEventReceiver()
@@ -1156,7 +1157,7 @@ They are used to extract and share behaviors without any heritage.</p>
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onSaveView(<span class="predefined-type">Object</span> target, Bundle outState) {
-        <span class="keyword">if</span> (viewCreated)
+        <span class="keyword">if</span> (viewExist)
             Icepick.saveInstanceState(target, outState);
     }
 }</code></pre>
@@ -1300,7 +1301,10 @@ By default, the Android plugin is configured to use this file</p>
     buildTypes {
         all {
             minifyEnabled <span class="predefined-constant">false</span>
-            proguardFiles getDefaultProguardFile(<span class="string"><span class="delimiter">'</span><span class="content">proguard-android.txt</span><span class="delimiter">'</span></span>), <span class="string"><span class="delimiter">'</span><span class="content">proguard-rules.pro</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">build/pandroid/pandroid-proguard-rules.pro</span><span class="delimiter">'</span></span>
+            proguardFiles getDefaultProguardFile(<span class="string"><span class="delimiter">'</span><span class="content">proguard-android.txt</span><span class="delimiter">'</span></span>), <span class="string"><span class="delimiter">'</span><span class="content">build/pandroid/pandroid-proguard-rules.pro</span><span class="delimiter">'</span></span>
+            <span class="keyword">if</span> (file(<span class="string"><span class="delimiter">'</span><span class="content">proguard-rules.pro</span><span class="delimiter">'</span></span>).exists()) {
+                proguardFiles <span class="string"><span class="delimiter">'</span><span class="content">proguard-rules.pro</span><span class="delimiter">'</span></span>
+            }
         }
         <span class="keyword">if</span> (!plugins.hasPlugin(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.android.library</span><span class="delimiter">&quot;</span></span>)) {
             release {
@@ -1428,10 +1432,9 @@ None of these encryption methods are unbreakable. Keep in mind that the best way
  */</span>
 <span class="directive">public</span> <span class="type">interface</span> <span class="class">ActionDelegate</span>&lt;T&gt; {
 
-    <span class="directive">public</span> <span class="type">void</span> onSuccess(T result);
+    <span class="type">void</span> onSuccess(T result);
 
-    <span class="directive">public</span> <span class="type">void</span> onError(<span class="exception">Exception</span> e);
-
+    <span class="type">void</span> onError(<span class="exception">Exception</span> e);
 
 }</code></pre>
 </div>
@@ -1787,6 +1790,21 @@ See demo&#8217;s examples</p>
                 toastManager.makeToast(getActivity(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Button </span><span class="delimiter">&quot;</span></span> + position + <span class="string"><span class="delimiter">&quot;</span><span class="content"> clicked</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">null</span>, R.style.Toast, getResources().getInteger(R.integer.toast_short_duration));
             }
         });
+        rvMenu.setAdapter(adapter);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A easiest implementation is available for simple RecyclerView</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">        adapter = <span class="keyword">new</span> SimpleRecyclerViewAdapter&lt;&gt;(<span class="keyword">new</span> SimpleRecyclerViewAdapter.SimpleHolder&lt;<span class="predefined-type">String</span>&gt;(R.layout.cell_list) {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> setContent(<span class="predefined-type">String</span> content, <span class="predefined-type">View</span> view, <span class="type">int</span> index) {
+                ((TextView) view).setText(content);
+            }
+        });
+        adapter.addAll(getData());
         rvMenu.setAdapter(adapter);</code></pre>
 </div>
 </div>
@@ -2225,7 +2243,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-07-13 09:57:31 CEST
+Last updated 2016-08-25 14:02:55 CEST
 </div>
 </div>
 </body>
