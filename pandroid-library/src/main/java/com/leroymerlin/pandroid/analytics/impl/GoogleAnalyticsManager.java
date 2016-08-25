@@ -72,8 +72,8 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
             if (Event.Type.TIMER.equals(params.get(Event.TYPE))) {
                 HitBuilders.TimingBuilder timingBuilder = new HitBuilders.TimingBuilder()
                         .setCategory(String.valueOf(params.get(Event.CATEGORY)))
-                        .setValue((Long) params.get(Event.LABEL))
-                        .setVariable((String) params.get(Event.VARIABLE))
+                        .setValue(parseToLong(params.get(Event.DURATION)))
+                        .setVariable(String.valueOf(params.get(Event.VARIABLE)))
                         .setLabel(String.valueOf(params.get(Event.LABEL)));
                 timingBuilder = addMetrics(timingBuilder, params);
                 timingBuilder = addDimensions(timingBuilder, params);
@@ -88,8 +88,8 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
 
                 HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder()
                         .setCategory(String.valueOf(params.get(Event.CATEGORY)))
-                        .setValue((Long) params.get(Event.VALUE))
-                        .setAction((String) params.get(Event.ACTION))
+                        .setValue(parseToLong(params.get(Event.VALUE)))
+                        .setAction(String.valueOf(params.get(Event.ACTION)))
                         .setLabel(String.valueOf(params.get(Event.LABEL)));
                 eventBuilder = addMetrics(eventBuilder, params);
                 eventBuilder = addDimensions(eventBuilder, params);
@@ -102,6 +102,17 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
         }
 
 
+    }
+
+    private long parseToLong(Object o) {
+        if (o == null)
+            return 0;
+        try {
+            return Long.valueOf(String.valueOf(0));
+        } catch (NumberFormatException e) {
+            logWrapper.w(TAG, "Can't parse value to long: " + o.toString());
+            return 0;
+        }
     }
 
     private <T> T addDimensions(T builder, HashMap<String, Object> params) {
@@ -118,6 +129,7 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                     }
                 }
             } catch (NumberFormatException ignore) {
+                logWrapper.w(TAG, "Dimension should be an integer : " + entry.getKey());
             }
         }
         return builder;
@@ -137,6 +149,7 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                     }
                 }
             } catch (NumberFormatException ignore) {
+                logWrapper.w(TAG, "Metric should be an integer : " + entry.getKey());
             }
 
         }
