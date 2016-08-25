@@ -12,6 +12,7 @@ import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventSecondFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
+import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
@@ -92,6 +93,7 @@ public class MainActivity extends PandroidDrawerActivity {
                 .addFragment(RestFragment.class)
                 .addFragment(ListViewFragment.class)
                 .addFragment(RecyclerViewFragment.class)
+                .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
         );
         //tag::FragmentWithOpener[]

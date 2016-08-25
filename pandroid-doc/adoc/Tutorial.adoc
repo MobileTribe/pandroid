@@ -581,6 +581,13 @@ See demo's examples
 include::{demoJava}/main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
 ----
 
+A easiest implementation is available for simple RecyclerView
+
+[source,java]
+----
+include::{demoJava}/main/list/SimpleRecyclerViewFragment.java[tags=SimpleRecyclerViewAdapter]
+----
+
 === List header
 
 A view is available to have a QuickHeader. This header can be used with ListView ScrollView and RecyclerView.

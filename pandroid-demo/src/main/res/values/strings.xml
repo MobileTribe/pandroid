@@ -33,6 +33,7 @@
     <string name="list_header_enable">Activer le header</string>
     <string name="list_header_show">Afficher le header</string>
     <string name="list_header_hide">Afficher à 0.5</string>
+    <string name="navigation_simplelist">SimpleAdapter</string>
 
 
 </resources>

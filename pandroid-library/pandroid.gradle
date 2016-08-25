@@ -14,7 +14,10 @@ android {
     buildTypes {
         all {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'build/pandroid/pandroid-proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'build/pandroid/pandroid-proguard-rules.pro'
+            if (file('proguard-rules.pro').exists()) {
+                proguardFiles 'proguard-rules.pro'
+            }
         }
         if (!plugins.hasPlugin("com.android.library")) {
             release {
