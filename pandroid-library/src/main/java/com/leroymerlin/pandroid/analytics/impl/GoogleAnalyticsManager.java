@@ -7,6 +7,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.leroymerlin.pandroid.analytics.AnalyticsManager;
 import com.leroymerlin.pandroid.log.LogWrapper;
+import com.leroymerlin.pandroid.log.PandroidLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
 
     private GoogleAnalytics mAnalytics;
     private ArrayList<Tracker> mTrackers = new ArrayList<>();
-    protected LogWrapper logWrapper;
+    protected LogWrapper logWrapper = PandroidLogger.getInstance();
     protected final Context context;
 
     @Inject
@@ -129,7 +130,6 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                     }
                 }
             } catch (NumberFormatException ignore) {
-                logWrapper.w(TAG, "Dimension should be an integer : " + entry.getKey());
             }
         }
         return builder;
@@ -149,7 +149,6 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
                     }
                 }
             } catch (NumberFormatException ignore) {
-                logWrapper.w(TAG, "Metric should be an integer : " + entry.getKey());
             }
 
         }
