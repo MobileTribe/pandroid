@@ -109,7 +109,7 @@ public class GoogleAnalyticsManager extends AnalyticsManager.AnalyticsProcessor 
         if (o == null)
             return 0;
         try {
-            return Long.valueOf(String.valueOf(0));
+            return Long.valueOf(String.valueOf(o));
         } catch (NumberFormatException e) {
             logWrapper.w(TAG, "Can't parse value to long: " + o.toString());
             return 0;

@@ -32,24 +32,29 @@ public class FirebaseAnalyticsManager extends AnalyticsManager.AnalyticsProcesso
     @Override
     public void processParam(HashMap<String, Object> params) {
         Bundle bundle = new Bundle();
+        String eventName = "event";
+        if (params.containsKey(Event.TYPE)) {
+            eventName = String.valueOf(params.get(Event.TYPE));
+        }
         for (Map.Entry<String, Object> set : params.entrySet()) {
             if (!set.getKey().equals(Event.TYPE)) {
                 if (set.getKey().startsWith("user")) {
                     if (set.getKey().equals(Param.USER_ID)) {
-                        mFirebaseAnalytics.setUserId(Param.USER_ID);
+                        mFirebaseAnalytics.setUserId(String.valueOf(set.getValue()));
                     } else {
                         mFirebaseAnalytics.setUserProperty(set.getKey(), String.valueOf(set.getValue()));
                     }
                 } else {
                     bundle.putString(set.getKey(), String.valueOf(set.getValue()));
                 }
+
+                if (set.getKey().equals(Event.LABEL)) {
+                    eventName += "_" + set.getValue();
+                }
             }
         }
 
-        String eventName = "event";
-        if (params.containsKey(Event.TYPE)) {
-            eventName = String.valueOf(params.get(Event.TYPE));
-        }
+
         mFirebaseAnalytics.logEvent(eventName, bundle);
     }
 
