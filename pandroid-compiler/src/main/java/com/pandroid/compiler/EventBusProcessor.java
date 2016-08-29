@@ -112,7 +112,7 @@ public class EventBusProcessor {
 
 
                     if (parameterTypeName != null) {
-                        receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null && data instanceof $T)", parameterTypeName.box())
+                        receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null && ( ( data instanceof $T ) || ( data == null && !getTags().isEmpty() ) ) )", parameterTypeName.box())
                                 .addStatement("weakReference.get()." + getMethodName(e) + "(($T) data)", parameterTypeName);
                     } else {
                         receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null)")
