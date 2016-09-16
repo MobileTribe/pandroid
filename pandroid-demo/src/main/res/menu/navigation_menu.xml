@@ -28,6 +28,11 @@
             android:title="@string/navigation_simplelist" />
 
         <item
+            android:id="@+id/navigation_mvvm"
+            android:checked="false"
+            android:title="@string/navigation_mvvm" />
+
+        <item
             android:id="@+id/navigation_recycler"
             android:checked="false"
             android:title="@string/navigation_recycler" />
