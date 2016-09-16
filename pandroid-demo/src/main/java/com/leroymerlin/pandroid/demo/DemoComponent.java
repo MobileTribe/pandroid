@@ -8,6 +8,7 @@ import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
+import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
@@ -37,6 +38,8 @@ public interface DemoComponent extends BaseComponent {
     ReviewManager reviewManager();
 
     PictureManager pictureManager();
+
+    void inject(MvvmFragment mvvmFragment);
 
     void inject(ScannerFragment scannerFragment);
 

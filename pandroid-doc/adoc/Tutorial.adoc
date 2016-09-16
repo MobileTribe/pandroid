@@ -751,6 +751,7 @@ pandroid {
 ----
 
 WARNING: GMS services now require a *google-services.json* configuration file. Please refer to the official documentation
+It can be generated here : https://developers.google.com/mobile/add
 
 
 == Tests

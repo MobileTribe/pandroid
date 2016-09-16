@@ -22,6 +22,9 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 
