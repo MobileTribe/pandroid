@@ -15,7 +15,7 @@ import com.leroymerlin.pandroid.net.PandroidCallAdapterFactory;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
 import com.leroymerlin.pandroid.ui.picture.impl.GlidePictureManagerImpl;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
-import com.leroymerlin.pandroid.ui.toast.impl.SuperToastManagerImpl;
+import com.leroymerlin.pandroid.ui.toast.impl.SnackbarManager;
 
 import javax.inject.Singleton;
 
@@ -76,8 +76,9 @@ public class DemoModule {
 
     //tag::provideToastManager[]
     @Provides
-    ToastManager provideToastManager(SuperToastManagerImpl superToastManager) {
-        return superToastManager;
+    @Singleton
+    ToastManager provideToastManager() {
+        return new SnackbarManager();
     }
     //end::provideToastManager[]
 
