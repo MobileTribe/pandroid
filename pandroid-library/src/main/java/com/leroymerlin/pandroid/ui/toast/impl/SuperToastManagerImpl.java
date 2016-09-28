@@ -169,7 +169,8 @@ public class SuperToastManagerImpl implements ToastManager {
     @Override
     public ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style, int duration) {
         SuperActivityToast toast = makeCustomToast(activity, SuperToast.Type.BUTTON, text, style, duration);
-        toast.setButtonIcon(icon);
+        if (icon > 0)
+            toast.setButtonIcon(icon);
         toast.setButtonText(buttonText);
         toast.show();
         return getNotifier(toast, listener);
