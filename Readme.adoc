@@ -22,6 +22,19 @@ This library was originaly used by Leroy Merlin France mobile teams to develop a
 In february 2015 Pandroid 1 was release for LM internal team. A year later the archetype needed a major refactor to improv the developer experiences. We decided to release and open Pandroid 2
 A presentation is available about the road we traveled : https://prezi.com/xyuwjyycsbsh/mobile-archetype-pandroid-2/
 
+## Roadmap
+
+#### *2.1.0* - (soon)
+
+*Features*
+- Android DataBinding : two ways DataBinding
+- MVVM support
+
+#### *2.0.0* - (2016-09-28)
+
+*link:{htmlPath}pandroid-doc/html/Tutorial.html[Features]*
+
+
 ## Setup project
 
 Pandroid dependencies are handled automatically by a single gradle plugin. +
