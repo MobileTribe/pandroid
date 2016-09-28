@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
 
-        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath "com.neenbedankt.gradle.plugins:android-apt:$aptPluginVersion"
         classpath 'com.leroymerlin.plugins:delivery-plugin:2.0.0-BETA8'
     }
