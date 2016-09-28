@@ -37,5 +37,10 @@
             android:checked="false"
             android:title="@string/navigation_animation" />
 
+        <item
+            android:id="@+id/navigation_toast"
+            android:checked="false"
+            android:title="@string/navigation_toast" />
+
     </group>
 </menu>
