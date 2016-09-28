@@ -33,9 +33,11 @@ public class EventBusManagerImpl implements EventBusManager {
     private void checkBox(List<EventBusReceiver> eventBusReceivers) {
         synchronized (box) {
             for (int i = box.size() - 1; i >= 0; i--) {
-                deliverMessage(box.get(i), eventBusReceivers);
-                if (box.get(i).isDelivered())
-                    box.remove(i);
+                if (box.get(i).isTreated()) {
+                    deliverMessage(box.get(i), eventBusReceivers);
+                    if (box.get(i).isDelivered())
+                        box.remove(i);
+                }
             }
         }
     }
@@ -117,6 +119,7 @@ public class EventBusManagerImpl implements EventBusManager {
     }
 
     private void handleMessage(Message message) {
+        message.setTreated();
         deliverMessage(message);
         if (!message.isDelivered()) {
             synchronized (box) {
@@ -175,7 +178,8 @@ public class EventBusManagerImpl implements EventBusManager {
         String messageTag;
         Object data;
         String id;
-        private boolean delivered;
+        private boolean delivered; //handle by only one receiver
+        private boolean treated; //have been handle by the manager (related to unsync send)
 
         public Message(Object data, String messageTag, DeliveryPolicy deliveryPolicy, String messageId) {
             this.data = data;
@@ -213,12 +217,21 @@ public class EventBusManagerImpl implements EventBusManager {
             return builder.toString();
         }
 
-        public boolean isDelivered() {
+        boolean isDelivered() {
             return deliveryPolicy == DeliveryPolicy.UNCHECKED || (delivered && deliveryPolicy == DeliveryPolicy.AT_LEAST_ONE);
         }
 
-        public void setDelivered() {
+        void setDelivered() {
             delivered = true;
+        }
+
+        boolean isTreated() {
+            return treated;
+        }
+
+
+        void setTreated() {
+            treated = true;
         }
     }
 
