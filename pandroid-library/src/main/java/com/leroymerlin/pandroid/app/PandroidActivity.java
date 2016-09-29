@@ -42,12 +42,16 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(this);
-        //initialize PandroidDelegate with the default from PandroidApplication
-        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
+        //create PandroidDelegate
+        pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
-        //end::PandroidActivityInjection[]
 
+    }
+
+    protected PandroidDelegate createDelegate() {
+        PandroidApplication pandroidApplication = PandroidApplication.get(this);
+        //initialize Base PandroidDelegate
+        return pandroidApplication.createBasePandroidDelegate();
     }
 
     @Override
@@ -65,6 +69,7 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     //tag::PandroidActivityResume[]
+
     /**
      * call at the end of onResume process. This method will help you determine the king of resume
      * your activity is facing
@@ -136,8 +141,10 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     //tag::PandroidActivityBack[]
+
     /**
      * Override this method to show an exit message and enable back confirmation to exit
+     *
      * @return true to stop the app exit, false otherwise
      */
     protected boolean showExitMessage() {
@@ -150,6 +157,7 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
 
     /**
      * Override this method to automatically (un)register receiver to the event bus with the activity life cycle
+     *
      * @return list of receivers attached by EventBusLifecycleDelegate
      */
     @Override

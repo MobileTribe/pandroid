@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="productViewModel"
-            type="com.leroymerlin.pandroid.demo.main.mvvm.ProductViewModel" />
+            name="mvvmViewModel"
+            type="com.leroymerlin.pandroid.demo.main.mvvm.MvvmViewModel" />
     </data>
 
     <LinearLayout
@@ -19,19 +19,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Toggle Visibilty"
-            app:visibility="@{productViewModel.nameVisible}" />
+            app:visibility="@{mvvmViewModel.productDataBinding.nameVisible}" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:binding="@{productViewModel.name}"
-            app:error="@{productViewModel.nameError}" />
+            app:binding="@{mvvmViewModel.productDataBinding.name}"
+            app:error="@{mvvmViewModel.productDataBinding.nameError}" />
 
         <Button
             android:id="@+id/onClickSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{productViewModel::onSubmit}"
+            android:onClick="@{mvvmViewModel::onSubmit}"
             android:text="@string/submit" />
     </LinearLayout>
 </layout>
