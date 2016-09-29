@@ -4,16 +4,19 @@
     <!--tag::Toast[]-->
     <declare-styleable name="ToastAppearance">
         <attr name="toastTextColor" format="color" />
+        <attr name="toastButtonTextColor" format="color" />
         <attr name="toastBackground" format="color" />
     </declare-styleable>
 
     <style name="Toast">
         <item name="toastTextColor">@color/white</item>
+        <item name="toastButtonTextColor">@color/white</item>
         <item name="toastBackground">@color/pandroid_green</item>
     </style>
 
     <style name="Toast.Error">
         <item name="toastBackground">@color/pandroid_red</item>
+
     </style>
 
     <style name="Toast.Warm">

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.0-BETA5-SNAPSHOT, Thu Aug 25 14:26:17 CEST 2016">
+<meta name="author" content="Pandroid v2.0.0, Wed Sep 28 13:31:06 CEST 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.0-BETA5-SNAPSHOT, Thu Aug 25 14:26:17 CEST 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.0, Wed Sep 28 13:31:06 CEST 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1016,6 +1016,7 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
                 .addFragment(RecyclerViewFragment.class)
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
+                .addFragment(ToastFragment.class)
         );
         receivers.add(<span class="keyword">new</span> FragmentEventReceiver()
                 .setContainerId(R.id.main_content_container)
@@ -1847,16 +1848,19 @@ See ListViewFragment in the demo</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml">    <span class="tag">&lt;declare-styleable</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">ToastAppearance</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;attr</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastTextColor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">format</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">color</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;attr</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastButtonTextColor</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">format</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">color</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
         <span class="tag">&lt;attr</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastBackground</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">format</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">color</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
     <span class="tag">&lt;/declare-styleable&gt;</span>
 
     <span class="tag">&lt;style</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Toast</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="inline">        <span class="error">&lt;</span><span class="tag">item</span> <span class="tag">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastTextColor</span><span class="delimiter">&quot;</span></span>&gt;<span class="directive">@color</span>/<span class="tag">white</span><span class="error">&lt;</span>/<span class="tag">item</span>&gt;
+        <span class="error">&lt;</span><span class="tag">item</span> <span class="tag">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastButtonTextColor</span><span class="delimiter">&quot;</span></span>&gt;<span class="directive">@color</span>/<span class="tag">white</span><span class="error">&lt;</span>/<span class="tag">item</span>&gt;
         <span class="error">&lt;</span><span class="tag">item</span> <span class="tag">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastBackground</span><span class="delimiter">&quot;</span></span>&gt;<span class="directive">@color</span>/<span class="tag">pandroid_green</span><span class="error">&lt;</span>/<span class="tag">item</span>&gt;</span>
     <span class="tag">&lt;/style&gt;</span>
 
     <span class="tag">&lt;style</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Toast.Error</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 <span class="inline">        <span class="error">&lt;</span><span class="tag">item</span> <span class="tag">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">toastBackground</span><span class="delimiter">&quot;</span></span>&gt;<span class="directive">@color</span>/<span class="tag">pandroid_red</span><span class="error">&lt;</span>/<span class="tag">item</span>&gt;</span>
+
     <span class="tag">&lt;/style&gt;</span>
 
     <span class="tag">&lt;style</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Toast.Warm</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -1872,6 +1876,9 @@ See ListViewFragment in the demo</p>
 </div>
 <div class="paragraph">
 <p>It&#8217;s possible to make a more advanced toast by adding an image, a button, or even a loader to it.</p>
+</div>
+<div class="paragraph">
+<p>Two implementations of the manager are available <strong>SnackbarManager</strong> (included) and <strong>SupertoastManagerImpl</strong> (optional library)</p>
 </div>
 <div class="sect3">
 <h4 id="supertoast">5.4.1. Supertoast</h4>
@@ -1901,8 +1908,10 @@ See ListViewFragment in the demo</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Provides</span>
-    ToastManager provideToastManager(SuperToastManagerImpl superToastManager) {
-        <span class="keyword">return</span> superToastManager;
+    <span class="annotation">@Singleton</span>
+    ToastManager provideToastManager() {
+        <span class="keyword">return</span> <span class="keyword">new</span> SuperToastManagerImpl();
+        <span class="comment">//could be return new SnackbarManager();</span>
     }</code></pre>
 </div>
 </div>
@@ -2243,7 +2252,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-08-25 14:02:55 CEST
+Last updated 2016-09-28 11:39:14 CEST
 </div>
 </div>
 </body>

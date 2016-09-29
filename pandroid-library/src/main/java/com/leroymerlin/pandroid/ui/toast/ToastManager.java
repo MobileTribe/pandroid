@@ -14,49 +14,49 @@ import java.util.Collection;
  */
 public interface ToastManager {
 
-    public final static int LONG_DURATION = 6000;
-    public final static int NORMAL_DURATION = 3000;
-    public final static int SHORT_DURATION = 2000;
+    final static int LONG_DURATION = 6000;
+    final static int NORMAL_DURATION = 3000;
+    final static int SHORT_DURATION = 2000;
 
-    public void onSaveInstanceState(Bundle outState);
+    void onSaveInstanceState(Bundle outState);
 
-    public void onRestoreState(Bundle outState, Activity activity, Collection<ToastListener> listenerWrappers);
+    void onRestoreState(Bundle outState, Activity activity, Collection<ToastListener> listenerWrappers);
 
-    public ToastNotifier makeToast(Activity activity, String text, ToastListener listener);
+    ToastNotifier makeToast(Activity activity, String text, ToastListener listener);
 
-    public ToastNotifier makeToast(Activity activity, String text, ToastListener listener, int style);
+    ToastNotifier makeToast(Activity activity, String text, ToastListener listener, int style);
 
-    public ToastNotifier makeToast(Activity activity, String text, ToastListener listener, int style, int duration);
+    ToastNotifier makeToast(Activity activity, String text, ToastListener listener, int style, int duration);
 
-    public ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener);
+    ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener);
 
-    public ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener, int style);
+    ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener, int style);
 
-    public ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener, int style, int duration);
+    ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener, int style, int duration);
 
-    public ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener);
+    ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener);
 
-    public ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style);
+    ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style);
 
-    public ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style, int duration);
+    ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style, int duration);
 
-    public ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener);
+    ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener);
 
-    public ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener, int style);
+    ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener, int style);
 
-    public ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener, int style, int duration);
+    ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener, int style, int duration);
 
-    public ToastBuilder builder();
+    ToastBuilder builder();
 
-    public void stopAllToast();
+    void stopAllToast();
 
-    public interface ToastNotifier {
-        public void setProgress(int progress);
+    interface ToastNotifier {
+        void setProgress(int progress);
 
-        public void dismiss();
+        void dismiss();
     }
 
-    public abstract class ToastListener {
+    abstract class ToastListener {
 
         private String tag;
 
@@ -68,7 +68,7 @@ public interface ToastManager {
             this("ToastListener");
         }
 
-        public ToastListener(String tag) {
+        ToastListener(String tag) {
             this.tag = tag;
         }
 

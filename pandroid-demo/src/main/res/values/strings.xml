@@ -37,6 +37,11 @@
     <string name="list_header_show">Afficher le header</string>
     <string name="list_header_hide">Afficher à 0.5</string>
     <string name="navigation_simplelist">SimpleAdapter</string>
+    <string name="toast_normal">Normal</string>
+    <string name="toast_icon">With icon</string>
+    <string name="toast_loader">With Loader</string>
+    <string name="toast_action">With action</string>
+    <string name="navigation_toast">Toast</string>
 
 
 </resources>

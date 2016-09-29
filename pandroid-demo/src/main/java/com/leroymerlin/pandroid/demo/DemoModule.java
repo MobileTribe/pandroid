@@ -76,8 +76,10 @@ public class DemoModule {
 
     //tag::provideToastManager[]
     @Provides
-    ToastManager provideToastManager(SuperToastManagerImpl superToastManager) {
-        return superToastManager;
+    @Singleton
+    ToastManager provideToastManager() {
+        return new SuperToastManagerImpl();
+        //could be return new SnackbarManager();
     }
     //end::provideToastManager[]
 
