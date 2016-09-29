@@ -22,7 +22,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
         return resumeState;
     }
 
-    public void addLifecycleDelegate(LifecycleDelegate<Object> lifecycleDelegate) {
+    public void addLifecycleDelegate(LifecycleDelegate lifecycleDelegate) {
         this.lifecycleDelegates.add(lifecycleDelegate);
     }
 
