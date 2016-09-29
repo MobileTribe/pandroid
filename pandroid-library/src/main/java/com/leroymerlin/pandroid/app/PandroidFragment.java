@@ -47,14 +47,19 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
-        //initialize PandroidDelegate
-        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
+        //create PandroidDelegate
+        pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
         if (getArguments() != null && getArguments().containsKey(FragmentOpener.ARG_OPENER)) {
             mOpener = (T) getArguments().get(FragmentOpener.ARG_OPENER);
         }
 
+    }
+
+    protected PandroidDelegate createDelegate() {
+        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
+        //initialize Base PandroidDelegate
+        return pandroidApplication.createBasePandroidDelegate();
     }
 
 
