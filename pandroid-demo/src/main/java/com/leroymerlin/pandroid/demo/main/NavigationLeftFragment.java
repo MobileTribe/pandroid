@@ -19,6 +19,7 @@ import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
+import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 
 import butterknife.BindView;
 
@@ -76,9 +77,13 @@ public class NavigationLeftFragment extends PandroidFragment {
                         sendEvent(new ListOpener(RecyclerViewFragment.class, 50));
                         handle = true;
                         break;
+                    case R.id.navigation_toast:
+                        startFragment(ToastFragment.class);
+                        handle = true;
+                        break;
                 }
                 if (handle) {
-                    eventBusManager.send(handle, MainActivity.DRAWER_EVENT);
+                    eventBusManager.send(true, MainActivity.DRAWER_EVENT);
                 }
                 return handle;
             }

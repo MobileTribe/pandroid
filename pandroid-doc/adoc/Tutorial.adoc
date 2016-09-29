@@ -613,6 +613,8 @@ You can also add a ToastListener to know when the toast is dismissed or clicked.
 
 It's possible to make a more advanced toast by adding an image, a button, or even a loader to it.
 
+Two implementations of the manager are available *SnackbarManager* (included) and *SupertoastManagerImpl* (optional library)
+
 ==== Supertoast
 Supertoast is optional, to use it you need to add the dependency to the Pandroid dependencies in your module build.gradle file :
 

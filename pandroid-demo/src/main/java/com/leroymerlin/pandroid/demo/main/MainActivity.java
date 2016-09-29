@@ -16,6 +16,7 @@ import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
+import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentEventReceiver;
 import com.pandroid.annotations.EventReceiver;
@@ -97,6 +98,7 @@ public class MainActivity extends PandroidDrawerActivity {
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
                 .addFragment(MvvmFragment.class)
+                .addFragment(ToastFragment.class)
         );
         //tag::FragmentWithOpener[]
         receivers.add(new FragmentEventReceiver()
