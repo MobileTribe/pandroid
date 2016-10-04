@@ -18,14 +18,14 @@ public class PandroidBindingAdapter {
     }
 
     @android.databinding.BindingAdapter({"error"})
-    public static void bindErrorEditText(final EditText view, final BindableString bindableString) {
+    public static void bindErrorEditText(final EditText view, final ObservableString bindableString) {
         if (bindableString != null && !TextUtils.isEmpty(bindableString.get())) {
             view.setError(bindableString.get());
         }
     }
 
     @android.databinding.BindingAdapter({"binding"})
-    public static void bindEditText(final EditText view, final BindableString bindableString) {
+    public static void bindEditText(final EditText view, final ObservableString bindableString) {
         // We use tag to ensure that we aren't adding multiple TextWatcher for same EditText. This ensures that
         // EditText has only one TextWatcher
         if (view.getTag(R.id.dataBinding) == null) {

@@ -3,9 +3,6 @@ package com.leroymerlin.pandroid.demo.globals.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.pandroid.annotations.DataBinding;
-
-@DataBinding
 public class Review implements Parcelable {
 
     private long userId;
