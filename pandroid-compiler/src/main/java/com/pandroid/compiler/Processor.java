@@ -40,11 +40,8 @@ public class Processor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
         new EventBusProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
         new DataBindingProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
-
-
         return false;
     }
 }
