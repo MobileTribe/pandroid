@@ -1,5 +1,5 @@
 :htmlPath:
-ifdef::env-github[:htmlPath: https://htmlpreview.github.io/?https://github.com/MobileTribe/pandroid/blob/master/]
+ifdef::env-github[:htmlPath: http://mobiletribe.github.io/pandroid/]
 
 image:./pandroid-doc/assets/logo.png[Pandroid,120,120,float="right",align="center"]
 
