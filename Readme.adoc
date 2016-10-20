@@ -30,6 +30,15 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - Android DataBinding : two ways DataBinding
 - MVVM support
 
+#### *2.0.1* - (2016-10-20)
+
+*Update*
+- Support Libraries 25
+- Remove useless APT plugin
+*Fix*
+- Fix RsaAesCryptoManager
+
+
 #### *2.0.0* - (2016-09-28)
 
 *link:{htmlPath}pandroid-doc/html/Tutorial.html[Features]*

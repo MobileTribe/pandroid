@@ -10,7 +10,6 @@ dependencies {
     compile localGroovy()
 
     compile project(':pandroid-java')
-    compile "com.neenbedankt.gradle.plugins:android-apt:$aptPluginVersion"
     testCompile 'junit:junit:4.11'
     testCompile "com.android.tools.build:gradle:$androidPluginVersion"
 
