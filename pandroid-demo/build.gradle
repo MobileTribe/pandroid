@@ -29,10 +29,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile('com.sothree.slidinguppanel:library:3.3.0') {
-        exclude group: 'com.nineoldandroids', module: 'library'
-        exclude module: 'support-annotations'
-    }
+    compile('com.sothree.slidinguppanel:library:3.3.0')
 
     //Support to simulate plugin work
     annotationProcessor project(':pandroid-compiler')
