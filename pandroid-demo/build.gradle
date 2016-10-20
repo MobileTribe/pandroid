@@ -13,6 +13,7 @@ android {
         targetSdkVersion Integer.parseInt(androidSdkVersion)
         versionCode Integer.parseInt(pandroidVersionId)
         versionName pandroidVersion
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         all {
@@ -28,9 +29,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.sothree.slidinguppanel:library:3.3.0'
-
+    compile('com.sothree.slidinguppanel:library:3.3.0') {
+        exclude group: 'com.nineoldandroids', module: 'library'
+        exclude module: 'support-annotations'
+    }
 
     //Support to simulate plugin work
     apt project(':pandroid-compiler')
@@ -40,6 +42,18 @@ dependencies {
     compile optionalLibs
     provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
     apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile('com.android.support.test:runner:0.5') {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile('com.android.support.test:rules:0.5') {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
+        exclude module: 'support-annotations'
+    }
 
 }
 
