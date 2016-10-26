@@ -38,7 +38,6 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
 
     protected PandroidDelegate pandroidDelegate;
 
-    //tag::PandroidActivityInjection[]
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
