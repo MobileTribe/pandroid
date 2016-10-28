@@ -1,5 +1,5 @@
 dependencies {
-    apt "com.leroymerlin.pandroid:pandroid-compiler:$pandroidVersion"
+    annotationProcessor "com.leroymerlin.pandroid:pandroid-compiler:$pandroidVersion"
     compile "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
     provided "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
 }
@@ -39,7 +39,7 @@ pandroid {
             gradle {
                 dependencies {
                     compile "com.jakewharton:butterknife:$libraryButterknifeVersion"
-                    apt "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+                    annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
                 }
             }
