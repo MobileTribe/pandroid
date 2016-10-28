@@ -5,11 +5,9 @@ repositories {
     jcenter()
 }
 
-apply plugin: 'com.neenbedankt.android-apt'
-
 
 dependencies {
-    apt "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
     compile "com.google.dagger:dagger:$libraryDaggerVersion"
     provided 'org.glassfish:javax.annotation:10.0-b28'
 }

@@ -4,18 +4,20 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
 
 import com.leroymerlin.pandroid.log.LogWrapper;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -23,6 +25,10 @@ import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 
 import javax.crypto.Cipher;
@@ -39,8 +45,11 @@ import javax.security.auth.x500.X500Principal;
 public class RsaAesCryptoManager implements CryptoManager {
     private static final String PREF_FILE = ".ksdata";
     private static final String TAG = "RsaAesCryptoManager";
-    public static final String RSA_FORMAT = "RSA/ECB/PKCS1Padding";
+
+    private static final String KEYPAIR_ALGO = "RSA";
+    private static final String RSA_FORMAT = "RSA/ECB/PKCS1Padding";
     private static final String KEY_ALIAS = "_k_";
+    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
 
     private final LogWrapper logWrapper;
     private KeyStore keyStore;
@@ -53,8 +62,7 @@ public class RsaAesCryptoManager implements CryptoManager {
         this.logWrapper = logWrapper;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             try {
-                keyStore = KeyStore.getInstance("AndroidKeyStore");
-
+                keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
                 keyStore.load(null);
             } catch (Exception e) {
                 logWrapper.e(TAG, e);
@@ -63,44 +71,76 @@ public class RsaAesCryptoManager implements CryptoManager {
         createNewKeys();
     }
 
+    protected void saveKeyPair(KeyPair keyPair) {
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = keyPair.getPublic();
 
-    public void writeKey(KeyPair value) {
+        // Store Public Key.
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
+                publicKey.getEncoded());
         try {
-            FileOutputStream fos = null;
-            fos = context.openFileOutput(PREF_FILE, Context.MODE_PRIVATE);
-            ObjectOutputStream os = new ObjectOutputStream(fos);
-            os.writeObject(value);
-            os.close();
+            FileOutputStream fos = context.openFileOutput(PREF_FILE + File.pathSeparator + "public.key", Context.MODE_PRIVATE);
+            fos.write(x509EncodedKeySpec.getEncoded());
+            fos.close();
+
+            // Store Private Key.
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
+                    privateKey.getEncoded());
+            fos = context.openFileOutput(PREF_FILE + File.pathSeparator + "private.key", Context.MODE_PRIVATE);
+            fos.write(pkcs8EncodedKeySpec.getEncoded());
             fos.close();
         } catch (Exception e) {
             logWrapper.e(TAG, e);
         }
     }
 
-    public KeyPair readKey() {
+    protected KeyPair loadKeyPair() {
         try {
-            FileInputStream fis = context.openFileInput(PREF_FILE);
-            ObjectInputStream is = new ObjectInputStream(fis);
-            KeyPair keyPair = (KeyPair) is.readObject();
-            is.close();
+            String publicKeyPath = PREF_FILE + File.pathSeparator + "public.key";
+            // Read Public Key.
+            File filePublicKey = context.getFileStreamPath(publicKeyPath);
+            FileInputStream fis = context.openFileInput(publicKeyPath);
+            byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
+            fis.read(encodedPublicKey);
             fis.close();
-            return keyPair;
+
+            String privateKeyPath = PREF_FILE + File.pathSeparator + "private.key";
+            // Read Private Key.
+            File filePrivateKey = context.getFileStreamPath(privateKeyPath);
+            fis = context.openFileInput(privateKeyPath);
+            byte[] encodedPrivateKey = new byte[(int) filePrivateKey.length()];
+            fis.read(encodedPrivateKey);
+            fis.close();
+
+            // Generate KeyPair.
+            KeyFactory keyFactory = KeyFactory.getInstance(KEYPAIR_ALGO);
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
+                    encodedPublicKey);
+            PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(
+                    encodedPrivateKey);
+            PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
+
+            return new KeyPair(publicKey, privateKey);
         } catch (Exception e) {
             logWrapper.e(TAG, e);
-            return null;
         }
+        return null;
     }
 
-    private void createNewKeys() {
+    protected void createNewKeys() {
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                initializeKeystoreAndroidM();
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 initializeKeystore();
             } else {
-                if (readKey() == null) {
-                    KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+                if (loadKeyPair() == null) {
+                    KeyPairGenerator generator = KeyPairGenerator.getInstance(KEYPAIR_ALGO);
                     generator.initialize(2048);
                     KeyPair keyPair = generator.generateKeyPair();
-                    writeKey(keyPair);
+                    saveKeyPair(keyPair);
                 }
             }
         } catch (Exception e) {
@@ -109,23 +149,35 @@ public class RsaAesCryptoManager implements CryptoManager {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private void initializeKeystore() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+    protected void initializeKeystore() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // Create new key if needed
         if (!keyStore.containsAlias(KEY_ALIAS)) {
             Calendar start = Calendar.getInstance();
             Calendar end = Calendar.getInstance();
             end.add(Calendar.YEAR, 1);
-            KeyPairGeneratorSpec spec = null;
-            spec = new KeyPairGeneratorSpec.Builder(context)
+            KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
                     .setAlias(KEY_ALIAS)
                     .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
                     .setSerialNumber(BigInteger.ONE)
                     .setStartDate(start.getTime())
                     .setEndDate(end.getTime())
                     .build();
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+            KeyPairGenerator generator = KeyPairGenerator.getInstance(KEYPAIR_ALGO, ANDROID_KEY_STORE);
             generator.initialize(spec);
             generator.generateKeyPair();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    protected void initializeKeystoreAndroidM() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        // Create new key if needed
+        if (!keyStore.containsAlias(KEY_ALIAS)) {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE);
+            keyPairGenerator.initialize(new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
+                    .setUserAuthenticationRequired(false)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1).build());
+            keyPairGenerator.generateKeyPair();
         }
     }
 
@@ -143,7 +195,7 @@ public class RsaAesCryptoManager implements CryptoManager {
                 KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
                 publicKey = privateKeyEntry.getCertificate().getPublicKey();
             } else {
-                publicKey = readKey().getPublic();
+                publicKey = loadKeyPair().getPublic();
             }
             // Encrypt the text
             Cipher input = Cipher.getInstance(RSA_FORMAT);
@@ -165,7 +217,7 @@ public class RsaAesCryptoManager implements CryptoManager {
                 privateKey = privateKeyEntry.getPrivateKey();
 
             } else {
-                privateKey = readKey().getPrivate();
+                privateKey = loadKeyPair().getPrivate();
             }
 
             Cipher output = Cipher.getInstance(RSA_FORMAT);

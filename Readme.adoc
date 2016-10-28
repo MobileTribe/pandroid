@@ -1,5 +1,5 @@
 :htmlPath:
-ifdef::env-github[:htmlPath: https://htmlpreview.github.io/?https://github.com/MobileTribe/pandroid/blob/master/]
+ifdef::env-github[:htmlPath: http://mobiletribe.github.io/pandroid/]
 
 image:./pandroid-doc/assets/logo.png[Pandroid,120,120,float="right",align="center"]
 
@@ -29,6 +29,15 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 *Features*
 - Android DataBinding : two ways DataBinding
 - MVVM support
+
+#### *2.0.1* - (2016-10-20)
+
+*Update*
+- Support Libraries 25
+- Remove useless APT plugin
+*Fix*
+- Fix RsaAesCryptoManager
+
 
 #### *2.0.0* - (2016-09-28)
 
