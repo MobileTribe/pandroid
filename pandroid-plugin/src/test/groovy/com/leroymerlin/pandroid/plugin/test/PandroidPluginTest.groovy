@@ -1,8 +1,8 @@
 package com.leroymerlin.pandroid.plugin.test
 
-import com.leroymerlin.pandroid.plugins.PandroidPlugin
-import com.leroymerlin.pandroid.plugins.PandroidPluginExtension
-import com.leroymerlin.pandroid.plugins.utils.XMLUtils
+import com.leroymerlin.pandroid.plugin.PandroidPlugin
+import com.leroymerlin.pandroid.plugin.PandroidPluginExtension
+import com.leroymerlin.pandroid.plugin.utils.XMLUtils
 import com.leroymerlin.pandroid.security.AESEncryption
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -21,7 +21,9 @@ class PandroidPluginTest {
     @Before
     public void setUp() {
         project = ProjectBuilder.builder().withProjectDir(new File("src/test/resources/android-app")).build()
-        project.buildDir = new File("../../../../build")
+        def buildDir = project.file("build")
+        buildDir.deleteDir()
+        project.buildDir = buildDir
 
         def manager = project.pluginManager
 
@@ -138,8 +140,7 @@ class PandroidPluginTest {
 
     }
 
-
-   // @Test
+    // @Test
     public void testAddCompileDependenciesToProject() {
 
         project.pandroid {
@@ -172,7 +173,7 @@ class PandroidPluginTest {
 
     }
 
-   // @Test
+    @Test
     public void testAddSecureProperties() {
 
         project.pandroid {

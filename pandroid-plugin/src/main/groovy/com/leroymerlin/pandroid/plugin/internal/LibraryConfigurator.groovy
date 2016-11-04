@@ -1,6 +1,6 @@
-package com.leroymerlin.pandroid.plugins.internal
+package com.leroymerlin.pandroid.plugin.internal
 
-import com.leroymerlin.pandroid.plugins.utils.XMLUtils
+import com.leroymerlin.pandroid.plugin.utils.XMLUtils
 import org.gradle.api.Project
 import org.xml.sax.SAXException
 
