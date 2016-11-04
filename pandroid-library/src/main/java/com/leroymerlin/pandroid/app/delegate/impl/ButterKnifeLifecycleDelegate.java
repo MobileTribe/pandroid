@@ -18,12 +18,16 @@ public class ButterKnifeLifecycleDelegate extends SimpleLifecycleDelegate<Object
     @Override
     public void onCreateView(Object target, View view, Bundle savedInstanceState) {
         super.onCreateView(target, view, savedInstanceState);
-        unbinder = ButterKnife.bind(target, view);
+        if (view != null) {
+            unbinder = ButterKnife.bind(target, view);
+        }
     }
 
     @Override
     public void onDestroyView(Object target) {
         super.onDestroyView(target);
-        unbinder.unbind();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 }
