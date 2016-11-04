@@ -42,40 +42,54 @@ public class CrashlyticsLogger extends SimpleLogger {
 
     @Override
     void debug(String tag, String msg, Throwable tr) {
-        Crashlytics.log(DEBUG, msg, tr!=null?tr.getMessage():"");
+        if(initialized) {
+            Crashlytics.log(DEBUG, msg, tr != null ? tr.getMessage() : "");
+        }
     }
 
     @Override
     void verbose(String tag, String msg, Throwable tr) {
-        Crashlytics.log(VERBOSE, msg, tr!=null?tr.getMessage():"");
+        if(initialized) {
+            Crashlytics.log(VERBOSE, msg, tr != null ? tr.getMessage() : "");
+        }
     }
 
     @Override
     void info(String tag, String msg, Throwable tr) {
-        Crashlytics.log(INFO, msg, tr!=null?tr.getMessage():"");
+        if(initialized) {
+            Crashlytics.log(INFO, msg, tr != null ? tr.getMessage() : "");
+        }
     }
 
     @Override
     void warn(String tag, String msg, Throwable tr) {
-        Crashlytics.log(WARN, msg,  tr!=null?tr.getMessage():"");
-        Crashlytics.logException(tr);
+        if(initialized) {
+            Crashlytics.log(WARN, msg, tr != null ? tr.getMessage() : "");
+            Crashlytics.logException(tr);
+        }
     }
 
     @Override
     void error(String tag, String msg, Throwable tr) {
-        Crashlytics.log(ERROR, msg,  tr!=null?tr.getMessage():"");
-        Crashlytics.logException(tr);
+        if(initialized) {
+            Crashlytics.log(ERROR, msg, tr != null ? tr.getMessage() : "");
+            Crashlytics.logException(tr);
+        }
     }
 
     @Override
     void logAssert(String tag, String msg, Throwable tr) {
-        Crashlytics.log(ASSERT, msg,  tr!=null?tr.getMessage():"");
-        Crashlytics.logException(tr);
+        if(initialized) {
+            Crashlytics.log(ASSERT, msg, tr != null ? tr.getMessage() : "");
+            Crashlytics.logException(tr);
+        }
     }
 
     @Override
     public void addKey(String key, String value) {
-        Crashlytics.setString(key, value);
+        if(initialized) {
+            Crashlytics.setString(key, value);
+        }
     }
 
 }
