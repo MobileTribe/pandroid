@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.app.delegate;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.leroymerlin.pandroid.app.ResumeState;
@@ -22,12 +23,25 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
         return resumeState;
     }
 
-    public void addLifecycleDelegate(LifecycleDelegate<Object> lifecycleDelegate) {
+    public void addLifecycleDelegate(@NonNull LifecycleDelegate<Object> lifecycleDelegate) {
         this.lifecycleDelegates.add(lifecycleDelegate);
     }
 
     public boolean removeLifecycleDelegate(LifecycleDelegate lifecycleDelegate) {
         return this.lifecycleDelegates.remove(lifecycleDelegate);
+    }
+
+    public LifecycleDelegate getLifecycleDelegate(Class<? extends LifecycleDelegate> delegateType) {
+        for (LifecycleDelegate delegate : lifecycleDelegates) {
+            if (delegate.getClass().isAssignableFrom(delegateType)) {
+                return delegate;
+            }
+        }
+        return null;
+    }
+
+    public List<CancellableActionDelegate> getLifecycleDelegates() {
+        return delegates;
     }
 
     @Override
