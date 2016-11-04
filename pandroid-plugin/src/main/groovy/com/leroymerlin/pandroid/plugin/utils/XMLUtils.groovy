@@ -1,4 +1,4 @@
-package com.leroymerlin.pandroid.plugins.utils
+package com.leroymerlin.pandroid.plugin.utils
 
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.XmlUtil

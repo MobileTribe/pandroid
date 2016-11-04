@@ -1,9 +1,9 @@
-package com.leroymerlin.pandroid.plugins
+package com.leroymerlin.pandroid.plugin
 
+import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.DependencyResolutionListener
-import org.gradle.api.artifacts.ResolvableDependencies
+import org.gradle.api.file.FileTree
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -14,6 +14,7 @@ class PandroidPlugin implements Plugin<Project> {
     Logger logger = LoggerFactory.getLogger('PandroidPlugin')
 
     def pluginVersion
+    PandroidConfigMapperBuilder configMapperBuilder;
 
     def gradleFiles = [
             PROP_FILE,
@@ -27,7 +28,7 @@ class PandroidPlugin implements Plugin<Project> {
 
     def void apply(Project project) {
         this.project = project;
-
+        this.configMapperBuilder = new PandroidConfigMapperBuilder();
 
         if (!project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()) {
             Properties properties = new Properties()
@@ -47,19 +48,20 @@ class PandroidPlugin implements Plugin<Project> {
         project.preBuild.dependsOn project.copyEmbededFiles
 
         applyEmbededFiles()
-
-        project.getGradle().addListener(new DependencyResolutionListener() {
-            @Override
-            void beforeResolve(ResolvableDependencies resolvableDependencies) {
-//                compileDeps.add(project.getDependencies().create("org.foo:bar:$version"))
-                project.getGradle().removeListener(this)
+        project.afterEvaluate {
+            project.android.applicationVariants.all { variant ->
+                File rDir = new File(project.buildDir, "generated/source/pandroid/$variant.dirName");
+                variant.addJavaSourceFoldersToModel(rDir);
+                def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
+                javaCompile.source += rDir
+                variant.outputs.each { output ->
+                    output.processResources.doLast {
+                        configMapperBuilder.buildClass(variant.applicationId, packageForR, rDir)
+                    }
+                }
 
             }
-
-            @Override
-            void afterResolve(ResolvableDependencies resolvableDependencies) {}
-        })
-
+        }
 
     }
 

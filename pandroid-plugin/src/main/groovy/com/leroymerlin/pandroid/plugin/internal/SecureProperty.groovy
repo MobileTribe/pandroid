@@ -1,4 +1,4 @@
-package com.leroymerlin.pandroid.plugins.internal
+package com.leroymerlin.pandroid.plugin.internal
 
 import com.leroymerlin.pandroid.security.AESEncryption
 import org.gradle.api.Project

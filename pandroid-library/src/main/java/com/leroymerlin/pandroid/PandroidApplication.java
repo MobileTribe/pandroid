@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.leroymerlin.pandroid.app.ConfigMapperConst;
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
@@ -22,9 +23,6 @@ import com.leroymerlin.pandroid.log.PandroidLogger;
 import java.lang.reflect.Method;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import icepick.Icepick;
 
 
 /**
@@ -101,22 +99,13 @@ public class PandroidApplication extends Application {
         return (PandroidApplication) context.getApplicationContext();
     }
 
-    public Class getBuildConfig() throws ClassNotFoundException {
-        String buildConfigName = getPackageName() + ".BuildConfig";
-        return Class.forName(buildConfigName);
-    }
-
     public void initializeBuildConfig() {
         try {
-            Class buildConfig = getBuildConfig();
-            PandroidConfig.DEBUG = (Boolean) buildConfig.getField("DEBUG").get(buildConfig); //NoSuchFieldException
-            PandroidConfig.APPLICATION_ID = (String) buildConfig.getField("APPLICATION_ID").get(buildConfig);
-            PandroidConfig.BUILD_TYPE = (String) buildConfig.getField("BUILD_TYPE").get(buildConfig);
-            PandroidConfig.FLAVOR = (String) buildConfig.getField("FLAVOR").get(buildConfig);
-            PandroidConfig.VERSION_CODE = (Integer) buildConfig.getField("VERSION_CODE").get(buildConfig);
-            PandroidConfig.VERSION_NAME = (String) buildConfig.getField("VERSION_NAME").get(buildConfig);
+            String configMapper = getPackageName() + "." + ConfigMapperConst.MAPPER_NAME;
+            Class<?> mapperClass = Class.forName(configMapper);
+            mapperClass.getMethod(ConfigMapperConst.METHOD_INIT).invoke(null);
         } catch (Exception e) {
-            Log.e(TAG, "Can't find BuildConfig var, override getBuildConfig to fix this", e);
+            Log.e(TAG, "Can't initialize PandroidConfig", e);
         }
     }
 
@@ -145,16 +134,14 @@ public class PandroidApplication extends Application {
         PandroidDelegate pandroidDelegate = new PandroidDelegate();
         pandroidDelegate.addLifecycleDelegate(new DaggerDelegate());
         pandroidDelegate.addLifecycleDelegate(new EventBusLifecycleDelegate(eventBusManager));
-        try {
-            Class.forName(ButterKnife.class.getName());
+        if (PandroidConfig.isLibraryEnable("butterknife")) {
             pandroidDelegate.addLifecycleDelegate(new ButterKnifeLifecycleDelegate());
-        } catch (ClassNotFoundException e) {
+        } else {
             logWrapper.v(TAG, "ButterKnife is disabled, add the library in Pandroid extension to use it");
         }
-        try {
-            Class.forName(Icepick.class.getName());
+        if (PandroidConfig.isLibraryEnable("icepick")) {
             pandroidDelegate.addLifecycleDelegate(new IcepickLifecycleDelegate());
-        } catch (ClassNotFoundException e) {
+        } else {
             logWrapper.v(TAG, "Icepick is disabled, add the library in Pandroid extension to use it");
         }
         return pandroidDelegate;

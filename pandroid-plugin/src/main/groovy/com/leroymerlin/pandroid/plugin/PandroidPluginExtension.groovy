@@ -1,7 +1,7 @@
-package com.leroymerlin.pandroid.plugins
+package com.leroymerlin.pandroid.plugin
 
-import com.leroymerlin.pandroid.plugins.internal.LibraryConfigurator
-import com.leroymerlin.pandroid.plugins.internal.SecureProperty
+import com.leroymerlin.pandroid.plugin.internal.LibraryConfigurator
+import com.leroymerlin.pandroid.plugin.internal.SecureProperty
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.NamedDomainObjectContainer
@@ -34,6 +34,7 @@ public class PandroidPluginExtension {
             pandroidDep ->
                 if ((pandroidDep.name =~ ".*" + regex + ".*").matches()) {
                     plugin.logger.info("$regex => provide ${pandroidDep.name}")
+                    plugin.configMapperBuilder.addLibrary(pandroidDep.name)
                     pandroidDep.apply(project, closure)
                 }
         }

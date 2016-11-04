@@ -20,5 +20,7 @@ allprojects {
 
 }
 
-
+ext.deps = [
+        javapoet: 'com.squareup:javapoet:1.7.0',
+]
 
