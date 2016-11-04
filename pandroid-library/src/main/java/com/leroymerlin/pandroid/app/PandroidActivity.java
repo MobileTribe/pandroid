@@ -158,7 +158,7 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
     //end::PandroidActivityReceivers[]
 
-    public void startFragment(Class<? extends PandroidFragment> fragmentClass) {
+    public void startFragment(Class<? extends Fragment> fragmentClass) {
         sendEventSync(new FragmentOpener(fragmentClass));
     }
 

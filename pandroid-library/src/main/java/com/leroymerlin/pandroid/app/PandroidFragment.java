@@ -100,7 +100,7 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
         pandroidDelegate.onSaveView(this, outState);
     }
 
-    public void startFragment(Class<? extends PandroidFragment> fragmentClass) {
+    public void startFragment(Class<? extends Fragment> fragmentClass) {
         sendEventSync(new FragmentOpener(fragmentClass));
     }
 
