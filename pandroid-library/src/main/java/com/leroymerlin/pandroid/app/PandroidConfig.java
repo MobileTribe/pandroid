@@ -44,8 +44,9 @@ public class PandroidConfig {
             return false;
         }
 
+        String libName = libraryName.toLowerCase();
         for (String library : LIBRARIES) {
-            Pattern pattern = Pattern.compile(".*" + libraryName + ".*");
+            Pattern pattern = Pattern.compile(".*" + libName + ".*");
             if (pattern.matcher(library).find()) {
                 return true;
             }
