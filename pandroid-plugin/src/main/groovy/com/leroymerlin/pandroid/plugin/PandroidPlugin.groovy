@@ -3,7 +3,6 @@ package com.leroymerlin.pandroid.plugin
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.file.FileTree
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -47,24 +46,15 @@ class PandroidPlugin implements Plugin<Project> {
         project.task("copyEmbededFiles", group: PANDROID_GROUP) << this.&copyEmbededFiles
         project.preBuild.dependsOn project.copyEmbededFiles
 
-        applyEmbededFiles()
-        project.afterEvaluate {
-            project.android.applicationVariants.all { variant ->
-                File rDir = new File(project.buildDir, "generated/source/pandroid/$variant.dirName");
-                variant.addJavaSourceFoldersToModel(rDir);
-                def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
-                javaCompile.source += rDir
-                variant.outputs.each { output ->
-                    output.processResources.doLast {
-                        configMapperBuilder.buildClass(variant.applicationId, packageForR, rDir)
-                    }
-                }
 
-            }
+
+        applyEmbededFiles()
+        project.android.applicationVariants.all { variant ->
+            def task = new GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
+            variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
         }
 
     }
-
 
     File getEmbededFile(String fileName) {
         File pandroidFolder = new File(project.buildDir, "pandroid");

@@ -1,10 +1,7 @@
 package com.leroymerlin.pandroid.plugin.test
 
-import org.gradle.tooling.BuildLauncher
-import org.gradle.tooling.GradleConnector
-import org.gradle.tooling.ProgressEvent
-import org.gradle.tooling.ProgressListener
-import org.gradle.tooling.ProjectConnection
+import org.gradle.tooling.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 /**
@@ -12,10 +9,11 @@ import org.junit.Test
  */
 class IntegrationTest {
 
+
     @Before
     public void setUp() {
         GradleConnector connector = GradleConnector.newConnector()
-        connector.forProjectDirectory(new File("pandroid-plugin"))
+        connector.forProjectDirectory(new File(""))
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
@@ -24,17 +22,23 @@ class IntegrationTest {
         } finally {
             connection.close()
         }
+
+        TestUtils.initProjectDirectory()
     }
 
+    @After
+    public void tearDown() {
+        TestUtils.clearProjectDirectory()
+    }
 
     /**
      *
      * Testing Methods
      *
      */
-    private static void testTask(String... tasks){
+    private static void testTask(String... tasks) {
         GradleConnector connector = GradleConnector.newConnector()
-        connector.forProjectDirectory(new File("pandroid-plugin/src/test/resources/android-app"))
+        connector.forProjectDirectory(TestUtils.pathToTmp)
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
@@ -42,9 +46,10 @@ class IntegrationTest {
             launcher.addProgressListener(new ProgressListener() {
                 @Override
                 void statusChanged(ProgressEvent progressEvent) {
-                    println (progressEvent.description)
+                    println(progressEvent.description)
                 }
             })
+            launcher.setStandardError(System.out)
             launcher.run()
         } finally {
             connection.close()
@@ -56,7 +61,6 @@ class IntegrationTest {
     public void testAssembleDebug() {
         testTask("clean", "assembleDebug")
     }
-
 
 
 }

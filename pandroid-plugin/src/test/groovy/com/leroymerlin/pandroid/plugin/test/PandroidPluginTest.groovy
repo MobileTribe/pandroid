@@ -16,13 +16,13 @@ import org.junit.Test
 class PandroidPluginTest {
 
     Project project
-
+    File projectDir;
 
     @Before
     public void setUp() {
-        project = ProjectBuilder.builder().withProjectDir(new File("src/test/resources/android-app")).build()
+        projectDir = TestUtils.initProjectDirectory(false);
+        project = ProjectBuilder.builder().withProjectDir(projectDir).build()
         def buildDir = project.file("build")
-        buildDir.deleteDir()
         project.buildDir = buildDir
 
         def manager = project.pluginManager
@@ -58,6 +58,7 @@ class PandroidPluginTest {
     @After
     public void tearDown() {
         project = null;
+        TestUtils.clearProjectDirectory();
     }
 
     @Test

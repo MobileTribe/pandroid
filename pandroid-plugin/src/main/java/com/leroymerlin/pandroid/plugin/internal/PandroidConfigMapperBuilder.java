@@ -26,7 +26,7 @@ public class PandroidConfigMapperBuilder {
     }
 
     public void addLibrary(String name) {
-        this.libraries.add(name);
+        this.libraries.add(name.toLowerCase());
     }
 
     static final List<String> fieldsName = Arrays.asList("DEBUG", "APPLICATION_ID", "BUILD_TYPE", "FLAVOR", "VERSION_CODE", "VERSION_NAME");
