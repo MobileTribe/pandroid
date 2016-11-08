@@ -1,5 +1,7 @@
 :sourcesDir: ./../../
 :javaDir: {sourcesDir}pandroid-java/
+:annotationsDir: {sourcesDir}pandroid-annotations/
+:annotationsJava: {annotationsDir}src/main/java/com/pandroid/annotations/
 :javaJava: {javaDir}src/main/java/com/leroymerlin/pandroid/
 :libDir: {sourcesDir}pandroid-library/
 :libJava: {libDir}src/main/java/com/leroymerlin/pandroid/
