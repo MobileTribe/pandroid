@@ -1,11 +1,11 @@
-package com.leroymerlin.pandroid.demo.main.presenter;
+package com.leroymerlin.pandroid.mvp;
 
 import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
+import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.android.annotations.Nullable;
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.SimpleLifecycleDelegate;

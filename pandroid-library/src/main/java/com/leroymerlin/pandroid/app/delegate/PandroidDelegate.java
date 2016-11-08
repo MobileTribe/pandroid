@@ -19,13 +19,13 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     public static final String TAG = "PandroidLifecycleDelegate";
     private List<CancellableActionDelegate> delegates = new ArrayList<>();
-    private List<LifecycleDelegate<Object>> lifecycleDelegates = new ArrayList<>();
+    private List<LifecycleDelegate> lifecycleDelegates = new ArrayList<>();
 
     public ResumeState getResumeState() {
         return resumeState;
     }
 
-    public void addLifecycleDelegate(@NonNull LifecycleDelegate<Object> lifecycleDelegate) {
+    public void addLifecycleDelegate(@NonNull LifecycleDelegate lifecycleDelegate) {
         this.lifecycleDelegates.add(lifecycleDelegate);
     }
 
@@ -46,6 +46,8 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
         return delegates;
     }
 
+
+    @SuppressWarnings("unchecked")
     @Override
     public void onInit(Object target) {
         super.onInit(target);
@@ -54,42 +56,47 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreateView(Object target, View view, Bundle savedInstanceState) {
         super.onCreateView(target, view, savedInstanceState);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+        for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onCreateView(target, view, savedInstanceState);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onResume(Object target) {
         super.onResume(target);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+        for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onResume(target);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onPause(Object target) {
         super.onPause(target);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+        for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onPause(target);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onSaveView(Object target, Bundle outState) {
         super.onSaveView(target, outState);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+        for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onSaveView(target, outState);
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onDestroyView(Object target) {
         super.onDestroyView(target);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
+        for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onDestroyView(target);
         }
         for (CancellableActionDelegate delegate : delegates) {
