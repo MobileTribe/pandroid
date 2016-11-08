@@ -8,6 +8,8 @@ import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,8 +49,8 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
     @Override
     public void onInit(Object target) {
         super.onInit(target);
-        for (LifecycleDelegate<Object> lifecycleDelegate : lifecycleDelegates) {
-            lifecycleDelegate.onInit(target);
+        for (int i = 0; i < lifecycleDelegates.size(); i++) {
+            lifecycleDelegates.get(i).onInit(target);
         }
     }
 

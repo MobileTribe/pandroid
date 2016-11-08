@@ -57,6 +57,15 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
 
     }
 
+    public PandroidDelegate getPandroidDelegate() {
+        return pandroidDelegate;
+    }
+
+    protected PandroidDelegate createDelegate() {
+        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
+        //initialize Base PandroidDelegate
+        return pandroidApplication.createBasePandroidDelegate();
+    }
 
     @Nullable
     @Override

@@ -2,7 +2,9 @@ package com.pandroid.compiler;
 
 
 import com.google.auto.service.AutoService;
+import com.pandroid.annotations.DataBinding;
 import com.pandroid.annotations.EventReceiver;
+import com.pandroid.annotations.BindLifeCycleDelegate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,8 @@ public class Processor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> supportedSet = new HashSet<>();
         supportedSet.add(EventReceiver.class.getCanonicalName());
+        supportedSet.add(DataBinding.class.getCanonicalName());
+        supportedSet.add(BindLifeCycleDelegate.class.getCanonicalName());
         return supportedSet;
     }
 
@@ -40,7 +44,8 @@ public class Processor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
         new EventBusProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
-
+        new DataBindingProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
+        new LifecycleDelegateAutoBinderProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
         return false;
     }
 }

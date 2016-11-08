@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.net;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 
 import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
@@ -38,7 +39,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
     }
 
     private PandroidCallAdapterFactory(Context context, LogWrapper logWrapper) {
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
         this.context = context;
         this.logWrapper = logWrapper;
     }

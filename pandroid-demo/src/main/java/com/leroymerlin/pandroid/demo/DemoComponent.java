@@ -8,6 +8,7 @@ import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
+import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
@@ -52,5 +53,7 @@ public interface DemoComponent extends BaseComponent {
     void inject(RestFragment restFragment);
 
     void inject(ToastFragment restFragment);
+
+    void inject(PresenterFragment fragment);
 
 }

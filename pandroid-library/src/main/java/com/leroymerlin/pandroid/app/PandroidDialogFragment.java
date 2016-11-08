@@ -57,6 +57,16 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         }
     }
 
+    public PandroidDelegate getPandroidDelegate() {
+        return pandroidDelegate;
+    }
+
+    protected PandroidDelegate createDelegate() {
+        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
+        //initialize Base PandroidDelegate
+        return pandroidApplication.createBasePandroidDelegate();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
