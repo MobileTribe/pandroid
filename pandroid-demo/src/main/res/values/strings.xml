@@ -39,6 +39,7 @@
     <string name="toast_loader">With Loader</string>
     <string name="toast_action">With action</string>
     <string name="navigation_toast">Toast</string>
+    <string name="mvp">MVP</string>
 
 
 </resources>

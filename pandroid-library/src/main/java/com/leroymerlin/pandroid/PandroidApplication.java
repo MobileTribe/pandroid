@@ -9,6 +9,7 @@ import com.leroymerlin.pandroid.app.ConfigMapperConst;
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.ButterKnifeLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.EventBusLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
@@ -134,6 +135,7 @@ public class PandroidApplication extends Application {
         PandroidDelegate pandroidDelegate = new PandroidDelegate();
         pandroidDelegate.addLifecycleDelegate(new DaggerDelegate());
         pandroidDelegate.addLifecycleDelegate(new EventBusLifecycleDelegate(eventBusManager));
+        pandroidDelegate.addLifecycleDelegate(new AutoBinderLifecycleDelegate());
         if (PandroidConfig.isLibraryEnable("butterknife")) {
             pandroidDelegate.addLifecycleDelegate(new ButterKnifeLifecycleDelegate());
         } else {

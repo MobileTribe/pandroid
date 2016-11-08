@@ -13,6 +13,7 @@ import com.leroymerlin.pandroid.demo.main.event.EventSecondFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
+import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
@@ -29,7 +30,6 @@ public class MainActivity extends PandroidDrawerActivity {
 
 
     public static final String DRAWER_EVENT = "DRAWER_EVENT";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +97,7 @@ public class MainActivity extends PandroidDrawerActivity {
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
                 .addFragment(ToastFragment.class)
+                .addFragment(PresenterFragment.class)
         );
         //tag::FragmentWithOpener[]
         receivers.add(new FragmentEventReceiver()
