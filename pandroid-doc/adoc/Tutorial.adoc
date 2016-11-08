@@ -164,7 +164,7 @@ You can give a custom base component by overriding _createBaseComponent()_
 
 [source,java]
 ----
-include::{demoJava}/DemoApplication.java[tags=createBaseComponent]
+include::{demoJava}DemoApplication.java[tags=createBaseComponent]
 ----
 
 === PandroidModule/Component
@@ -182,28 +182,28 @@ This activity handles the following points :
 
 [source,java]
 ----
-include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityInjection]
+include::{libJava}app/PandroidActivity.java[tags=PandroidActivityInjection]
 ----
 
 - onResume Helper
 
 [source,java]
 ----
-include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityResume]
+include::{libJava}app/PandroidActivity.java[tags=PandroidActivityResume]
 ----
 
 - Back pressed behavior
 
 [source,java]
 ----
-include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityBack]
+include::{libJava}app/PandroidActivity.java[tags=PandroidActivityBack]
 ----
 
 - Provides a receiver that will be attached/detached from your application by the EventBusLifeCycleDelegate
 
 [source,java]
 ----
-include::{libJava}/app/PandroidActivity.java[tags=PandroidActivityReceivers]
+include::{libJava}app/PandroidActivity.java[tags=PandroidActivityReceivers]
 ----
 
 === PandroidFragment
@@ -218,7 +218,7 @@ and... that's it ! A custom event receiver named FragmentEventReceiver will hand
 
 [source,java]
 ----
-include::{demoJava}/main/MainActivity.java[tags=FragmentReceivers]
+include::{demoJava}main/MainActivity.java[tags=FragmentReceivers]
 ----
 
 ==== Fragment arguments
@@ -282,10 +282,31 @@ By default PandroidLifecycleDelegate is create in your PandroidApplication.
 
 [source,java]
 ----
-include::{libJava}/PandroidApplication.java[tags=PandroidBaseLifecycleDelegate]
+include::{libJava}PandroidApplication.java[tags=PandroidBaseLifecycleDelegate]
 ----
 NOTE: you could override this method to bring new behavior to all activity and fragment.
 
+=== Auto bind Lifecycle Delegate
+
+If you need to associate your custom Lifecycle Delegate automatically so just use the annotation :
+
+[source,java]
+----
+include::{annotationsJava}BindLifeCycleDelegate.java[tags=PandroidBindLifeCycleDelegateAnnotation]
+----
+
+Integration in Fragment :
+
+[source,java]
+----
+include::{demoJava}main/mvp/PresenterFragment.java[tags=PandroidBindLifeCycleDelegateAnnotationUseCase]
+----
+
+NOTE: if the tool is not initialized by dagger or manually when the auto binder create an
+instance if there is an empty constructor
+
+WARNING: To initialize after declaration must put your statement in the createDelegate() method
+overloading
 
 === Logger
 
@@ -477,7 +498,7 @@ pandroid{
 
 [source,java]
 ----
-include::{demoJava}/DemoModule.java[tags=Glide]
+include::{demoJava}DemoModule.java[tags=Glide]
 ----
 
 - Inject it
@@ -578,14 +599,14 @@ See demo's examples
 
 [source,java]
 ----
-include::{demoJava}/main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
+include::{demoJava}main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
 ----
 
 A easiest implementation is available for simple RecyclerView
 
 [source,java]
 ----
-include::{demoJava}/main/list/SimpleRecyclerViewFragment.java[tags=SimpleRecyclerViewAdapter]
+include::{demoJava}main/list/SimpleRecyclerViewFragment.java[tags=SimpleRecyclerViewAdapter]
 ----
 
 === List header
@@ -595,7 +616,7 @@ See ListViewFragment in the demo
 
 [source,xml]
 ----
-include::{demoRes}/layout/fragment_listview.xml[tags=QuickHeaderLayout]
+include::{demoRes}layout/fragment_listview.xml[tags=QuickHeaderLayout]
 ----
 
 === Toast
@@ -604,7 +625,7 @@ Pandroid allows you to customize Android Toast notifications thanks to a dedicat
 
 [source,xml]
 ----
-include::{libRes}/values/styles.xml[tags=Toast]
+include::{libRes}values/styles.xml[tags=Toast]
 ----
 
 If needed, you can declare your own style.
@@ -642,7 +663,7 @@ The ToastManager interface exposes a list of methods to display toasts, here is 
 
 [source,java]
 ----
-include::{demoJava}/main/rest/RestFragment.java[tags=toastUsageExample]
+include::{demoJava}main/rest/RestFragment.java[tags=toastUsageExample]
 ----
 
 
@@ -672,7 +693,7 @@ pandroid{
 
 [source,java]
 ----
-include::{demoJava}/main/scanner/ScannerFragment.java[tags=Vision]
+include::{demoJava}main/scanner/ScannerFragment.java[tags=Vision]
 ----
 
 
@@ -701,7 +722,7 @@ To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.
 
 [source,java]
 ----
-include::{demoJava}/main/rest/RestFragment.java[tags=Loader]
+include::{demoJava}main/rest/RestFragment.java[tags=Loader]
 ----
 
 == Analytics
@@ -717,7 +738,7 @@ You need to add the dependency in your build.gradle
 [source,java]
 ----
 
-include::{libDir}/pandroid.gradle[tags=GoogleAnalytics]
+include::{libDir}pandroid.gradle[tags=GoogleAnalytics]
 
 pandroid {
     dependencies {
@@ -743,7 +764,7 @@ You need to add the dependency in your build.gradle
 [source,java]
 ----
 
-include::{libDir}/pandroid.gradle[tags=FirebaseAnalytics]
+include::{libDir}pandroid.gradle[tags=FirebaseAnalytics]
 
 pandroid {
     dependencies {

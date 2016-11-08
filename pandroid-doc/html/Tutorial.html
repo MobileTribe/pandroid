@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.0, Wed Sep 28 13:31:06 CEST 2016">
+<meta name="author" content="Pandroid v2.0.2-SNAPSHOT, Tue Nov 08 17:50:00 CET 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.0, Wed Sep 28 13:31:06 CEST 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.2-SNAPSHOT, Tue Nov 08 17:50:00 CET 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -533,7 +533,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#pandroidactivity">2.4. PandroidActivity</a></li>
 <li><a href="#pandroidfragment">2.5. PandroidFragment</a></li>
 <li><a href="#lifecycle-delegate">2.6. Lifecycle Delegate</a></li>
-<li><a href="#logger">2.7. Logger</a></li>
+<li><a href="#auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</a></li>
+<li><a href="#logger">2.8. Logger</a></li>
 </ul>
 </li>
 <li><a href="#security">3. Security</a>
@@ -864,6 +865,7 @@ You can give a custom base component by overriding <em>createBaseComponent()</em
                         keyManagers.add(trustManager);
                         <span class="keyword">return</span> keyManagers;
                     }
+
                     <span class="annotation">@Override</span>
                     <span class="directive">protected</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">KeyManager</span>&gt; getKeyManagers() {
                         <span class="keyword">return</span> <span class="local-variable">super</span>.getKeyManagers(); <span class="comment">// here you can add you own key manager</span>
@@ -901,13 +903,15 @@ This activity handles the following points :</p>
     <span class="annotation">@Inject</span>
     <span class="directive">protected</span> EventBusManager eventBusManager;
 
+    <span class="annotation">@CallSuper</span>
     <span class="annotation">@Override</span>
     <span class="directive">protected</span> <span class="type">void</span> onCreate(Bundle savedInstanceState) {
         <span class="local-variable">super</span>.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(<span class="local-variable">this</span>);
         <span class="comment">//initialize PandroidDelegate with the default from PandroidApplication</span>
-        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
-        pandroidDelegate.onInit(<span class="local-variable">this</span>);</code></pre>
+        pandroidDelegate = createDelegate();
+        pandroidDelegate.onInit(<span class="local-variable">this</span>);
+
+    }</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1017,6 +1021,7 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
                 .addFragment(ToastFragment.class)
+                .addFragment(PresenterFragment.class)
         );
         receivers.add(<span class="keyword">new</span> FragmentEventReceiver()
                 .setContainerId(R.id.main_content_container)
@@ -1179,16 +1184,15 @@ They are used to extract and share behaviors without any heritage.</p>
         PandroidDelegate pandroidDelegate = <span class="keyword">new</span> PandroidDelegate();
         pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> DaggerDelegate());
         pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> EventBusLifecycleDelegate(eventBusManager));
-        <span class="keyword">try</span> {
-            <span class="predefined-type">Class</span>.forName(ButterKnife.class.getName());
+        pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> AutoBinderLifecycleDelegate());
+        <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">butterknife</span><span class="delimiter">&quot;</span></span>)) {
             pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> ButterKnifeLifecycleDelegate());
-        } <span class="keyword">catch</span> (<span class="exception">ClassNotFoundException</span> e) {
+        } <span class="keyword">else</span> {
             logWrapper.v(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">ButterKnife is disabled, add the library in Pandroid extension to use it</span><span class="delimiter">&quot;</span></span>);
         }
-        <span class="keyword">try</span> {
-            <span class="predefined-type">Class</span>.forName(Icepick.class.getName());
+        <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">icepick</span><span class="delimiter">&quot;</span></span>)) {
             pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> IcepickLifecycleDelegate());
-        } <span class="keyword">catch</span> (<span class="exception">ClassNotFoundException</span> e) {
+        } <span class="keyword">else</span> {
             logWrapper.v(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">Icepick is disabled, add the library in Pandroid extension to use it</span><span class="delimiter">&quot;</span></span>);
         }
         <span class="keyword">return</span> pandroidDelegate;
@@ -1211,7 +1215,64 @@ you could override this method to bring new behavior to all activity and fragmen
 </div>
 </div>
 <div class="sect2">
-<h3 id="logger">2.7. Logger</h3>
+<h3 id="auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</h3>
+<div class="paragraph">
+<p>If you need to associate your custom Lifecycle Delegate automatically so just use the annotation :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="annotation">@interface</span> BindLifeCycleDelegate {
+
+    <span class="predefined-type">String</span> BINDER_PREFIX = <span class="string"><span class="delimiter">&quot;</span><span class="content">_LifecycleAutoBinder</span><span class="delimiter">&quot;</span></span>;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Integration in Fragment :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">PresenterFragment</span> <span class="directive">extends</span> PandroidFragment&lt;FragmentOpener&gt; <span class="directive">implements</span> TestPresenter.TestPresenterView{
+
+
+    <span class="annotation">@BindLifeCycleDelegate</span>
+    LoggerLifeCycleDelegate mLoggerLifeCycleDelegate = <span class="keyword">new</span> LoggerLifeCycleDelegate();
+
+    <span class="annotation">@Inject</span>
+    <span class="annotation">@BindLifeCycleDelegate</span>
+    TestPresenter mTestPresenter;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+if the tool is not initialized by dagger or manually when the auto binder create an
+instance if there is an empty constructor
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+To initialize after declaration must put your statement in the createDelegate() method
+overloading
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="logger">2.8. Logger</h3>
 <div class="paragraph">
 <p>A powerful logger is a very important part of your development. A logger can become your best friend to identify bugs remotely.
 But keep in mind that your logger has to be properly configured to avoid any security vulnerability or debugging mess.</p>
@@ -1231,7 +1292,7 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 </div>
 </div>
 <div class="sect3">
-<h4 id="crashlytics">2.7.1. Crashlytics</h4>
+<h4 id="crashlytics">2.8.1. Crashlytics</h4>
 <div class="paragraph">
 <p>Crashlytics is an optional library in pandroid.</p>
 </div>
@@ -1412,6 +1473,7 @@ None of these encryption methods are unbreakable. Keep in mind that the best way
                         keyManagers.add(trustManager);
                         <span class="keyword">return</span> keyManagers;
                     }
+
                     <span class="annotation">@Override</span>
                     <span class="directive">protected</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">KeyManager</span>&gt; getKeyManagers() {
                         <span class="keyword">return</span> <span class="local-variable">super</span>.getKeyManagers(); <span class="comment">// here you can add you own key manager</span>
@@ -1506,32 +1568,34 @@ See <a href="http://square.github.io/retrofit/">official documentation</a> to us
     <span class="directive">public</span> <span class="type">void</span> getReview(<span class="predefined-type">String</span> productId, <span class="directive">final</span> NetActionDelegate&lt;Review&gt; delegate) {
 
         <span class="comment">//Standard Retrofit way</span>
+        <span class="comment">/*
         Call&lt;Review&gt; review = reviewService.getReview(productId);
-        review.enqueue(<span class="keyword">new</span> <span class="predefined-type">Callback</span>&lt;Review&gt;() {
+        review.enqueue(new Callback&lt;Review&gt;() {
 
-            <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> onResponse(Call&lt;Review&gt; call, Response&lt;Review&gt; response) {
-                <span class="keyword">try</span> {
-                    <span class="keyword">if</span> (response.isSuccessful()) {
+            @Override
+            public void onResponse(Call&lt;Review&gt; call, Response&lt;Review&gt; response) {
+                try {
+                    if (response.isSuccessful()) {
                         delegate.onSuccess(response.body());
-                    } <span class="keyword">else</span> {
-                        <span class="predefined-type">String</span> string = response.errorBody().string();
-                        delegate.onError(<span class="keyword">new</span> <span class="exception">Exception</span>(response.code() + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span> + string));
+                    } else {
+                        String string = response.errorBody().string();
+                        delegate.onError(new Exception(response.code() + &quot;: &quot; + string));
                     }
-                } <span class="keyword">catch</span> (<span class="exception">IOException</span> e) {
+                } catch (IOException e) {
                     onFailure(call, e);
                 }
             }
 
-            <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> onFailure(Call&lt;Review&gt; call, <span class="predefined-type">Throwable</span> t) {
-                <span class="comment">//Be carefull with the onFailure. This method can be called by retrofit outside of the main thread</span>
-                <span class="comment">//You can't update you UI directly</span>
-                <span class="comment">//delegate.onError(new Exception(&quot;Fail to get product&quot;, t)); =&gt; Error</span>
+            @Override
+            public void onFailure(Call&lt;Review&gt; call, Throwable t) {
+                //Be carefull with the onFailure. This method can be called by retrofit outside of the main thread
+                //You can't update you UI directly
+                //delegate.onError(new Exception(&quot;Fail to get product&quot;, t)); =&gt; Error
             }
         });
+        */</span>
 
-        <span class="comment">//Pandroid way</span>
+        <span class="comment">// Pandroid way</span>
         PandroidCall&lt;Review&gt; reviewPandroidWay = reviewService.getReviewPandroidWay(productId);
         reviewPandroidWay.enqueue(delegate);
     }</code></pre>
@@ -2252,7 +2316,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-28 11:39:14 CEST
+Last updated 2016-11-08 17:49:46 +01:00
 </div>
 </div>
 </body>
