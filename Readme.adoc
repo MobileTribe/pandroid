@@ -24,22 +24,35 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-#### *2.1.0* - (soon)
+### *2.1.0* - (soon)
 
 *Features*
 - Android DataBinding : two ways DataBinding
 - MVVM support
 
-#### *2.0.1* - (2016-10-20)
+### *2.0.2* - (2016-11-8)
+
+*Features*
+- Generate mapper to initialize PandroidConfig
+- Add annotation to add lifecycleDelegate
+*Update*
+- add method to remove delegate from PandroidDelegate (#4)
+- refactor startFragment method (#3)
+*Fix*
+- Crashlytics Logger not initialized
+- ButterknifeLifecycle delegate nullPointerException
+- Not fully optional library (Butterknife / Icepick)
+
+### *2.0.1* - (2016-10-20)
 
 *Update*
 - Support Libraries 25
 - Remove useless APT plugin
 *Fix*
-- Fix RsaAesCryptoManager
+- Fix RsaAesCryptoManager (#2)
 
 
-#### *2.0.0* - (2016-09-28)
+### *2.0.0* - (2016-09-28)
 
 *link:{htmlPath}pandroid-doc/html/Tutorial.html[Features]*
 

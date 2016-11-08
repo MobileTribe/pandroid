@@ -154,9 +154,6 @@ Your application has to extend PandroidApplication in order to:
 * Initialize PandroidConfig with the app's BuildConfig. This class allows the library to know if your app
 is in DEBUG mode. (To enable Logger for example)
 
-WARNING: If your application changes his package name for some flavors, you have to override the _getBuildConfig()_ method
-in order to give the good BuildConfig class
-
 * Initialize the logger. See link:#_logger[Logger part] to know how to customize it.
 
 * Handle Dagger component injection. Pandroid classes will inject their manager using the PandroidApplication.
