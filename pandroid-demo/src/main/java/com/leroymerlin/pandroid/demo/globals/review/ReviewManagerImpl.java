@@ -33,6 +33,7 @@ public class ReviewManagerImpl implements ReviewManager {
     public void getReview(String productId, final NetActionDelegate<Review> delegate) {
 
         //Standard Retrofit way
+        /*
         Call<Review> review = reviewService.getReview(productId);
         review.enqueue(new Callback<Review>() {
 
@@ -57,8 +58,9 @@ public class ReviewManagerImpl implements ReviewManager {
                 //delegate.onError(new Exception("Fail to get product", t)); => Error
             }
         });
+        */
 
-        //Pandroid way
+        // Pandroid way
         PandroidCall<Review> reviewPandroidWay = reviewService.getReviewPandroidWay(productId);
         reviewPandroidWay.enqueue(delegate);
     }

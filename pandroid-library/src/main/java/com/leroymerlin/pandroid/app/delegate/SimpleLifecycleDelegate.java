@@ -19,7 +19,6 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
     @Override
     public void onInit(T target) {
         newInstance = true;
-
     }
 
     @Override
