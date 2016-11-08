@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.app;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,6 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
         //initialize PandroidDelegate
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
@@ -73,12 +73,14 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pandroidDelegate.onCreateView(this, view, savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onResume() {
         super.onResume();
@@ -90,12 +92,14 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
         logWrapper.i(getClass().getSimpleName(), "resume state: " + state);
     }
 
+    @CallSuper
     @Override
     public void onPause() {
         super.onPause();
         pandroidDelegate.onPause(this);
     }
 
+    @CallSuper
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -103,6 +107,7 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
 
     }
 
+    @CallSuper
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

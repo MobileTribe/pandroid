@@ -18,8 +18,12 @@ import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
@@ -62,13 +66,37 @@ public class LifecycleDelegateAutoBinderProcessor {
 
             MethodSpec.Builder bindBuilder = MethodSpec.methodBuilder("bind")
                     .addModifiers(Modifier.PUBLIC)
-                    .addStatement("final $L target = mTarget.get()", className)
-                    .addStatement("final $L delegate = target.getPandroidDelegate()",
+                    .addStatement("final $T target = mTarget.get()", className)
+                    .addStatement("final $T delegate = target.getPandroidDelegate()",
                             ClassName.get("com.leroymerlin.pandroid.app.delegate",
                                     "PandroidDelegate"))
                     .addAnnotation(Override.class)
                     .beginControlFlow("if (target != null && delegate != null)");
+
+
             for (Element element : infosMap.get(className)) {
+                String illegalGenericConstructor = "throw new $T(\"empty constructor not exist\")";
+                String elementClassName = element.asType().toString();
+                TypeElement classElement = mElementsUtils.getTypeElement(elementClassName);
+                for (Element enclosed : classElement.getEnclosedElements()) {
+                    if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
+                        ExecutableElement constructorElement = (ExecutableElement) enclosed;
+                        if (constructorElement.getParameters().size() == 0 && constructorElement
+                                .getModifiers().contains(Modifier.PUBLIC)) {
+                            illegalGenericConstructor = null;
+                            break;
+                        }
+                    }
+                }
+
+                bindBuilder.beginControlFlow("if (target.$L == null)", element);
+                if (illegalGenericConstructor == null) {
+                    bindBuilder.addStatement("target.$L = new $T()", element, classElement);
+                } else {
+                    bindBuilder.addStatement(illegalGenericConstructor, IllegalStateException.class);
+                }
+                bindBuilder.endControlFlow();
+
                 bindBuilder.addStatement("delegate.addLifecycleDelegate(target" +
                         ".$L)", element);
             }
@@ -97,5 +125,4 @@ public class LifecycleDelegateAutoBinderProcessor {
     private void log(ProcessingEnvironment environment, String msg, Diagnostic.Kind level) {
         environment.getMessager().printMessage(level, msg);
     }
-    
 }
