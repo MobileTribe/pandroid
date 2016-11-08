@@ -42,5 +42,10 @@
             android:checked="false"
             android:title="@string/navigation_toast" />
 
+        <item
+            android:id="@+id/navigation_mvp"
+            android:checkable="false"
+            android:title="@string/mvp" />
+
     </group>
 </menu>

@@ -44,10 +44,20 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
         super.onCreate(savedInstanceState);
         PandroidApplication pandroidApplication = PandroidApplication.get(this);
         //initialize PandroidDelegate with the default from PandroidApplication
-        pandroidDelegate = pandroidApplication.createBasePandroidDelegate();
+        pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
-        //end::PandroidActivityInjection[]
 
+    }
+    //end::PandroidActivityInjection[]
+
+    public PandroidDelegate getPandroidDelegate() {
+        return pandroidDelegate;
+    }
+
+    protected PandroidDelegate createDelegate() {
+        PandroidApplication pandroidApplication = PandroidApplication.get(this);
+        //initialize Base PandroidDelegate
+        return pandroidApplication.createBasePandroidDelegate();
     }
 
     @Override
