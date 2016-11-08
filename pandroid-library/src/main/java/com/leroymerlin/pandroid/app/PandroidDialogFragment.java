@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.app;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +46,10 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
 
     protected PandroidDelegate pandroidDelegate;
 
+    @CallSuper
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
         //initialize PandroidDelegate
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
@@ -67,18 +68,21 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         return pandroidApplication.createBasePandroidDelegate();
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pandroidDelegate.onCreateView(this, view, savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onResume() {
         super.onResume();
@@ -90,18 +94,21 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         logWrapper.i(getClass().getSimpleName(), "resume state: " + state);
     }
 
+    @CallSuper
     @Override
     public void onPause() {
         super.onPause();
         pandroidDelegate.onPause(this);
     }
 
+    @CallSuper
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         pandroidDelegate.onSaveView(this, outState);
     }
 
+    @CallSuper
     @Override
     public void onDestroyView() {
         super.onDestroyView();

@@ -17,9 +17,14 @@ public class TestPresenter extends Presenter<TestPresenter.TestPresenterView> {
     private ReviewManager mReviewManager;
 
     @Inject
-    public TestPresenter(Application application, ReviewManager reviewManager) {
-        super(application);
+    public TestPresenter(ReviewManager reviewManager) {
+        super();
         mReviewManager = reviewManager;
+    }
+
+    @Override
+    public void onInit(TestPresenterView target) {
+        super.onInit(target);
     }
 
     public void load() {

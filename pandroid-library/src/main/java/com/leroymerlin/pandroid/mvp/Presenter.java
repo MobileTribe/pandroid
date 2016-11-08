@@ -1,16 +1,16 @@
 package com.leroymerlin.pandroid.mvp;
 
-import android.app.Application;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.SimpleLifecycleDelegate;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
-import com.leroymerlin.pandroid.log.LogcatLogger;
 
 import java.lang.ref.WeakReference;
 
@@ -23,30 +23,31 @@ public class Presenter<T> extends SimpleLifecycleDelegate<T> implements Cancella
 
     private static final String TAG = Presenter.class.getSimpleName();
 
-    private WeakReference<Application> mApplication;
     private WeakReference<T> mView;
     private final PandroidDelegate mDelegate;
 
-    public Presenter(Application application) {
-        mApplication = new WeakReference<>(application);
+    public Presenter() {
         mDelegate = new PandroidDelegate();
     }
 
+    @CallSuper
     @Override
     public void onInit(T target) {
         super.onInit(target);
         mView = new WeakReference<>(target);
-        final Application activity = mApplication.get();
-        if (activity != null) {
-            try {
-                PandroidApplication.get(activity).inject(this);
-            } catch (Exception e) {
-                LogcatLogger.getInstance().wtf(TAG, e);
-            }
-        } else {
-            LogcatLogger.getInstance().wtf(TAG, "Activity not found onInit(T target)");
-        }
         mDelegate.onInit(target);
+    }
+
+    @Nullable
+    protected Context getContext() {
+        T view = mView.get();
+        if (view instanceof Context) {
+            return (Context) view;
+        } else if (view instanceof Fragment) {
+            return ((Fragment) view).getActivity();
+        } else {
+            return null;
+        }
     }
 
     @Override

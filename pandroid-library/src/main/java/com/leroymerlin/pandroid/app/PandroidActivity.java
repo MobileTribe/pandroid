@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.app;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
 
 import com.leroymerlin.pandroid.PandroidApplication;
@@ -39,10 +40,10 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     protected PandroidDelegate pandroidDelegate;
 
     //tag::PandroidActivityInjection[]
+    @CallSuper
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PandroidApplication pandroidApplication = PandroidApplication.get(this);
         //initialize PandroidDelegate with the default from PandroidApplication
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
@@ -60,12 +61,14 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
         return pandroidApplication.createBasePandroidDelegate();
     }
 
+    @CallSuper
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         pandroidDelegate.onCreateView(this, findViewById(android.R.id.content), savedInstanceState);
     }
 
+    @CallSuper
     @Override
     protected void onResume() {
         super.onResume();
@@ -86,18 +89,21 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
     //end::PandroidActivityResume[]
 
+    @CallSuper
     @Override
     protected void onPause() {
         super.onPause();
         pandroidDelegate.onPause(this);
     }
 
+    @CallSuper
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         pandroidDelegate.onSaveView(this, outState);
     }
 
+    @CallSuper
     @Override
     protected void onDestroy() {
         super.onDestroy();

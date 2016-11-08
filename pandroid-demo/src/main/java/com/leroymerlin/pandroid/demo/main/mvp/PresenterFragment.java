@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
@@ -21,12 +22,18 @@ import butterknife.BindView;
 /**
  * Created by Mehdi on 08/11/2016.
  */
-
+//tag::PandroidBindLifeCycleDelegateAnnotationUseCase[]
 public class PresenterFragment extends PandroidFragment<FragmentOpener> implements TestPresenter.TestPresenterView{
+
+
+    @BindLifeCycleDelegate
+    LoggerLifeCycleDelegate mLoggerLifeCycleDelegate = new LoggerLifeCycleDelegate();
 
     @Inject
     @BindLifeCycleDelegate
     TestPresenter mTestPresenter;
+
+    //end::PandroidBindLifeCycleDelegateAnnotationUseCase[]
 
     @BindView(R.id.text1)
     TextView mTextView;
@@ -37,6 +44,11 @@ public class PresenterFragment extends PandroidFragment<FragmentOpener> implemen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected PandroidDelegate createDelegate() {
+        return super.createDelegate();
     }
 
     @Nullable

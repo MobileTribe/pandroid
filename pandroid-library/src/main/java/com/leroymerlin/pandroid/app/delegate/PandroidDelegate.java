@@ -15,7 +15,8 @@ import java.util.List;
 /**
  * Created by florian on 26/11/15.
  */
-public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements CancellableActionDelegate.ActionDelegateRegister {
+public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
+        CancellableActionDelegate.ActionDelegateRegister {
 
     public static final String TAG = "PandroidLifecycleDelegate";
     private List<CancellableActionDelegate> delegates = new ArrayList<>();
