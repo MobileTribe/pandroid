@@ -285,25 +285,19 @@ NOTE: you could override this method to bring new behavior to all activity and f
 
 === Auto bind Lifecycle Delegate
 
-If you need to associate your custom Lifecycle Delegate automatically so just use the annotation :
+If you need to associate your custom Lifecycle Delegate automatically you can use the annotation @BindLifeCycleDelegate in PandroidActivity/Fragment
 
-[source,java]
-----
-include::{annotationsJava}BindLifeCycleDelegate.java[tags=PandroidBindLifeCycleDelegateAnnotation]
-----
-
-Integration in Fragment :
+Example :
 
 [source,java]
 ----
 include::{demoJava}main/mvp/PresenterFragment.java[tags=PandroidBindLifeCycleDelegateAnnotationUseCase]
 ----
 
-NOTE: if the tool is not initialized by dagger or manually when the auto binder create an
-instance if there is an empty constructor
+NOTE: If your delegate is not initialized or inject before the onCreate then the auto binder will try to create an
+instance by himself
 
-WARNING: To initialize after declaration must put your statement in the createDelegate() method
-overloading
+WARNING: The class initialization must be done in the createDelegate() or before its call. If you do it after that your class will be ignored
 
 === Logger
 

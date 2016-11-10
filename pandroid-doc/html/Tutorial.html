@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.2-SNAPSHOT, Tue Nov 08 17:50:00 CET 2016">
+<meta name="author" content="Pandroid v2.0.2-SNAPSHOT, Thu Nov 10 16:17:04 CET 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.2-SNAPSHOT, Tue Nov 08 17:50:00 CET 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.2-SNAPSHOT, Thu Nov 10 16:17:04 CET 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -824,23 +824,6 @@ All configuration files applied to your project can be found in the pandroid fol
 <p>Initialize PandroidConfig with the app&#8217;s BuildConfig. This class allows the library to know if your app
 is in DEBUG mode. (To enable Logger for example)</p>
 </li>
-</ul>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-If your application changes his package name for some flavors, you have to override the <em>getBuildConfig()</em> method
-in order to give the good BuildConfig class
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
 <li>
 <p>Initialize the logger. See <a href="#_logger">Logger part</a> to know how to customize it.</p>
 </li>
@@ -1217,19 +1200,10 @@ you could override this method to bring new behavior to all activity and fragmen
 <div class="sect2">
 <h3 id="auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</h3>
 <div class="paragraph">
-<p>If you need to associate your custom Lifecycle Delegate automatically so just use the annotation :</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="annotation">@interface</span> BindLifeCycleDelegate {
-
-    <span class="predefined-type">String</span> BINDER_PREFIX = <span class="string"><span class="delimiter">&quot;</span><span class="content">_LifecycleAutoBinder</span><span class="delimiter">&quot;</span></span>;
-
-}</code></pre>
-</div>
+<p>If you need to associate your custom Lifecycle Delegate automatically you can use the annotation @BindLifeCycleDelegate in PandroidActivity/Fragment</p>
 </div>
 <div class="paragraph">
-<p>Integration in Fragment :</p>
+<p>Example :</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1251,8 +1225,8 @@ you could override this method to bring new behavior to all activity and fragmen
 <div class="title">Note</div>
 </td>
 <td class="content">
-if the tool is not initialized by dagger or manually when the auto binder create an
-instance if there is an empty constructor
+If your delegate is not initialized or inject before the onCreate then the auto binder will try to create an
+instance by himself
 </td>
 </tr>
 </table>
@@ -1264,8 +1238,7 @@ instance if there is an empty constructor
 <div class="title">Warning</div>
 </td>
 <td class="content">
-To initialize after declaration must put your statement in the createDelegate() method
-overloading
+The class initialization must be done in the createDelegate() or before its call. If you do it after that your class will be ignored
 </td>
 </tr>
 </table>
@@ -2316,7 +2289,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-08 17:49:46 +01:00
+Last updated 2016-11-10 16:15:15 +01:00
 </div>
 </div>
 </body>
