@@ -70,9 +70,6 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
             this.responseType = responseType;
             if(responseType instanceof ParameterizedType && (((ParameterizedType) responseType).getRawType()).equals(Response.class)){
                 Type[] actualTypeArguments = ((ParameterizedType) responseType).getActualTypeArguments();
-                if(actualTypeArguments.length<1){
-                    throw new IllegalStateException("Response genericType is missing. You need to add it in your PandroidCall<Response<???>>");
-                }
                 this.responseType = actualTypeArguments[0];
                 this.needResponse = true;
             }
