@@ -6,6 +6,7 @@ import com.leroymerlin.pandroid.net.http.Mock;
 import com.leroymerlin.pandroid.net.mock.ServiceMock;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -29,6 +30,9 @@ public interface ReviewService {
     )
     @GET("posts/{id}")
     PandroidCall<Review> getReviewPandroidWay(@Path("id") String id);
+
+    @GET("posts/{id}")
+    PandroidCall<Response<Review>> getReviewReponsePandroidWay(@Path("id") String id);
 
 }
 //end::Retrofit[]
