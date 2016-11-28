@@ -2,7 +2,7 @@
 #-dontobfuscate
 
 #PANDROID
--keep public class **.BuildConfig{ *; }
+-keep public class **.PandroidConfigMapper{ *; }
 
 -keep class * implements java.io.Serializable { *; }
 
