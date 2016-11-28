@@ -30,6 +30,13 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - Android DataBinding : two ways DataBinding
 - MVVM support
 
+### *2.0.3* - (2016-11-28)
+
+*Update*
+- improv PandroidCall to access Retrofit Response
+*Fix*
+- Proguard rules with PandroidConfigMapper
+
 ### *2.0.2* - (2016-11-8)
 
 *Features*
