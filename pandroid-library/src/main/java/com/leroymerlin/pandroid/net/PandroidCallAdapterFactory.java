@@ -54,18 +54,28 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        if (returnType instanceof ParameterizedType && (((ParameterizedType) returnType).getRawType() == PandroidCall.class || ((ParameterizedType) returnType).getRawType() == Call.class))
-            return new ResponseCallAdapter(((ParameterizedType) returnType).getActualTypeArguments()[0], annotations);
+        if (returnType instanceof ParameterizedType && (((ParameterizedType) returnType).getRawType() == PandroidCall.class || ((ParameterizedType) returnType).getRawType() == Call.class)) {
+            Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
+            return new ResponseCallAdapter(actualTypeArguments[0], annotations);
+        }
         return null;
     }
 
     final class ResponseCallAdapter implements CallAdapter<PandroidCall<?>> {
-        private final Type responseType;
+        private boolean needResponse;
+        private Type responseType;
         private ServiceMock serviceMock;
 
         ResponseCallAdapter(Type responseType, Annotation[] annotations) {
             this.responseType = responseType;
-
+            if(responseType instanceof ParameterizedType && (((ParameterizedType) responseType).getRawType()).equals(Response.class)){
+                Type[] actualTypeArguments = ((ParameterizedType) responseType).getActualTypeArguments();
+                if(actualTypeArguments.length<1){
+                    throw new IllegalStateException("Response genericType is missing. You need to add it in your PandroidCall<Response<???>>");
+                }
+                this.responseType = actualTypeArguments[0];
+                this.needResponse = true;
+            }
             for (Annotation annotation : annotations) {
                 if (annotation instanceof Mock) {
                     try {
@@ -139,15 +149,17 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                     }
                 };
             }
-            return new PandroidCallImpl<R>(callWrapper);
+            return new PandroidCallImpl<R>(callWrapper, needResponse);
         }
     }
 
     private class PandroidCallImpl<R> implements PandroidCall<R> {
         private final Call<R> call;
+        private final boolean needResponse;
 
-        PandroidCallImpl(Call<R> call) {
+        PandroidCallImpl(Call<R> call, boolean needResponse) {
             this.call = call;
+            this.needResponse = needResponse;
         }
 
         @Override
@@ -165,23 +177,34 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                     new Callback<R>() {
                         @Override
                         public void onResponse(Call<R> call, final Response<R> response) {
-                            if (response.isSuccessful()) {
+                            if (needResponse) {
                                 handler.post(
                                         new Runnable() {
                                             @Override
                                             public void run() {
-                                                delegate.onSuccess(response.body());
+                                                delegate.onSuccess(response);
                                             }
                                         }
                                 );
                             } else {
-                                byte[] bytes = new byte[0];
+                                if (response.isSuccessful()) {
+                                    handler.post(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    delegate.onSuccess(response.body());
+                                                }
+                                            }
+                                    );
+                                } else {
+                                    byte[] bytes = new byte[0];
 
-                                try {
-                                    bytes = response.errorBody().bytes();
-                                } catch (IOException ignore) {
+                                    try {
+                                        bytes = response.errorBody().bytes();
+                                    } catch (IOException ignore) {
+                                    }
+                                    onError(new NetworkException(response.raw().request().url().toString(), response.code(), response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
                                 }
-                                onError(new NetworkException(response.raw().request().url().toString(), response.code(), response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
                             }
                         }
 
@@ -231,7 +254,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public PandroidCall<R> clone() {
-            return new PandroidCallImpl<R>(call.clone());
+            return new PandroidCallImpl<R>(call.clone(), needResponse);
         }
 
         @Override

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.2-SNAPSHOT, Thu Nov 10 16:17:04 CET 2016">
+<meta name="author" content="Pandroid v2.0.3-SNAPSHOT, Mon Nov 28 13:54:14 CET 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.2-SNAPSHOT, Thu Nov 10 16:17:04 CET 2016</span><br>
+<span id="author" class="author">Pandroid v2.0.3-SNAPSHOT, Mon Nov 28 13:54:14 CET 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1569,6 +1569,26 @@ See <a href="http://square.github.io/retrofit/">official documentation</a> to us
         */</span>
 
         <span class="comment">// Pandroid way</span>
+
+        <span class="comment">// if you need the Retrofit Response object</span>
+        PandroidCall&lt;Response&lt;Review&gt;&gt; reviewReponsePandroidWay = reviewService.getReviewReponsePandroidWay(productId);
+        reviewReponsePandroidWay.enqueue(<span class="keyword">new</span> ActionDelegate&lt;Response&lt;Review&gt;&gt;() {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> onSuccess(Response&lt;Review&gt; result) {
+                <span class="comment">//be careful the response could be an error code</span>
+                <span class="comment">//you have to check it yourself</span>
+                <span class="keyword">if</span> (result.isSuccessful())
+                    <span class="keyword">assert</span> result.body() <span class="keyword">instanceof</span> Review;
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> onError(<span class="exception">Exception</span> e) {
+                logWrapper.e(TAG, e);
+            }
+        });
+
+        <span class="comment">//Easiest way to get your object</span>
+        <span class="comment">//if the retrofit response is an error it will pass the onError method of the delegate</span>
         PandroidCall&lt;Review&gt; reviewPandroidWay = reviewService.getReviewPandroidWay(productId);
         reviewPandroidWay.enqueue(delegate);
     }</code></pre>
@@ -1598,6 +1618,9 @@ The mock has to be enabled during the declaration of your PandroidCallAdapterFac
     )
     <span class="annotation">@GET</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">posts/{id}</span><span class="delimiter">&quot;</span></span>)
     PandroidCall&lt;Review&gt; getReviewPandroidWay(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
+
+    <span class="annotation">@GET</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">posts/{id}</span><span class="delimiter">&quot;</span></span>)
+    PandroidCall&lt;Response&lt;Review&gt;&gt; getReviewReponsePandroidWay(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
 
 }</code></pre>
 </div>
