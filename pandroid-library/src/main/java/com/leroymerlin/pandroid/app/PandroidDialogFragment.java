@@ -56,6 +56,7 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         if (getArguments() != null && getArguments().containsKey(FragmentOpener.ARG_OPENER)) {
             mOpener = (T) getArguments().get(FragmentOpener.ARG_OPENER);
         }
+
     }
 
     public PandroidDelegate getPandroidDelegate() {
@@ -67,7 +68,6 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         //initialize Base PandroidDelegate
         return pandroidApplication.createBasePandroidDelegate();
     }
-
 
     @Nullable
     @Override

@@ -78,6 +78,7 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     //tag::PandroidActivityResume[]
+
     /**
      * call at the end of onResume process. This method will help you determine the king of resume
      * your activity is facing
@@ -152,8 +153,10 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     //tag::PandroidActivityBack[]
+
     /**
      * Override this method to show an exit message and enable back confirmation to exit
+     *
      * @return true to stop the app exit, false otherwise
      */
     protected boolean showExitMessage() {
@@ -166,6 +169,7 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
 
     /**
      * Override this method to automatically (un)register receiver to the event bus with the activity life cycle
+     *
      * @return list of receivers attached by EventBusLifecycleDelegate
      */
     @Override

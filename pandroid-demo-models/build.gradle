@@ -1,41 +1,33 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'delivery'
-
 
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
     buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        applicationId "com.leroymerlin.pandroid.demo"
         minSdkVersion Integer.parseInt(androidMinSdkVersion)
         targetSdkVersion Integer.parseInt(androidSdkVersion)
         versionCode Integer.parseInt(pandroidVersionId)
         versionName pandroidVersion
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
-        all {
-            buildConfigField "String", "BASE_URL_PRODUCT", '"http://jsonplaceholder.typicode.com/"'
-        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../pandroid-library/pandroid-proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     dataBinding {
         enabled = true
     }
-
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile('com.sothree.slidinguppanel:library:3.3.0')
 
-    compile project(':pandroid-demo-models')
-    //Support to simulate plugin work
     annotationProcessor project(':pandroid-compiler')
     compile project(':pandroid-library')
     provided project(':pandroid-annotations')
@@ -55,21 +47,4 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         exclude module: 'support-annotations'
     }
-
-}
-
-
-
-
-delivery {
-    signingProperties {
-        all {
-            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_dev.properties")
-        }
-        release {
-            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_prod.properties")
-        }
-
-    }
-
 }
