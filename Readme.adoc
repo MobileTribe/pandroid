@@ -24,7 +24,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.1.0* - (soon)
+### *2.1.0* - (2016-12-05)
 
 *Features*
 - Android DataBinding : two ways DataBinding

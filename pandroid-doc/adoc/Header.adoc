@@ -7,7 +7,9 @@
 :libJava: {libDir}src/main/java/com/leroymerlin/pandroid/
 :libRes: {libDir}src/main/res/
 :demoDir: {sourcesDir}pandroid-demo/
+:demoModelDir: {sourcesDir}pandroid-demo-models/
 :demoJava: {demoDir}src/main/java/com/leroymerlin/pandroid/demo/
+:demoModelJava: {demoModelDir}src/main/java/com/leroymerlin/pandroid/demo/
 :demoRes: {demoDir}src/main/res/
 :pluginDir: {sourcesDir}pandroid-plugin/
 :assetsDir: ./../assets/

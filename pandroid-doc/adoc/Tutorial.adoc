@@ -315,7 +315,71 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 include::{libJava}PandroidApplication.java[tags=Logger]
 ----
 
-==== Crashlytics
+=== Android DataBinding
+
+Pandroid provide an annotation to help the use of Android Data Binding in your project.
+On your model add the annotation @DataBinding, it will generate an intermediate class with fields that are
+abservable
+
+For exemple :
+
+[source,java]
+----
+include::{demoModelJava}models/Product.java[tags=PandroidDataBinding]
+----
+
+
+It will generate :
+
+[source,java]
+----
+public class ProductDataBinding {
+  private Product product;
+
+  public ObservableString name = new ObservableString();
+
+  public ObservableInt id = new ObservableInt();
+
+  public Product getProduct() {
+    return this.product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
+    name.set(product.getName());
+    name.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+               public void onPropertyChanged(Observable observable, int i) {
+                   ProductDataBinding.this.product.setName(name.get());
+               }
+           });
+    id.set(product.getId());
+    id.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+               public void onPropertyChanged(Observable observable, int i) {
+                   ProductDataBinding.this.product.setId(id.get());
+               }
+           });
+  }
+}
+----
+
+WARNING : The downside of this annotation is that the annotation processer is causing conflict with the one use by Android Data Binding. You have to create separate module containing your models. Have a look at the demo
+
+=== MVVM & MVP
+
+A good application, is an appliction well stuctured. To help the developpers Pandroid provide helpers
+to use two famous pattern MVVM and MVP
+
+==== MVVM
+
+To use MVVM, pandroid provide a class ViewModelDelegate which is bound to the application's lifecycle
+
+==== MVP
+
+To use MVVM, pandroid provide a class Presenter which is bound to the application's lifecycle
+
+=== Crashlytics
 
 Crashlytics is an optional library in pandroid.
 
