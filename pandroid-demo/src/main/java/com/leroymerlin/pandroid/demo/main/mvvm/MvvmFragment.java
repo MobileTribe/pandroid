@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.demo.models.ProductDataBinding;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 
 /**
@@ -41,7 +42,7 @@ public class MvvmFragment extends PandroidFragment<FragmentOpener> implements Mv
             }
         }).setNegativeButton("Non", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                productDataBinding.name.set("wrong");
+                productDataBinding.name.set("scie");
 
             }
         }).show();

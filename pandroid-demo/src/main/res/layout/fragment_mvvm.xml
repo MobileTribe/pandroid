@@ -23,7 +23,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:binding='@{mvvmViewModel.productDataBinding["name"]}' />
+            app:binding='@{mvvmViewModel.productDataBinding.name}' />
 
         <Button
             android:id="@+id/onClickSubmit"

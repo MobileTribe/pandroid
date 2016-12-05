@@ -8,14 +8,14 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.leroymerlin.pandroid.demo.BR;
-import com.leroymerlin.pandroid.mvvm.DataBindingModelWrapper;
+import com.leroymerlin.pandroid.demo.models.Product;
+import com.leroymerlin.pandroid.demo.models.ProductDataBinding;
 import com.leroymerlin.pandroid.mvvm.ObservableString;
 import com.leroymerlin.pandroid.mvvm.ViewModelDelegate;
 
 /**
  * Created by florian on 29/09/2016.
- */
-
+ **/
 public class MvvmViewModel extends ViewModelDelegate<MvvmViewModel.ExampleViewContract> {
 
 
@@ -28,7 +28,7 @@ public class MvvmViewModel extends ViewModelDelegate<MvvmViewModel.ExampleViewCo
         //Injection if needed
     }
 
-    public DataBindingModelWrapper getProductDataBinding() {
+    public ProductDataBinding getProductDataBinding() {
         return productDataBinding;
     }
 
@@ -53,7 +53,7 @@ public class MvvmViewModel extends ViewModelDelegate<MvvmViewModel.ExampleViewCo
 
     public void loadProduct() {
         Product product = new Product();
-        product.setName("eroij");
+        product.setName("Perceuse");
         productDataBinding.setProduct(product);
         nameVisible.set(View.VISIBLE);
     }
