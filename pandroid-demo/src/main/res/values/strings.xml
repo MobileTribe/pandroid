@@ -9,6 +9,9 @@
     <string name="navigation_animation">Animation</string>
     <string name="navigation_list">QuickHeader - ListView</string>
     <string name="navigation_recycler">RecyclerView</string>
+    <string name="navigation_mvvm">Mvvm</string>
+
+    <string name="submit">Subimt</string>
 
     <string name="event_title">Exemple Bus d\'événement</string>
     <string name="event_send_object_string">Envoyer le texte</string>
