@@ -7,11 +7,13 @@ import java.util.List;
 /**
  * Created by adrien on 28/10/2016.
  */
+//tag::PandroidDataBinding[]
 @DataBinding
 public class Product {
 
     private String name;
     private int id;
+    //end::PandroidDataBinding[]
 
     //  private List<String> list;
 
