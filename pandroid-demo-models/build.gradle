@@ -32,10 +32,6 @@ dependencies {
     compile project(':pandroid-library')
     provided project(':pandroid-annotations')
 
-    compile optionalLibs
-    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
-
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test:runner:0.5') {
