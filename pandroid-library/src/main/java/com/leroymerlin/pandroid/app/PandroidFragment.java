@@ -67,6 +67,7 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
         return pandroidApplication.createBasePandroidDelegate();
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
