@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.0.3-SNAPSHOT, Mon Nov 28 13:54:14 CET 2016">
+<meta name="author" content="Pandroid v2.1.0-SNAPSHOT, Mon Dec 05 17:15:54 CET 2016">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.0.3-SNAPSHOT, Mon Nov 28 13:54:14 CET 2016</span><br>
+<span id="author" class="author">Pandroid v2.1.0-SNAPSHOT, Mon Dec 05 17:15:54 CET 2016</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -535,6 +535,9 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#lifecycle-delegate">2.6. Lifecycle Delegate</a></li>
 <li><a href="#auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</a></li>
 <li><a href="#logger">2.8. Logger</a></li>
+<li><a href="#android-databinding">2.9. Android DataBinding</a></li>
+<li><a href="#mvvm-mvp">2.10. MVVM &amp; MVP</a></li>
+<li><a href="#crashlytics">2.11. Crashlytics</a></li>
 </ul>
 </li>
 <li><a href="#security">3. Security</a>
@@ -939,8 +942,10 @@ This activity handles the following points :</p>
         }
     }
 
+
     <span class="comment">/**
      * Override this method to show an exit message and enable back confirmation to exit
+     *
      * @return true to stop the app exit, false otherwise
      */</span>
     <span class="directive">protected</span> <span class="type">boolean</span> showExitMessage() {
@@ -959,6 +964,7 @@ This activity handles the following points :</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="comment">/**
      * Override this method to automatically (un)register receiver to the event bus with the activity life cycle
+     *
      * @return list of receivers attached by EventBusLifecycleDelegate
      */</span>
     <span class="annotation">@Override</span>
@@ -1003,6 +1009,7 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
                 .addFragment(RecyclerViewFragment.class)
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
+                .addFragment(MvvmFragment.class)
                 .addFragment(ToastFragment.class)
                 .addFragment(PresenterFragment.class)
         );
@@ -1264,8 +1271,87 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
     }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="android-databinding">2.9. Android DataBinding</h3>
+<div class="paragraph">
+<p>Pandroid provide an annotation to help the use of Android Data Binding in your project.
+On your model add the annotation @DataBinding, it will generate an intermediate class with fields that are
+abservable</p>
+</div>
+<div class="paragraph">
+<p>For exemple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@DataBinding</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Product</span> {
+
+    <span class="directive">private</span> <span class="predefined-type">String</span> name;
+    <span class="directive">private</span> <span class="type">int</span> id;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It will generate :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ProductDataBinding</span> {
+  <span class="directive">private</span> Product product;
+
+  <span class="directive">public</span> ObservableString name = <span class="keyword">new</span> ObservableString();
+
+  <span class="directive">public</span> ObservableInt id = <span class="keyword">new</span> ObservableInt();
+
+  <span class="directive">public</span> Product getProduct() {
+    <span class="keyword">return</span> <span class="local-variable">this</span>.product;
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> setProduct(Product product) {
+    <span class="local-variable">this</span>.product = product;
+    name.set(product.getName());
+    name.addOnPropertyChangedCallback(<span class="keyword">new</span> <span class="predefined-type">Observable</span>.OnPropertyChangedCallback() {
+            <span class="annotation">@Override</span>
+               <span class="directive">public</span> <span class="type">void</span> onPropertyChanged(<span class="predefined-type">Observable</span> observable, <span class="type">int</span> i) {
+                   ProductDataBinding.this.product.setName(name.get());
+               }
+           });
+    id.set(product.getId());
+    id.addOnPropertyChangedCallback(<span class="keyword">new</span> <span class="predefined-type">Observable</span>.OnPropertyChangedCallback() {
+            <span class="annotation">@Override</span>
+               <span class="directive">public</span> <span class="type">void</span> onPropertyChanged(<span class="predefined-type">Observable</span> observable, <span class="type">int</span> i) {
+                   ProductDataBinding.this.product.setId(id.get());
+               }
+           });
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>WARNING : The downside of this annotation is that the annotation processer is causing conflict with the one use by Android Data Binding. You have to create separate module containing your models. Have a look at the demo</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mvvm-mvp">2.10. MVVM &amp; MVP</h3>
+<div class="paragraph">
+<p>A good application, is an appliction well stuctured. To help the developpers Pandroid provide helpers
+to use two famous pattern MVVM and MVP</p>
+</div>
 <div class="sect3">
-<h4 id="crashlytics">2.8.1. Crashlytics</h4>
+<h4 id="mvvm">2.10.1. MVVM</h4>
+<div class="paragraph">
+<p>To use MVVM, pandroid provide a class ViewModelDelegate which is bound to the application&#8217;s lifecycle</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mvp">2.10.2. MVP</h4>
+<div class="paragraph">
+<p>To use MVVM, pandroid provide a class Presenter which is bound to the application&#8217;s lifecycle</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="crashlytics">2.11. Crashlytics</h3>
 <div class="paragraph">
 <p>Crashlytics is an optional library in pandroid.</p>
 </div>
@@ -1310,7 +1396,6 @@ pandroid
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// this logger is configured to be activated when the BuildConfig.DEBUG is false</span>
 <span class="comment">// you can override this behaviour</span>
 logWrapper.addLogger(<span class="keyword">new</span> CrashlyticsLogger(<span class="local-variable">this</span>));</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -2270,6 +2355,7 @@ pandroid {
 </td>
 <td class="content">
 GMS services now require a <strong>google-services.json</strong> configuration file. Please refer to the official documentation
+It can be generated here : <a href="https://developers.google.com/mobile/add" class="bare">https://developers.google.com/mobile/add</a>
 </td>
 </tr>
 </table>
@@ -2312,7 +2398,7 @@ GMS services now require a <strong>google-services.json</strong> configuration f
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-10 16:15:15 +01:00
+Last updated 2016-12-05 17:11:46 +01:00
 </div>
 </div>
 </body>
