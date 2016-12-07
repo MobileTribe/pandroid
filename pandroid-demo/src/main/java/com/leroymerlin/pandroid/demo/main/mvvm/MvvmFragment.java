@@ -36,7 +36,7 @@ public class MvvmFragment extends PandroidFragment<FragmentOpener> implements Mv
     @Override
     public void onSubmit(final ProductDataBinding productDataBinding) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        String title = productDataBinding.name.get();
+        String title = productDataBinding.id.get() + " - " + productDataBinding.name.get();
         alertDialogBuilder.setTitle(title).setMessage(title).setPositiveButton("Oui", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             }

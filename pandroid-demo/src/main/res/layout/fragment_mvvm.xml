@@ -9,10 +9,17 @@
             type="com.leroymerlin.pandroid.demo.main.mvvm.MvvmViewModel" />
     </data>
 
-    <LinearLayout
+    <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:padding="16dp"
+        app:columnCount="2"
+        app:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/toggle_visibility" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,8 +27,23 @@
             android:text="@string/toggle_visibility"
             app:visibility="@{mvvmViewModel.nameVisible}" />
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_id" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:binding='@{mvvmViewModel.productDataBinding.id}' />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_name" />
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:binding='@{mvvmViewModel.productDataBinding.name}' />
 
@@ -31,5 +53,5 @@
             android:layout_height="wrap_content"
             android:onClick="@{mvvmViewModel::onSubmit}"
             android:text="@string/submit" />
-    </LinearLayout>
+    </android.support.v7.widget.GridLayout>
 </layout>

@@ -14,10 +14,7 @@ public class Product {
     private String name;
     private int id;
     //end::PandroidDataBinding[]
-
-    //  private List<String> list;
-
-
+    
     public int getId() {
         return id;
     }
@@ -34,11 +31,4 @@ public class Product {
         this.name = name;
     }
 
-   /* public List<String> getList() {
-        return list;
-    }
-
-    public void setList(List<String> list) {
-        this.list = list;
-    }*/
 }

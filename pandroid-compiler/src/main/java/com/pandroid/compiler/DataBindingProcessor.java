@@ -41,7 +41,7 @@ public class DataBindingProcessor {
     HashMap<ClassName, ClassName> observableClasses = new HashMap<ClassName, ClassName>() {{
         put(ClassName.get(String.class), ClassName.get("com.leroymerlin.pandroid.mvvm", "ObservableString"));
         put(ClassName.get(Short.class), ClassName.get("android.databinding", "ObservableShort"));
-        put(ClassName.get(Integer.class), ClassName.get("android.databinding", "ObservableInt"));
+        put(ClassName.get(Integer.class), ClassName.get("com.leroymerlin.pandroid.mvvm", "PandroidObservableInt"));
         put(ClassName.get(Float.class), ClassName.get("android.databinding", "ObservableFloat"));
         put(ClassName.get(Long.class), ClassName.get("android.databinding", "ObservableLong"));
         put(ClassName.get(Double.class), ClassName.get("android.databinding", "ObservableDouble"));

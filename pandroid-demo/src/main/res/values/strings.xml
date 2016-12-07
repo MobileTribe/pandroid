@@ -43,7 +43,10 @@
     <string name="toast_action">With action</string>
     <string name="navigation_toast">Toast</string>
     <string name="mvp">MVP</string>
+
     <string name="toggle_visibility">Toggle Visibilty</string>
+    <string name="product_id">Id</string>
+    <string name="product_name">Name</string>
 
 
 </resources>

@@ -1,7 +1,5 @@
 package com.leroymerlin.pandroid.demo.main.mvp;
 
-import android.app.Application;
-
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.future.NetActionDelegate;
