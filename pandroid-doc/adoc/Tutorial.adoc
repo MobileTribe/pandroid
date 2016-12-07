@@ -275,7 +275,7 @@ To understand what we could do with them take a look at this example
 include::{libJava}app/delegate/impl/IcepickLifecycleDelegate.java[tags=LifecycleDelegate]
 ----
 
-By default PandroidLifecycleDelegate is create in your PandroidApplication.
+By default PandroidLifecycleDelegate is created in your PandroidApplication.
 
 [source,java]
 ----
