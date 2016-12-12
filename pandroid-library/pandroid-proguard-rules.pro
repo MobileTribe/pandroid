@@ -34,6 +34,9 @@
 -keep class **ReceiversProvider{
       public <init>(...);
 }
+
+-keep class **LifecycleAutoBinder { *; }
+
 -dontwarn com.leroymerlin.pandroid.**
 
 #ICEPICK
