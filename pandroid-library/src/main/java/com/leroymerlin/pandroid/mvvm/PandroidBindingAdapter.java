@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.mvvm;
 
 import android.databinding.BindingConversion;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,6 +16,11 @@ import com.leroymerlin.pandroid.R;
 public class PandroidBindingAdapter {
 
     public PandroidBindingAdapter() {
+    }
+
+    @BindingConversion
+    public static String convertObservableStringToString(ObservableField<String> observableString) {
+        return observableString.get();
     }
 
     @android.databinding.BindingAdapter({"error"})
@@ -57,9 +63,46 @@ public class PandroidBindingAdapter {
 
     }
 
-    @BindingConversion
-    public static String convertObservableStringToString(ObservableField<String> observableString) {
-        return observableString.get();
+    @android.databinding.BindingAdapter({"binding"})
+    public static void bindEditText(final EditText view, final PandroidObservableInt pandroidObservableInt) {
+        // We use tag to ensure that we aren't adding multiple TextWatcher for same EditText. This ensures that
+        // EditText has only one TextWatcher
+        if (view.getTag(R.id.dataBinding) == null) {
+            view.setTag(R.id.dataBinding, true);
+            view.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    try {
+                        pandroidObservableInt.set(Integer.valueOf(s.toString()));
+                    } catch (NumberFormatException e) {
+
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
+
+        // Checking if the value has really changed. This prevents problems with the position of cursor
+        // in the EditText
+        int newValue = pandroidObservableInt.get();
+        try {
+            int oldValue = Integer.parseInt(view.getText().toString());
+            if (newValue != oldValue) {
+                view.setText(String.valueOf(newValue));
+            }
+        } catch (NumberFormatException e) {
+            view.setText(String.valueOf(newValue));
+        }
+
     }
 
 }
