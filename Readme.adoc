@@ -24,11 +24,24 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.1.2* - (2016-12-15)
+
+*Update*
+- Refactor CircularFrameLayout
+*Fix*
+- Gradle crash with library module
+- ViewInfosContainer not serializable
+
+### *2.1.1* - (2016-12-8)
+
+*Fix*
+- Proguard configuration with lifecycleAutoBinder
+
 ### *2.1.0* - (2016-12-05)
 
 *Features*
 - Android DataBinding : two ways DataBinding
-- MVVM support
+- MVP support
 
 ### *2.0.3* - (2016-11-28)
 
