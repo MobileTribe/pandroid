@@ -10,11 +10,15 @@ import android.widget.TextView;
 
 import com.leroymerlin.pandroid.R;
 
+import java.io.Serializable;
+
 /**
  * Created by florian on 20/10/2015.
  */
-public class ViewInfosContainer implements Parcelable {
+public class ViewInfosContainer implements Parcelable, Serializable {
 
+
+    private static final long serialVersionUID = -3514235930169078450L;
 
     public Class<? extends View> viewClass;
     public int viewId;
