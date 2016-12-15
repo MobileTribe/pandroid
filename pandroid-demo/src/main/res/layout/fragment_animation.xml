@@ -59,7 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             app:clipOut="true"
-            app:revealRadius="100dp">
+            app:revealRadius="100dp"
+            app:centerOn="@+id/animation_test_btn4">
 
             <View
                 android:layout_width="match_parent"
@@ -88,6 +89,12 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="bottom|right" />
+
+            <Button
+                android:id="@id/animation_test_btn4"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center" />
 
 
         </com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout>

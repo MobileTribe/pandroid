@@ -1,6 +1,8 @@
 package com.leroymerlin.pandroid.demo.main.anim;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,10 @@ import android.widget.TextView;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.ui.animation.AnimUtils;
 import com.leroymerlin.pandroid.ui.animation.ResizeAnimation;
 import com.leroymerlin.pandroid.ui.animation.Rotate3dAnimation;
+import com.leroymerlin.pandroid.ui.animation.SimpleAnimatorListener;
 import com.leroymerlin.pandroid.ui.animation.ViewInfosContainer;
 import com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
@@ -56,6 +60,15 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final View movingView = view.findViewById(R.id.animation_test_btn4);
+
+        float toXDelta = DeviceUtils.dpToPx(getActivity(), 20);
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(movingView, "translationX", -toXDelta, toXDelta);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setDuration(getResources().getInteger(R.integer.anim_speed));
+        animator.start();
         view.findViewById(R.id.animation_btn_material).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,36 +83,24 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
 
             }
         });
-        View.OnClickListener circularClickListener = new View.OnClickListener() {
+        final View.OnClickListener circularClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
+                Animator.AnimatorListener animatorListener = new SimpleAnimatorListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         toastManager.makeToast(getActivity(), "Animation end", null);
-
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 };
-
                 if (circularFrameLayout.isClipOutEnable()) {
                     circularFrameLayout.open(animatorListener);
                 } else {
+                    if (v == movingView) {
+                        circularFrameLayout.setCenterOnChild(v.getId());
+                    } else {
+                        circularFrameLayout.setCenter(AnimUtils.getCenterPositionRelativeTo(v, circularFrameLayout));
 
-                    circularFrameLayout.setCenter(v.getX() + v.getWidth() / 2, v.getY() + v.getHeight() / 2);
+                    }
                     circularFrameLayout.animateToRadius(v.getWidth(), getResources().getInteger(R.integer.anim_speed), animatorListener);
                 }
 
@@ -109,6 +110,7 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
         view.findViewById(R.id.animation_test_btn1).setOnClickListener(circularClickListener);
         view.findViewById(R.id.animation_test_btn2).setOnClickListener(circularClickListener);
         view.findViewById(R.id.animation_test_btn3).setOnClickListener(circularClickListener);
+        movingView.setOnClickListener(circularClickListener);
 
         resizeView.setOnClickListener(new View.OnClickListener() {
             int initHeight = 0;

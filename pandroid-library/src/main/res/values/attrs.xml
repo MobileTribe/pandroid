@@ -18,6 +18,7 @@
         <attr name="clipOut" format="boolean" />
         <attr name="centerX" format="dimension" />
         <attr name="centerY" format="dimension" />
+        <attr name="centerOn" format="reference" />
         <attr name="revealRadius" format="dimension" />
     </declare-styleable>
 
