@@ -49,11 +49,14 @@ class PandroidPlugin implements Plugin<Project> {
 
 
         applyEmbededFiles()
-        project.android.applicationVariants.all { variant ->
-            def task = new GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
-            variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
-        }
 
+        def isAndroidApp = project.plugins.hasPlugin("com.android.application")
+        if (isAndroidApp) {
+            project.android.applicationVariants.all { variant ->
+                def task = new GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
+                variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
+            }
+        }
     }
 
     File getEmbededFile(String fileName) {
