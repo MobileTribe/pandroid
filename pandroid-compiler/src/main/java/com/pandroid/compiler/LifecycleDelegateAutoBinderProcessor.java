@@ -1,7 +1,7 @@
 package com.pandroid.compiler;
 
 import com.leroymerlin.pandroid.app.delegate.LifecycleDelegateAutoBinder;
-import com.pandroid.annotations.BindLifeCycleDelegate;
+import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -22,8 +22,6 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 

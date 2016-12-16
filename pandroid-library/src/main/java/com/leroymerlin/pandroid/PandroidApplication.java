@@ -5,8 +5,8 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.leroymerlin.pandroid.app.ConfigMapperConst;
 import com.leroymerlin.pandroid.app.PandroidConfig;
+import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
@@ -101,13 +101,7 @@ public class PandroidApplication extends Application {
     }
 
     public void initializeBuildConfig() {
-        try {
-            String configMapper = getPackageName() + "." + ConfigMapperConst.MAPPER_NAME;
-            Class<?> mapperClass = Class.forName(configMapper);
-            mapperClass.getMethod(ConfigMapperConst.METHOD_INIT).invoke(null);
-        } catch (Exception e) {
-            Log.e(TAG, "Can't initialize PandroidConfig", e);
-        }
+
     }
 
 

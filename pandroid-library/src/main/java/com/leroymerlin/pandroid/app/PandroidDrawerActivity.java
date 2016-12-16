@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.leroymerlin.pandroid.R;
-import com.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.EventReceiver;
 
 
 /**

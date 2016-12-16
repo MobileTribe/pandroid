@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
-import com.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.EventReceiver;
 
 import butterknife.BindView;
 

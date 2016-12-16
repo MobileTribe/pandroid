@@ -2,9 +2,9 @@ package com.pandroid.compiler;
 
 
 import com.google.auto.service.AutoService;
-import com.pandroid.annotations.BindLifeCycleDelegate;
-import com.pandroid.annotations.DataBinding;
-import com.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
+import com.leroymerlin.pandroid.annotations.DataBinding;
+import com.leroymerlin.pandroid.annotations.EventReceiver;
 
 import java.util.HashSet;
 import java.util.Set;

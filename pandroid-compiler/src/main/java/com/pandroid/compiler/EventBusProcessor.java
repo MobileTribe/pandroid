@@ -1,8 +1,10 @@
 package com.pandroid.compiler;
 
+import com.leroymerlin.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
-import com.pandroid.annotations.EventReceiver;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -69,8 +71,13 @@ public class EventBusProcessor {
 
                 ParameterizedTypeName weakReferenceType = ParameterizedTypeName.get(ClassName.get(WeakReference.class), parentClassName);
                 TypeSpec.Builder receiverClassBuilder = TypeSpec.classBuilder(parentClassName.simpleName() + ReceiversProvider.SUFFIX_RECEIVER_PROVIDER)
-                        .addModifiers(Modifier.PUBLIC).addSuperinterface(ReceiversProvider.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addSuperinterface(ReceiversProvider.class)
                         .addField(weakReferenceType, "weakReference", Modifier.PRIVATE)
+                        .addAnnotation(AnnotationSpec.builder(PandroidGeneratedClass.class)
+                                .addMember("target", "$T.class", parentClassName)
+                                .addMember("type", "$T.class", ReceiversProvider.class)
+                                .build())
                         .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addParameter(parentClassName, "reference")
                                 .addStatement("weakReference = new $T(reference)", weakReferenceType)
                                 .build());

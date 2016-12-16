@@ -44,6 +44,7 @@ public class DemoApplication extends PandroidApplication {
     //end::createBaseComponent[]
 
 
+
     /**
      * Demo application doesn't apply pandroid plugin
      * We have to map config by ourselves

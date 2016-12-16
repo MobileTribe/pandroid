@@ -1,6 +1,6 @@
 package com.leroymerlin.pandroid.plugin.internal;
 
-import com.leroymerlin.pandroid.app.ConfigMapperConst;
+import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -18,7 +18,6 @@ import java.util.List;
 import javax.lang.model.element.Modifier;
 
 public class PandroidConfigMapperBuilder {
-
 
     List<String> libraries = new ArrayList<String>();
 
@@ -42,20 +41,27 @@ public class PandroidConfigMapperBuilder {
         tagInitBlockBuilder.add(")");
 
         TypeSpec.Builder result =
-                TypeSpec.classBuilder(ConfigMapperConst.MAPPER_NAME).addModifiers(Modifier.PUBLIC).addModifiers(Modifier.FINAL)
+                TypeSpec.classBuilder(PandroidMapper.MAPPER_IMPL_NAME)
+                        .addModifiers(Modifier.PUBLIC)
+                        .superclass(PandroidMapper.class)
                         .addField(FieldSpec.builder(ParameterizedTypeName.get(List.class, String.class), "LIBRARIES")
                                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC).initializer(tagInitBlockBuilder.build()).build());
 
+
+        // ###### setupConfig ######
         ClassName pandroidConfigClassName = ClassName.get("com.leroymerlin.pandroid.app", "PandroidConfig");
         ClassName buildConfigClassName = ClassName.get(packageName, "BuildConfig");
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("setupConfig").addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        MethodSpec.Builder setupConfigMethodBuilder = MethodSpec.methodBuilder("setupConfig").addAnnotation(Override.class).addModifiers(Modifier.PUBLIC);
         for (String field : fieldsName) {
-            methodBuilder.addStatement("$T.$L = $T.$L", pandroidConfigClassName, field, buildConfigClassName, field);
+            setupConfigMethodBuilder.addStatement("$T.$L = $T.$L", pandroidConfigClassName, field, buildConfigClassName, field);
         }
+        setupConfigMethodBuilder.addStatement("$T.LIBRARIES = $L.LIBRARIES", pandroidConfigClassName, PandroidMapper.MAPPER_IMPL_NAME);
+        result.addMethod(setupConfigMethodBuilder.build());
+        // ###### setupConfig ######
 
-        methodBuilder.addStatement("$T.LIBRARIES = $L.LIBRARIES", pandroidConfigClassName, ConfigMapperConst.MAPPER_NAME);
-        result.addMethod(methodBuilder.build());
-        JavaFile finalClass = JavaFile.builder(applicationId, result.build())
+
+
+        JavaFile finalClass = JavaFile.builder(PandroidMapper.MAPPER_PACKAGE, result.build())
                 .addFileComment("Generated code from Pandroid Plugin. Do not modify!")
                 .build();
 

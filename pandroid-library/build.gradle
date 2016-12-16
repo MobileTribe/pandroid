@@ -49,7 +49,7 @@ dependencies {
 
     //Test
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.1.2"
+    testCompile "org.robolectric:robolectric:3.1.4"
 
 
     //Support to simulate plugin work

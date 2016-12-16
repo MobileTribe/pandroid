@@ -28,7 +28,7 @@ class IntegrationTest {
 
     @After
     public void tearDown() {
-        TestUtils.clearProjectDirectory()
+        //TODO TestUtils.clearProjectDirectory()
     }
 
     /**

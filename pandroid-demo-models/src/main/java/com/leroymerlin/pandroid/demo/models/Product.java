@@ -1,8 +1,6 @@
 package com.leroymerlin.pandroid.demo.models;
 
-import com.pandroid.annotations.DataBinding;
-
-import java.util.List;
+import com.leroymerlin.pandroid.annotations.DataBinding;
 
 /**
  * Created by adrien on 28/10/2016.
