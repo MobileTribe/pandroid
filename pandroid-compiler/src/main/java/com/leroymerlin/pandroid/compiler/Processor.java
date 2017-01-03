@@ -1,11 +1,9 @@
-package com.pandroid.compiler;
+package com.leroymerlin.pandroid.compiler;
 
 
 import com.google.auto.service.AutoService;
-import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
-import com.leroymerlin.pandroid.annotations.DataBinding;
-import com.leroymerlin.pandroid.annotations.EventReceiver;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,28 +21,42 @@ public class Processor extends AbstractProcessor {
 
     private ProcessingEnvironment mProcessingEnvironment;
     private Elements mElementsUtils;
+    private ArrayList<BaseProcessor> processors;
+
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         mProcessingEnvironment = processingEnv;
         mElementsUtils = processingEnv.getElementUtils();
+
+
+        processors = new ArrayList<BaseProcessor>();
+        processors.add(new EventBusProcessor(mElementsUtils));
+        processors.add(new LifecycleDelegateProcessor(mElementsUtils));
+        processors.add(new DataBindingProcessor(mElementsUtils));
+        processors.add(new GeneratedClassMapperProcessor(mElementsUtils));
+
     }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> supportedSet = new HashSet<>();
-        supportedSet.add(EventReceiver.class.getCanonicalName());
-        supportedSet.add(BindLifeCycleDelegate.class.getCanonicalName());
-        supportedSet.add(DataBinding.class.getCanonicalName());
+        for (BaseProcessor processor : processors) {
+            supportedSet.addAll(processor.getSupportedAnnotations());
+        }
         return supportedSet;
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        new EventBusProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
-        new LifecycleDelegateAutoBinderProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
-        new DataBindingProcessor(mElementsUtils).process(roundEnv, mProcessingEnvironment);
+        boolean generatedSources = false;
+        for (BaseProcessor processor : processors) {
+            processor.setClassGenerated(generatedSources);
+            processor.process(roundEnv, mProcessingEnvironment);
+            if (processor.useGeneratedAnnotation())
+                generatedSources = processor.isClassGenerated();
+        }
         return false;
     }
 }

@@ -3,7 +3,6 @@ package com.leroymerlin.pandroid;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
@@ -101,7 +100,7 @@ public class PandroidApplication extends Application {
     }
 
     public void initializeBuildConfig() {
-
+        PandroidMapper.getInstance().setupConfig();
     }
 
 

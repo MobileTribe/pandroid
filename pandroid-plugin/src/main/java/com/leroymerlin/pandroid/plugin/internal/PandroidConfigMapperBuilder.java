@@ -7,7 +7,9 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +50,9 @@ public class PandroidConfigMapperBuilder {
                                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC).initializer(tagInitBlockBuilder.build()).build());
 
 
+        // ###### PACKAGE ATTR ######
+        result.addField(FieldSpec.builder(String.class, PandroidMapper.PACKAGE_ATTR, Modifier.STATIC, Modifier.FINAL, Modifier.PUBLIC).initializer("$S", packageName).build());
+
         // ###### setupConfig ######
         ClassName pandroidConfigClassName = ClassName.get("com.leroymerlin.pandroid.app", "PandroidConfig");
         ClassName buildConfigClassName = ClassName.get(packageName, "BuildConfig");
@@ -59,6 +64,22 @@ public class PandroidConfigMapperBuilder {
         result.addMethod(setupConfigMethodBuilder.build());
         // ###### setupConfig ######
 
+
+        //###### GENERATED METHOD #######
+
+        TypeVariableName t = TypeVariableName.get("T");
+        ParameterizedTypeName returnType = ParameterizedTypeName.get(ClassName.get(List.class), t);
+        result.addMethod(
+                MethodSpec.methodBuilder(PandroidMapper.WRAPPER_METHOD_NAME)
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addTypeVariable(t)
+                        .returns(returnType)
+                        .addParameter(ParameterizedTypeName.get(ClassName.get(Class.class), t), "type")
+                        .addParameter(TypeName.OBJECT, "target")
+                        .addStatement("return $T.$L(type, target)", ClassName.get(packageName, PandroidMapper.WRAPPER_NAME), PandroidMapper.WRAPPER_METHOD_NAME)
+                        .build());
+        //###### GENERATED METHOD #######
 
 
         JavaFile finalClass = JavaFile.builder(PandroidMapper.MAPPER_PACKAGE, result.build())

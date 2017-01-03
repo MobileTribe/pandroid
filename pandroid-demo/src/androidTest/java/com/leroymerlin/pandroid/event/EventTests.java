@@ -1,33 +1,43 @@
 package com.leroymerlin.pandroid.event;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.leroymerlin.pandroid.demo.ApplicationTest;
+import com.leroymerlin.pandroid.demo.main.MainActivity;
 
-import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
+
 /**
  * Created by florian on 19/01/16.
  */
-public class EventTests extends ApplicationTest {
+@RunWith(AndroidJUnit4.class)
+public class EventTests {
+
+    @Rule
+    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
+
+
 
     private EventBusManagerImpl eventBusManager;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         eventBusManager = new EventBusManagerImpl();
     }
 
-    @SmallTest
+    @Test
     public void testTaggedReceiver() {
         final String sendedObject = "test";
         final int[] received = {0};
 
-        //TODO
         eventBusManager.registerReceiver(new EventBusManager.EventBusReceiver() {
             @Override
             public List<String> getTags() {
@@ -36,12 +46,12 @@ public class EventTests extends ApplicationTest {
 
             @Override
             public boolean handle(Object data) {
-                Assert.assertEquals(data, sendedObject);
+                assertEquals(data, sendedObject);
                 received[0]++;
                 return true;
             }
         });
-        eventBusManager.sendSync(sendedObject, "TEST");
+        eventBusManager.send(sendedObject, "TEST");
         assertEquals(received[0], 0);
         try {
             Thread.sleep(2000);

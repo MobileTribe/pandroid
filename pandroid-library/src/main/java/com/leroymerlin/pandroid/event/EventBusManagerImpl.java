@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.event;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EventBusManagerImpl implements EventBusManager {
 
 
     public EventBusManagerImpl() {
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
     }
 
     public static EventBusManagerImpl getMainInstance() {

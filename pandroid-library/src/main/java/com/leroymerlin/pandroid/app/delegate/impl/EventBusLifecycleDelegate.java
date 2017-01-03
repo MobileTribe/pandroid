@@ -7,13 +7,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
-import com.leroymerlin.pandroid.app.PandroidActivity;
-import com.leroymerlin.pandroid.app.PandroidFragment;
+import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.LifecycleDelegate;
 import com.leroymerlin.pandroid.event.AbstractReceiver;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
-import com.leroymerlin.pandroid.log.PandroidLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,22 +39,6 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
 
     }
 
-    List<EventBusManager.EventBusReceiver> getGeneratedReceivers(Class objClass, Object target) {
-        List<EventBusManager.EventBusReceiver> result = null;
-        if (objClass.getSuperclass() == null || objClass == PandroidActivity.class || objClass == PandroidFragment.class ||
-                objClass == Activity.class || objClass == Fragment.class || objClass == View.class) {
-            result = new ArrayList<>();
-        } else {
-            result = getGeneratedReceivers(objClass.getSuperclass(), target);
-            try {
-                result.addAll(((ReceiversProvider) Class.forName(objClass.getName() + ReceiversProvider.SUFFIX_RECEIVER_PROVIDER).getConstructor(objClass).newInstance(target)).getReceivers());
-                PandroidLogger.getInstance().v(TAG, objClass.getName() + ReceiversProvider.SUFFIX_RECEIVER_PROVIDER + " added to the EventBus");
-            } catch (Exception ignore) {
-            }
-        }
-        return result;
-    }
-    
     @Override
     public void onResume(Object target) {
         if (target instanceof ReceiversProvider) {
@@ -84,7 +66,10 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
             }
             this.receivers.addAll(receivers);
         }
-        receivers.addAll(getGeneratedReceivers(target.getClass(), target));
+        List<ReceiversProvider> receiversProviders = PandroidMapper.getInstance().getGeneratedInstances(ReceiversProvider.class, target);
+        for (ReceiversProvider receiversProvider : receiversProviders) {
+            receivers.addAll(receiversProvider.getReceivers());
+        }
         eventBusManager.registerReceivers(receivers);
     }
 

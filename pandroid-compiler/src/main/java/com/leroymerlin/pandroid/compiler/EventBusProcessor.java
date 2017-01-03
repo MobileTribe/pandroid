@@ -1,5 +1,6 @@
-package com.pandroid.compiler;
+package com.leroymerlin.pandroid.compiler;
 
+import com.google.common.collect.Lists;
 import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
 import com.leroymerlin.pandroid.event.EventBusManager;
@@ -8,7 +9,6 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -28,7 +28,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
@@ -37,14 +36,19 @@ import javax.tools.Diagnostic;
 /**
  * Created by florian on 30/11/15.
  */
-public class EventBusProcessor {
-    private final Elements mElementsUtils;
+public class EventBusProcessor extends BaseProcessor {
+
 
     public EventBusProcessor(Elements elements) {
-        mElementsUtils = elements;
+        super(elements);
     }
 
+    @Override
+    public List<String> getSupportedAnnotations() {
+        return Lists.newArrayList(EventReceiver.class.getCanonicalName());
+    }
 
+    @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
         try {
             Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith(EventReceiver.class);
@@ -70,23 +74,12 @@ public class EventBusProcessor {
 
 
                 ParameterizedTypeName weakReferenceType = ParameterizedTypeName.get(ClassName.get(WeakReference.class), parentClassName);
-                TypeSpec.Builder receiverClassBuilder = TypeSpec.classBuilder(parentClassName.simpleName() + ReceiversProvider.SUFFIX_RECEIVER_PROVIDER)
-                        .addModifiers(Modifier.PUBLIC)
-                        .addSuperinterface(ReceiversProvider.class)
-                        .addField(weakReferenceType, "weakReference", Modifier.PRIVATE)
-                        .addAnnotation(AnnotationSpec.builder(PandroidGeneratedClass.class)
-                                .addMember("target", "$T.class", parentClassName)
-                                .addMember("type", "$T.class", ReceiversProvider.class)
-                                .build())
-                        .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addParameter(parentClassName, "reference")
-                                .addStatement("weakReference = new $T(reference)", weakReferenceType)
-                                .build());
 
 
-                MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder(ReceiverProvider_MethodReceivers.getName())
-                        .returns(ReceiverProvider_MethodReceivers.getReturnType()).addModifiers(Modifier.PUBLIC).addAnnotation(Override.class)
-                        .addStatement("return new $T(){{", ParameterizedTypeName.get(ClassName.get(ArrayList.class), ClassName.get(EventBusManager.EventBusReceiver.class)));
-
+                ParameterizedTypeName listReceiverType = ParameterizedTypeName.get(ClassName.get(ArrayList.class), ClassName.get(EventBusManager.EventBusReceiver.class));
+                MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addParameter(parentClassName, "reference")
+                        .addStatement("weakReference = new $T(reference)", weakReferenceType)
+                        .addCode("receivers = new $T(){{\n", listReceiverType);
                 for (ExecutableElement e : infosMap.get(parentClassName)) {
 
                     String[] receiverTags = e.getAnnotation(EventReceiver.class)
@@ -141,52 +134,44 @@ public class EventBusProcessor {
                             .addMethod(receiverMethod)
                             .build();
 
-                    getMethodBuilder.addStatement("add($L)", eventBusReceiverClass);
+                    constructorBuilder.addStatement("add($L)", eventBusReceiverClass);
 
                 }
-                getMethodBuilder.addStatement("}}");
+                constructorBuilder.addStatement("}}");
 
+
+                TypeSpec.Builder receiverClassBuilder = TypeSpec.classBuilder(parentClassName.simpleName() + ReceiversProvider.SUFFIX_RECEIVER_PROVIDER)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addSuperinterface(ReceiversProvider.class)
+                        .addField(weakReferenceType, "weakReference", Modifier.PRIVATE)
+                        .addField(listReceiverType, "receivers", Modifier.PRIVATE)
+                        .addAnnotation(AnnotationSpec.builder(PandroidGeneratedClass.class)
+                                .addMember("target", "$T.class", parentClassName)
+                                .addMember("type", "$T.class", ReceiversProvider.class)
+                                .build())
+                        .addMethod(constructorBuilder.build());
+
+
+                MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder(ReceiverProvider_MethodReceivers.getName())
+                        .returns(ReceiverProvider_MethodReceivers.getReturnType()).addModifiers(Modifier.PUBLIC).addAnnotation(Override.class)
+                        .addStatement("return receivers");
                 receiverClassBuilder.addMethod(getMethodBuilder.build());
 
 
-                JavaFile javaFile = JavaFile.builder(parentClassName.packageName(), receiverClassBuilder.build())
-                        .build();
-                javaFile.toJavaFileObject();
-                javaFile.writeTo(processingEnvironment.getFiler());
+                saveClass(processingEnvironment, parentClassName.packageName(), receiverClassBuilder);
 
             }
 
 
         } catch (Exception e) {
+            log(processingEnvironment, e.getMessage(), Diagnostic.Kind.ERROR);
             e.printStackTrace();
         }
     }
 
-
-    private String getPackageName(Element element) throws Exception {
-        PackageElement packageElement = mElementsUtils.getPackageOf(element);
-        if (packageElement.isUnnamed()) {
-            throw new Exception("Aucun package est indiqué pour " + element.getSimpleName());
-        }
-        return packageElement.getQualifiedName().toString();
-    }
-
-    private String getClassName(Element element) {
-        return element.getEnclosingElement().getSimpleName().toString();
-    }
-
-    private String getMethodName(ExecutableElement element) {
-        return element.getSimpleName().toString();
-    }
-
-    private String getFullName(ExecutableElement element) throws Exception {
-        String packageName = getPackageName(element);
-        String className = getClassName(element.getEnclosingElement());
-        return packageName + "." + className + "." + getMethodName(element);
-    }
-
-    private void log(ProcessingEnvironment environment, String msg, Diagnostic.Kind level) {
-        environment.getMessager().printMessage(level, msg);
+    @Override
+    public boolean useGeneratedAnnotation() {
+        return true;
     }
 
 

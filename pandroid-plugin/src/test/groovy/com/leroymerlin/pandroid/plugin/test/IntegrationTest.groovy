@@ -28,7 +28,7 @@ class IntegrationTest {
 
     @After
     public void tearDown() {
-        //TODO TestUtils.clearProjectDirectory()
+        TestUtils.clearProjectDirectory()
     }
 
     /**
@@ -42,13 +42,14 @@ class IntegrationTest {
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
-            launcher.forTasks(tasks)
+            launcher.forTasks(tasks).withArguments("--stacktrace")
             launcher.addProgressListener(new ProgressListener() {
                 @Override
                 void statusChanged(ProgressEvent progressEvent) {
                     println(progressEvent.description)
                 }
             })
+            launcher.setStandardOutput(System.out)
             launcher.setStandardError(System.out)
             launcher.run()
         } finally {

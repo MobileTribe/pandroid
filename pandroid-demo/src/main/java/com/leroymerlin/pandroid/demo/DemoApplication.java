@@ -1,12 +1,10 @@
 package com.leroymerlin.pandroid.demo;
 
 import com.leroymerlin.pandroid.PandroidApplication;
-import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.security.PandroidX509TrustManager;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.net.ssl.KeyManager;
@@ -43,21 +41,4 @@ public class DemoApplication extends PandroidApplication {
     }
     //end::createBaseComponent[]
 
-
-
-    /**
-     * Demo application doesn't apply pandroid plugin
-     * We have to map config by ourselves
-     */
-    @Override
-    public void initializeBuildConfig() {
-        PandroidConfig.DEBUG = BuildConfig.DEBUG;
-        PandroidConfig.APPLICATION_ID = BuildConfig.APPLICATION_ID;
-        PandroidConfig.BUILD_TYPE = BuildConfig.BUILD_TYPE;
-        PandroidConfig.FLAVOR = BuildConfig.FLAVOR;
-        PandroidConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-        PandroidConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-
-        PandroidConfig.LIBRARIES = Arrays.asList("butterknife", "icepick");
-    }
 }

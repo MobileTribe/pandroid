@@ -1,9 +1,11 @@
-package com.pandroid.compiler;
+package com.leroymerlin.pandroid.compiler;
 
-import com.leroymerlin.pandroid.app.delegate.LifecycleDelegateAutoBinder;
+import com.google.common.collect.Lists;
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
+import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
+import com.leroymerlin.pandroid.app.delegate.LifecycleDelegateAutoBinder;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -23,20 +25,24 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
 
 /**
  * Created by Mehdi on 07/11/2016.
  */
 
-public class LifecycleDelegateAutoBinderProcessor {
+public class LifecycleDelegateProcessor extends BaseProcessor {
 
-    private final Elements mElementsUtils;
 
-    public LifecycleDelegateAutoBinderProcessor(Elements elementsUtils) {
-        mElementsUtils = elementsUtils;
+    public LifecycleDelegateProcessor(Elements elements) {
+        super(elements);
     }
 
+    @Override
+    public List<String> getSupportedAnnotations() {
+        return Lists.newArrayList(BindLifeCycleDelegate.class.getCanonicalName());
+    }
+
+    @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
         Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith
                 (BindLifeCycleDelegate.class);
@@ -105,22 +111,20 @@ public class LifecycleDelegateAutoBinderProcessor {
                     .addModifiers(Modifier.PUBLIC)
                     .addSuperinterface(LifecycleDelegateAutoBinder.class)
                     .addMethod(constructorBuilder.build())
+                    .addAnnotation(AnnotationSpec.builder(PandroidGeneratedClass.class)
+                            .addMember("target", "$T.class", className)
+                            .addMember("type", "$T.class", LifecycleDelegateAutoBinder.class)
+                            .build())
                     .addField(ParameterizedTypeName.get(ClassName.get(WeakReference.class),
                             className), "mTarget", Modifier.PRIVATE, Modifier.FINAL)
                     .addMethod(bindBuilder.build());
 
-            try {
-                JavaFile javaFile = JavaFile.builder(className.packageName(), modelBuilder.build())
-                        .build();
-                javaFile.toJavaFileObject();
-                javaFile.writeTo(processingEnvironment.getFiler());
-            } catch (Exception e) {
-                log(processingEnvironment, e.getMessage(), Diagnostic.Kind.ERROR);
-            }
+            saveClass(processingEnvironment, className.packageName(), modelBuilder);
         }
     }
 
-    private void log(ProcessingEnvironment environment, String msg, Diagnostic.Kind level) {
-        environment.getMessager().printMessage(level, msg);
+    @Override
+    public boolean useGeneratedAnnotation() {
+        return true;
     }
 }

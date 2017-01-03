@@ -119,8 +119,6 @@ public class CircularFrameLayout extends FrameLayout {
     @Override
     public void setBackground(Drawable background) {
         //Background is not supported in circularFrameLayout
-
-        //TODO
     }
 
 

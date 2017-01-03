@@ -1,3 +1,4 @@
+package com;
 
 import com.leroymerlin.pandroid.annotations.EventReceiver;
 

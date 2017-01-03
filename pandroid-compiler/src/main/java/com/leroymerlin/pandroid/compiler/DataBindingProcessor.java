@@ -1,13 +1,12 @@
-package com.pandroid.compiler;
+package com.leroymerlin.pandroid.compiler;
 
-import com.pandroid.annotations.DataBinding;
+import com.google.common.collect.Lists;
+import com.leroymerlin.pandroid.annotations.DataBinding;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,15 +24,11 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
-import static javax.swing.UIManager.put;
-
 /**
  * Created by adrien le roy on 29/09/2016.
  */
 
-public class DataBindingProcessor {
-
-    private final Elements mElementsUtils;
+public class DataBindingProcessor extends BaseProcessor {
 
 
     private final ClassName bindable = ClassName.get("android.databinding", "Observable");
@@ -52,9 +47,13 @@ public class DataBindingProcessor {
         put(ClassName.get(Object.class), ClassName.get("android.databinding", "ObservableField"));
     }};
 
-
     public DataBindingProcessor(Elements elements) {
-        mElementsUtils = elements;
+        super(elements);
+    }
+
+    @Override
+    public List<String> getSupportedAnnotations() {
+        return Lists.newArrayList(DataBinding.class.getCanonicalName());
     }
 
 
@@ -118,17 +117,15 @@ public class DataBindingProcessor {
             databindingClassBuilder.addMethod(setModelMethodBuilder.build());
             databindingClassBuilder.addFields(fieldSpecList);
 
-            //on enregistre la class
-            JavaFile javaFile = JavaFile.builder(modelClassName.packageName(), databindingClassBuilder.build())
-                    .build();
-            javaFile.toJavaFileObject();
-            try {
-                javaFile.writeTo(processingEnvironment.getFiler());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            saveClass(processingEnvironment, modelClassName.packageName(),databindingClassBuilder);
         }
 
+
+    }
+
+    @Override
+    public boolean useGeneratedAnnotation() {
+        return false;
     }
 
     private ClassName findFieldType(TypeMirror fieldType) {
@@ -142,13 +139,4 @@ public class DataBindingProcessor {
         return findFieldType(mElementsUtils.getTypeElement(fieldType.toString()).getSuperclass());
     }
 
-
-    private void log(ProcessingEnvironment environment, String msg, Diagnostic.Kind level) {
-        environment.getMessager().printMessage(level, msg);
-    }
-
-    private String capitalize(String s) {
-        if (s.length() == 0) return s;
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    }
 }

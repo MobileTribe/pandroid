@@ -1,5 +1,7 @@
 package com.leroymerlin.pandroid.app;
 
+import java.util.List;
+
 /**
  * Created by florian on 03/11/2016.
  */
@@ -7,7 +9,10 @@ package com.leroymerlin.pandroid.app;
 public abstract class PandroidMapper {
     private static PandroidMapper instance;
     public static final String MAPPER_IMPL_NAME = "PandroidMapperImpl";
+    public static final String WRAPPER_NAME = "PandroidGeneratedClassWrapper";
+    public static final String WRAPPER_METHOD_NAME = "getGeneratedInstances";
     public static final String MAPPER_PACKAGE = "com.leroymerlin.pandroid";
+    public static final String PACKAGE_ATTR = "PACKAGE";
 
 
     public static PandroidMapper getInstance() {
@@ -26,6 +31,7 @@ public abstract class PandroidMapper {
     public abstract void setupConfig();
 
 
-    //public abstract ReceiversProvider getReceiver(Object target);
+
+    public abstract <T> List<T> getGeneratedInstances(Class<T> type, Object target);
 
 }
