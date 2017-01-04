@@ -9,8 +9,8 @@ import android.view.View;
 
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.LifecycleDelegate;
-import com.leroymerlin.pandroid.event.AbstractReceiver;
 import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.FragmentEventReceiver;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
 
 import java.util.ArrayList;
@@ -58,8 +58,8 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
                 }
 
                 for (EventBusManager.EventBusReceiver receiver : receivers) {
-                    if (receiver instanceof AbstractReceiver) {
-                        ((AbstractReceiver) receiver).attach(context, target, manager);
+                    if (receiver instanceof FragmentEventReceiver) {
+                        ((FragmentEventReceiver) receiver).attach(context, (ReceiversProvider) target, manager);
                     }
                 }
 
@@ -77,8 +77,8 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     public void onPause(Object object) {
         eventBusManager.unregisterReceivers(receivers);
         for (EventBusManager.EventBusReceiver receiver : receivers) {
-            if (receiver instanceof AbstractReceiver) {
-                ((AbstractReceiver) receiver).detach();
+            if (receiver instanceof FragmentEventReceiver) {
+                ((FragmentEventReceiver) receiver).detach();
             }
         }
         receivers.clear();

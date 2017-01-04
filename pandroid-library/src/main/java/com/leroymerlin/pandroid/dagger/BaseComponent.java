@@ -4,9 +4,10 @@ import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.app.PandroidActivity;
 import com.leroymerlin.pandroid.app.PandroidDialogFragment;
 import com.leroymerlin.pandroid.app.PandroidFragment;
-import com.leroymerlin.pandroid.event.AbstractReceiver;
 import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.FragmentEventReceiver;
 import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
 /**
@@ -18,7 +19,7 @@ public interface BaseComponent {
 
     EventBusManager eventBusManager();
 
-    void inject(AbstractReceiver<Object> receiver);
+    void inject(FragmentEventReceiver<ReceiversProvider> receiver);
 
     void inject(PandroidApplication pandroidApplication);
 

@@ -4,17 +4,65 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.util.Log;
 
+import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.app.PandroidFragment;
+import com.leroymerlin.pandroid.log.LogWrapper;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by florian on 12/11/14.
  */
-public class FragmentEventReceiver<T extends ReceiversProvider> extends EventReceiver<T> {
-    private final static String TAG = FragmentEventReceiver.class.getName();
-    private final static String OPEN_TAG = TAG + ".OPEN_FRAGMENT";
+public class FragmentEventReceiver<T extends ReceiversProvider> implements EventBusManager.EventBusReceiver {
+
+    private final static String TAG = "FragmentEventReceiver";
+
+    List<String> filter = new ArrayList<String>();
+
+    @Override
+    public List<String> getTags() {
+        return null;
+    }
+
+    @Override
+    public boolean handle(Object data) {
+        if (data instanceof FragmentOpener && filter.contains(((FragmentOpener) data).getFilterTag())) {
+            onFragmentOpenerReceived((FragmentOpener) data);
+            return true;
+        }
+        return false;
+    }
+
+    @Inject
+    protected EventBusManager eventBusManager;
+    @Inject
+    protected LogWrapper logWrapper;
+
+    protected WeakReference<T> refAttachedObject;
+    protected FragmentManager fragmentManager;
+
+
+    public void attach(Context context, T attachedObject, FragmentManager fragmentManager) {
+        PandroidApplication.get(context).inject(this);
+        this.refAttachedObject = new WeakReference<T>(attachedObject);
+        this.fragmentManager = fragmentManager;
+    }
+
+    public void detach() {
+        refAttachedObject = null;
+        fragmentManager = null;
+    }
+
+
+    // ###### FRAGMENT OPENING PART #######
 
     public static final int[] ANIM_SLIDE = {R.animator.pandroid_in_right, R.animator.pandroid_out_left,
             R.animator.pandroid_in_left, R.animator.pandroid_out_right};
@@ -35,7 +83,7 @@ public class FragmentEventReceiver<T extends ReceiversProvider> extends EventRec
     private boolean clearBackStack;
 
 
-    protected void executeFragmentTransaction(FragmentOpener fragmentOpener) {
+    protected void onFragmentOpenerReceived(FragmentOpener fragmentOpener) {
 
         if (clearBackStack) {
             clearBackStack();
@@ -102,7 +150,6 @@ public class FragmentEventReceiver<T extends ReceiversProvider> extends EventRec
 
 
     protected Fragment getFragment(FragmentOpener opener) {
-
         try {
             return opener.newInstance();
         } catch (InstantiationException e) {
@@ -120,17 +167,13 @@ public class FragmentEventReceiver<T extends ReceiversProvider> extends EventRec
     }
 
     public FragmentEventReceiver addFragment(Class<? extends PandroidFragment> fragmentClass) {
-        addEvent(new FragmentOpener(fragmentClass));
+        addFragment(new FragmentOpener(fragmentClass));
         return this;
     }
 
     public FragmentEventReceiver addFragment(FragmentOpener opener) {
-        addEvent(opener);
+        filter.add(opener.getFilterTag());
         return this;
-    }
-
-    public void onReceive(FragmentOpener opener) {
-        executeFragmentTransaction(opener);
     }
 
     public FragmentEventReceiver setFragmentTag(String fragmentTag) {
@@ -158,4 +201,6 @@ public class FragmentEventReceiver<T extends ReceiversProvider> extends EventRec
         this.defaultBreadcrumbTitle = breadcrumbTitle;
         return this;
     }
+
+
 }

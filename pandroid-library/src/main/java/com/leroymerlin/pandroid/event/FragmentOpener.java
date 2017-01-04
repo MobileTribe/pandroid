@@ -4,10 +4,12 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by florian on 30/11/14.
  */
-public class FragmentOpener extends Event {
+public class FragmentOpener implements Serializable {
 
     private static final long serialVersionUID = -5637436898054135590L;
 
@@ -49,7 +51,6 @@ public class FragmentOpener extends Event {
         this.breadcrumbTitle = breadcrumbTitle;
     }
 
-    @Override
     public String getFilterTag() {
         return OPEN_TAG + ":" + classType.getName();
     }

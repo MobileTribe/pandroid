@@ -11,9 +11,6 @@
 -keep @com.leroymerlin.pandroid.security.KeepClass class * {
     *;
 }
--keepclassmembers class * extends com.leroymerlin.pandroid.event.AbstractReceiver{
-    void onReceive(...);
-}
 
 -keepclassmembers class * extends com.leroymerlin.pandroid.net.mock.ServiceMock{
     public <init>(...);
