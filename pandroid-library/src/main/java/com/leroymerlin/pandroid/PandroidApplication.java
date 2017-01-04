@@ -59,8 +59,7 @@ public class PandroidApplication extends Application {
     public void inject(Object obj) {
         if (obj != null) {
             BaseComponent baseComponent = getBaseComponent();
-
-            invokeInject(baseComponent, obj, obj.getClass());
+            PandroidMapper.getInstance().injectToTarget(baseComponent, obj);
         }
     }
 

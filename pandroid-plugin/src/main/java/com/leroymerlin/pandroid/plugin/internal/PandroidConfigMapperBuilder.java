@@ -70,16 +70,32 @@ public class PandroidConfigMapperBuilder {
         TypeVariableName t = TypeVariableName.get("T");
         ParameterizedTypeName returnType = ParameterizedTypeName.get(ClassName.get(List.class), t);
         result.addMethod(
-                MethodSpec.methodBuilder(PandroidMapper.WRAPPER_METHOD_NAME)
+                MethodSpec.methodBuilder(PandroidMapper.WRAPPER_GENERATED_METHOD_NAME)
                         .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC)
                         .addTypeVariable(t)
                         .returns(returnType)
                         .addParameter(ParameterizedTypeName.get(ClassName.get(Class.class), t), "type")
                         .addParameter(TypeName.OBJECT, "target")
-                        .addStatement("return $T.$L(type, target)", ClassName.get(packageName, PandroidMapper.WRAPPER_NAME), PandroidMapper.WRAPPER_METHOD_NAME)
+                        .addStatement("return $T.$L(type, target)", ClassName.get(packageName, PandroidMapper.WRAPPER_NAME), PandroidMapper.WRAPPER_GENERATED_METHOD_NAME)
                         .build());
         //###### GENERATED METHOD #######
+
+
+        //###### INJECT METHOD #######
+
+        ClassName baseComponentName = ClassName.bestGuess(PandroidMapper.WRAPPER_BASE_COMPONENT);
+
+        result.addMethod(
+                MethodSpec.methodBuilder(PandroidMapper.WRAPPER_INJECT_METHOD_NAME)
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addParameter(TypeName.OBJECT, "component")
+                        .addParameter(TypeName.OBJECT, "target")
+                        .addStatement("$T.$L(component, target)", ClassName.get(packageName, PandroidMapper.WRAPPER_NAME), PandroidMapper.WRAPPER_INJECT_METHOD_NAME)
+                        .build()
+        );
+        //###### INJECT METHOD #######
 
 
         JavaFile finalClass = JavaFile.builder(PandroidMapper.MAPPER_PACKAGE, result.build())

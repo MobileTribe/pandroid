@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
 import javax.inject.Inject;
@@ -20,7 +21,7 @@ import butterknife.OnClick;
  * Created by florian on 27/09/2016.
  */
 
-public class ToastFragment extends PandroidFragment {
+public class ToastFragment extends PandroidFragment<FragmentOpener> {
 
 
     @Inject

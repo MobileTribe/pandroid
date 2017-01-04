@@ -28,8 +28,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+
+import dagger.Component;
 
 /**
  * Created by florian on 30/11/15.
@@ -45,18 +48,20 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
     @Override
     public List<String> getSupportedAnnotations() {
-        return Lists.newArrayList(PandroidGeneratedClass.class.getCanonicalName());
+        return Lists.newArrayList(
+                PandroidGeneratedClass.class.getCanonicalName(),
+                Component.class.getCanonicalName()
+        );
     }
 
     Map<DeclaredType, Map<DeclaredType, TypeElement>> dataMap = new HashMap<>();
+    Map<TypeMirror, List<TypeName>> injectList = new HashMap<>();
 
     @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
 
 
         Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith(PandroidGeneratedClass.class);
-
-
         for (Element element : elementsAnnotatedWith) {
             TypeElement typeElement = (TypeElement) element;
             ClassName modelClassName = ClassName.get(typeElement);
@@ -88,7 +93,24 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             }
         }
 
+        TypeElement baseComponentType = processingEnvironment.getElementUtils().getTypeElement("com.leroymerlin.pandroid.dagger.BaseComponent");
+
+
+        Set<? extends Element> daggerComponentElements = roundEnvironment.getElementsAnnotatedWith(Component.class);
+        for (Element element : daggerComponentElements) {
+            TypeElement typeElement = (TypeElement) element;
+
+
+            if (typeElement.getInterfaces().contains(baseComponentType.asType())) {
+                extractInjectMethod(typeElement);
+            }
+        }
+
+
         if (!fileSaved && !isClassGenerated() && !roundEnvironment.processingOver()) {
+
+            extractInjectMethod(baseComponentType);
+
 
             TypeElement pandroidMapperImplType = processingEnvironment.getElementUtils().getTypeElement(PandroidMapper.MAPPER_PACKAGE + "." + PandroidMapper.MAPPER_IMPL_NAME);
 
@@ -112,9 +134,12 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             TypeSpec.Builder wrapperBuilder = TypeSpec.classBuilder(PandroidMapper.WRAPPER_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 
+
+            // ##### GENERATE INSTANCE METHOD #####
+
             TypeVariableName t = TypeVariableName.get("T");
             ParameterizedTypeName returnType = ParameterizedTypeName.get(ClassName.get(List.class), t);
-            MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(PandroidMapper.WRAPPER_METHOD_NAME)
+            MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(PandroidMapper.WRAPPER_GENERATED_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .addTypeVariable(t)
                     .returns(returnType)
@@ -152,81 +177,56 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             methodBuilder.addStatement("return result");
             wrapperBuilder.addMethod(methodBuilder.build());
 
+            // ##### INJECT METHOD #####
+            MethodSpec.Builder injectMethodBuilder = MethodSpec.methodBuilder(PandroidMapper.WRAPPER_INJECT_METHOD_NAME)
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                    .addParameter(TypeName.OBJECT, "component")
+                    .addParameter(TypeName.OBJECT, "target");
+
+            CodeBlock.Builder code = CodeBlock.builder();
+
+            for (Map.Entry<TypeMirror, List<TypeName>> set : injectList.entrySet()) {
+                code.beginControlFlow("if(component instanceof $T)", set.getKey());
+
+                for (TypeName typeName : set.getValue()) {
+                    code
+                            .beginControlFlow("if(target instanceof $T)", typeName)
+                            .addStatement("(($T)component).inject(($T)target)", set.getKey(), typeName)
+                            .endControlFlow();
+
+                }
+                code.endControlFlow();
+
+            }
+
+            injectMethodBuilder.addCode(code.build());
+            wrapperBuilder.addMethod(injectMethodBuilder.build());
 
             saveClass(processingEnvironment, packageName, wrapperBuilder);
             fileSaved = true;
         }
-/*
-
-            TypeSpec.Builder databindingClassBuilder = TypeSpec.classBuilder(packageName+"."+)
-                    .addModifiers(Modifier.PUBLIC);
-                    */
-
-/*
-            boolean twoway = typeElement.getAnnotation(DataBinding.class).twoway();
-            String model = modelClassName.simpleName().toLowerCase();
-            String finalClassName = modelClassName.simpleName() + "DataBinding";
-
-            //on creer la class
-            TypeSpec.Builder databindingClassBuilder = TypeSpec.classBuilder(finalClassName)
-                    .addModifiers(Modifier.PUBLIC);
-
-            MethodSpec.Builder setModelMethodBuilder = MethodSpec.methodBuilder("set" + capitalize(model)).addModifiers(Modifier.PUBLIC).addParameter(modelClassName, model);
-            setModelMethodBuilder.addStatement("this.$L = $L", model, model);
 
 
-            MethodSpec.Builder getModelMethodBuilder = MethodSpec.methodBuilder("get" + capitalize(model)).addModifiers(Modifier.PUBLIC).returns(modelClassName);
-            getModelMethodBuilder.addStatement("return this.$L", model);
-            databindingClassBuilder.addMethod(getModelMethodBuilder.build());
+    }
 
-            List<FieldSpec> fieldSpecList = new ArrayList<>();
-
-            //champs qui contient le model
-            fieldSpecList.add(FieldSpec.builder(modelClassName, model, Modifier.PRIVATE).build());
-
-            //on recupere les champs a ajouter
-            List<VariableElement> elements = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
-            for (VariableElement variableElement : elements) {
-                TypeMirror fieldType = variableElement.asType();
-                String fullTypeClassName = fieldType.toString();
-                String fieldName = variableElement.getSimpleName().toString();
-
-                ClassName fieldClassName = findFieldType(fieldType);
-                if (fieldClassName == null) {
-                    log(processingEnvironment, "No Bindable Object available for " + fullTypeClassName, Diagnostic.Kind.MANDATORY_WARNING);
-                } else {
-                    fieldSpecList.add(FieldSpec.builder(fieldClassName, fieldName, Modifier.PUBLIC)
-                            .initializer("new $T()", fieldClassName)
-                            .build());
-                    setModelMethodBuilder.addStatement(fieldName + ".set($L.get$L())", model, capitalize(fieldName));
-
-                    //si on fait un binding twoway
-                    if (twoway) {
-                        String setter = variableElement.getSimpleName() + ".addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {\n"
-                                + "    @Override\n"
-                                + "       public void onPropertyChanged($T observable, int i) {\n"
-                                + "           $L.this.$L.set$L($L.get());\n"
-                                + "       }\n"
-                                + "   })";
-                        setModelMethodBuilder.addStatement(setter, bindable, finalClassName, model, capitalize(fieldName), fieldName);
+    private void extractInjectMethod(TypeElement typeElement) {
+        List<TypeName> types = new ArrayList<>();
+        for (Element content : typeElement.getEnclosedElements()) {
+            if (content.getKind().equals(ElementKind.METHOD) && content.getSimpleName().toString().startsWith("inject")) {
+                ExecutableElement method = (ExecutableElement) content;
+                if (method.getParameters().size() == 1) {
+                    TypeMirror paramType = method.getParameters().get(0).asType();
+                    TypeName e = ClassName.get(paramType);
+                    if (e instanceof ParameterizedTypeName) {
+                        e = ((ParameterizedTypeName) e).rawType;
                     }
+                    types.add(e);
                 }
-
             }
-
-            databindingClassBuilder.addMethod(setModelMethodBuilder.build());
-            databindingClassBuilder.addFields(fieldSpecList);
-
-            //on enregistre la class
-            JavaFile javaFile = JavaFile.builder(modelClassName.packageName(), databindingClassBuilder.build())
-                    .build();
-            javaFile.toJavaFileObject();
-            try {
-                javaFile.writeTo(processingEnvironment.getFiler());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
+        }
+        if (!types.isEmpty()) {
+            injectList.put(typeElement.asType(), types);
+        }
 
     }
 

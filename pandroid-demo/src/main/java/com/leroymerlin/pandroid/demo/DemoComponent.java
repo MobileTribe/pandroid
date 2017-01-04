@@ -55,8 +55,8 @@ public interface DemoComponent extends BaseComponent {
 
     void inject(RestFragment restFragment);
 
-    void inject(ToastFragment restFragment);
+    void inject(ToastFragment toastFragment);
 
-    void inject(PresenterFragment fragment);
+    void inject(PresenterFragment presenterFragment);
 
 }

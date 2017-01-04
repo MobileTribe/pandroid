@@ -30,4 +30,9 @@ public class PandroidMapperImpl extends PandroidMapper {
     public <T> List<T> getGeneratedInstances(Class<T> type, Object target) {
         return PandroidGeneratedClassWrapper.getGeneratedInstances(type, target);
     }
+
+    @Override
+    public void injectToTarget(Object component, Object target) {
+        PandroidGeneratedClassWrapper.injectToTarget(component, target);
+    }
 }

@@ -6,6 +6,7 @@ apply from: file('../delivery.gradle')
 dependencies {
     compile project(':pandroid-annotations')
     compile 'com.google.auto.service:auto-service:1.0-rc2'
+    compile "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
     compile deps.javapoet
 }
 targetCompatibility = JavaVersion.VERSION_1_7

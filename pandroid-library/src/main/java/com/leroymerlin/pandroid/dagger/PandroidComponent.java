@@ -8,7 +8,7 @@ import dagger.Component;
 @Component(
         modules = PandroidModule.class
 )
-public interface PandroidComponent extends BaseComponent{
+public interface PandroidComponent extends BaseComponent {
 
 
 
