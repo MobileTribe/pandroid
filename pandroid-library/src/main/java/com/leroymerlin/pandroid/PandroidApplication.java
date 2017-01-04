@@ -63,24 +63,6 @@ public class PandroidApplication extends Application {
         }
     }
 
-
-    private void invokeInject(BaseComponent baseComponent, Object obj, Class objClass) {
-        try {
-            Method method = baseComponent.getClass().getMethod("inject", objClass);
-            method.invoke(baseComponent, obj);
-        } catch (NoSuchMethodException e) {
-            if (objClass.getSuperclass() != null) {
-                invokeInject(baseComponent, obj, objClass.getSuperclass());
-            } else {
-                throw new IllegalStateException("inject(" + obj.getClass().getSimpleName() + ") is not declared in your BaseComponent", e);
-            }
-        } catch (Exception e) {
-            logWrapper.e(TAG, e);
-            throw new RuntimeException("Can't inject in " + obj.getClass() + "  with your BaseComponent ", e);
-        }
-    }
-
-
     @VisibleForTesting
     public void overrideBaseComponent(BaseComponent mBaseComponent) {
         this.mBaseComponent = mBaseComponent;
