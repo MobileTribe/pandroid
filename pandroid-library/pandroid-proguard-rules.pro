@@ -2,7 +2,7 @@
 #-dontobfuscate
 
 #PANDROID
--keep public class **.PandroidConfigMapper{ *; }
+-keep public class com.leroymerlin.pandroid.PandroidMapperImpl{ *; }
 
 -keep class * implements java.io.Serializable { *; }
 
@@ -15,27 +15,9 @@
     void onReceive(...);
 }
 
--keep class **ReceiversProvider{
-    public <init>(...);
-}
-
-
--keepclassmembers class * implements com.leroymerlin.pandroid.dagger.BaseComponent{
-    void inject(...);
-}
-
 -keepclassmembers class * extends com.leroymerlin.pandroid.net.mock.ServiceMock{
     public <init>(...);
 }
-
--keepnames class * {
-      @com.pandroid.annotations.EventReceiver <methods>;
-}
--keep class **ReceiversProvider{
-      public <init>(...);
-}
-
--keep class **LifecycleAutoBinder { *; }
 
 -dontwarn com.leroymerlin.pandroid.**
 
