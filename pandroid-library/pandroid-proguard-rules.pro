@@ -4,9 +4,9 @@
 #PANDROID
 -keep public class com.leroymerlin.pandroid.PandroidMapperImpl{ *; }
 
--keep class * implements java.io.Serializable { *; }
+-keepclassmembers class * implements java.io.Serializable { *; }
 
--keep class * implements android.os.Parcelable { *; }
+-keepclassmembers class * implements android.os.Parcelable { *; }
 
 -keep @com.leroymerlin.pandroid.security.KeepClass class * {
     *;
@@ -25,20 +25,18 @@
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
--keepnames class * { @icepick.State *;}
+-keepclasseswithmembernames class * { @icepick.State *;}
 
 #BUTTERKNIFE
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
+# Retain generated class which implement Unbinder.
+-keep public class * implements butterknife.Unbinder { public <init>(...); }
 
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinding.
+-keep class butterknife.*
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }
 
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
 
 #RETROFIT
 -dontwarn retrofit2.**
@@ -62,3 +60,8 @@
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
 -keepattributes SourceFile,LineNumberTable,*Annotation*
+-dontwarn com.crashlytics.**
+
+#DATA BINDING
+-keep class android.databinding.** { *; }
+-dontwarn android.databinding.**

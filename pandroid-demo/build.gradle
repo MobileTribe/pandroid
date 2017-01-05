@@ -20,7 +20,7 @@ android {
             buildConfigField "String", "BASE_URL_PRODUCT", '"http://jsonplaceholder.typicode.com/"'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../pandroid-library/pandroid-proguard-rules.pro'
         }
     }
