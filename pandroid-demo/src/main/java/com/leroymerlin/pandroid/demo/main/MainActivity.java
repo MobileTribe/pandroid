@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.demo.main;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.app.PandroidDrawerActivity;
 import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.demo.R;
@@ -20,7 +21,6 @@ import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentEventReceiver;
-import com.leroymerlin.pandroid.annotations.EventReceiver;
 
 import java.util.List;
 
@@ -87,6 +87,9 @@ public class MainActivity extends PandroidDrawerActivity {
         //This receiver will handle the NavigationLeftFragment and open it in the R.id.main_navigation_container container
         FragmentEventReceiver navigationReceiver = new FragmentEventReceiver().setContainerId(R.id.main_navigation_container).addFragment(NavigationLeftFragment.class);
         receivers.add(navigationReceiver);
+        // ...
+        // return receivers;
+        //end::FragmentReceivers[]
 
         receivers.add(new FragmentEventReceiver().setContainerId(R.id.main_content_container)
                 .setAnim(new int[]{R.animator.demo_in, R.animator.demo_out, R.animator.demo_in, R.animator.demo_out})
@@ -115,7 +118,6 @@ public class MainActivity extends PandroidDrawerActivity {
         );
         return receivers;
     }
-    //end::FragmentReceivers[]
 
 
     @EventReceiver(DRAWER_EVENT)

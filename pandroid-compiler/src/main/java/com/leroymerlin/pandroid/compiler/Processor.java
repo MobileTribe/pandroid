@@ -5,6 +5,7 @@ import com.google.auto.service.AutoService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -14,6 +15,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 @AutoService(javax.annotation.processing.Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
@@ -22,6 +24,7 @@ public class Processor extends AbstractProcessor {
     private ProcessingEnvironment mProcessingEnvironment;
     private Elements mElementsUtils;
     private ArrayList<BaseProcessor> processors;
+    private double duration;
 
 
     @Override
@@ -37,6 +40,8 @@ public class Processor extends AbstractProcessor {
         processors.add(new DataBindingProcessor(mElementsUtils));
         processors.add(new GeneratedClassMapperProcessor(mElementsUtils));
 
+        duration = 0;
+
     }
 
     @Override
@@ -48,14 +53,24 @@ public class Processor extends AbstractProcessor {
         return supportedSet;
     }
 
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+
+
+        double startTime = System.currentTimeMillis();
+
         boolean generatedSources = false;
         for (BaseProcessor processor : processors) {
             processor.setClassGenerated(generatedSources);
             processor.process(roundEnv, mProcessingEnvironment);
             if (processor.useGeneratedAnnotation())
                 generatedSources = processor.isClassGenerated();
+        }
+
+        duration += (System.currentTimeMillis() - startTime);
+        if (roundEnv.processingOver()) {
+            mProcessingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format(Locale.getDefault(), "Pandroid processor took %s ms", duration));
         }
         return false;
     }
