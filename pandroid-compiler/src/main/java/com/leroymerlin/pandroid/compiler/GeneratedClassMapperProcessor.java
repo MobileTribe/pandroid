@@ -26,11 +26,9 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
-import javax.tools.Diagnostic;
 
 import dagger.Component;
 
@@ -100,26 +98,24 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
         for (Element element : daggerComponentElements) {
             TypeElement typeElement = (TypeElement) element;
 
-
             if (typeElement.getInterfaces().contains(baseComponentType.asType())) {
-                extractInjectMethod(typeElement);
+                extractInjectMethod(baseComponentType);
             }
+            extractInjectMethod(typeElement);
         }
 
 
         if (!fileSaved && !isClassGenerated() && !roundEnvironment.processingOver()) {
 
-            extractInjectMethod(baseComponentType);
-
 
             TypeElement pandroidMapperImplType = processingEnvironment.getElementUtils().getTypeElement(PandroidMapper.MAPPER_PACKAGE + "." + PandroidMapper.MAPPER_IMPL_NAME);
 
+            boolean library = false;
             if (pandroidMapperImplType == null) {
-                //We probably are in a android library
-                return;
+                library = true;
             }
 
-            String packageName = null;
+            /*String packageName = null;
             for (Element element : pandroidMapperImplType.getEnclosedElements()) {
                 if (PandroidMapper.PACKAGE_ATTR.equals(element.getSimpleName().toString())) {
                     packageName = (String) ((VariableElement) element).getConstantValue();
@@ -129,9 +125,29 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
             if (packageName == null) {
                 log(processingEnvironment, "Can't find packageName", Diagnostic.Kind.ERROR);
+            }*/
+
+            String wrapperName = null;
+            TypeElement lastWrapper = null;
+            int i = 0;
+            do {
+                wrapperName = PandroidMapper.WRAPPER_NAME + "$_" + i++;
+
+                TypeElement libWrapper = processingEnvironment.getElementUtils().getTypeElement(PandroidMapper.MAPPER_PACKAGE + "." + wrapperName);
+                if (libWrapper == null) {
+                    break;
+                }
+                lastWrapper = libWrapper;
+            }
+            while (true);
+
+
+            if (!library) {
+                wrapperName = PandroidMapper.WRAPPER_NAME;
             }
 
-            TypeSpec.Builder wrapperBuilder = TypeSpec.classBuilder(PandroidMapper.WRAPPER_NAME)
+
+            TypeSpec.Builder wrapperBuilder = TypeSpec.classBuilder(wrapperName)
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
 
 
@@ -147,6 +163,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     .addParameter(TypeName.OBJECT, "target")
 
                     .addStatement("$T result = new $T()", returnType, ParameterizedTypeName.get(ClassName.get(ArrayList.class), t));
+            if (lastWrapper != null) {
+                methodBuilder.addStatement("result.addAll($T.$L(type, target))", lastWrapper, PandroidMapper.WRAPPER_GENERATED_METHOD_NAME);
+            }
 
             CodeBlock.Builder codeBuilder = CodeBlock.builder();
             for (Map.Entry<DeclaredType, Map<DeclaredType, TypeElement>> entry : dataMap.entrySet()) {
@@ -183,6 +202,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     .addParameter(TypeName.OBJECT, "component")
                     .addParameter(TypeName.OBJECT, "target");
 
+            if (lastWrapper != null) {
+                injectMethodBuilder.addStatement("$T.$L(component, target)", lastWrapper, PandroidMapper.WRAPPER_INJECT_METHOD_NAME);
+            }
             CodeBlock.Builder code = CodeBlock.builder();
 
             for (Map.Entry<TypeMirror, List<TypeName>> set : injectList.entrySet()) {
@@ -202,7 +224,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             injectMethodBuilder.addCode(code.build());
             wrapperBuilder.addMethod(injectMethodBuilder.build());
 
-            saveClass(processingEnvironment, packageName, wrapperBuilder);
+            saveClass(processingEnvironment, PandroidMapper.MAPPER_PACKAGE, wrapperBuilder);
             fileSaved = true;
         }
 
