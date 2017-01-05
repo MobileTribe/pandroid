@@ -171,7 +171,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             for (Map.Entry<DeclaredType, Map<DeclaredType, TypeElement>> entry : dataMap.entrySet()) {
                 codeBuilder.beginControlFlow("if(type.equals($T.class))", entry.getKey());
                 for (Map.Entry<DeclaredType, TypeElement> content : entry.getValue().entrySet()) {
-                    codeBuilder.beginControlFlow("if(target.getClass().isAssignableFrom($T.class))", content.getKey());
+                    codeBuilder.beginControlFlow("if($T.class.isAssignableFrom(target.getClass()))", content.getKey());
                     TypeElement generatedClass = content.getValue();
                     for (Element enclosed : generatedClass.getEnclosedElements()) {
                         if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
