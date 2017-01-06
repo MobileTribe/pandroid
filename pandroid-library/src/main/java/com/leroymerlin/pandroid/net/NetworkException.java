@@ -5,19 +5,22 @@ import android.text.TextUtils;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by florian on 09/12/15.
  */
 public class NetworkException extends Exception {
 
+    private static final long serialVersionUID = -8397564457960144524L;
+
     private final String url;
     private final int statusCode;
-    private final Map<String, List<String>> headers;
+    private final TreeMap<String, List<String>> headers;
     private final byte[] body;
     private final long networkTime;
 
-    public NetworkException(String url, int statusCode, Map<String, List<String>> headers, Exception error, byte[] body, long networkTime) {
+    public NetworkException(String url, int statusCode, TreeMap<String, List<String>> headers, Exception error, byte[] body, long networkTime) {
         super(error);
         this.url = url;
         this.statusCode = statusCode;
@@ -57,7 +60,7 @@ public class NetworkException extends Exception {
         String bodyString = "";
         try {
             bodyString = new String(body, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException ignored) {
             bodyString = "Unable to parse error body to UTF-8 String";
         }
 

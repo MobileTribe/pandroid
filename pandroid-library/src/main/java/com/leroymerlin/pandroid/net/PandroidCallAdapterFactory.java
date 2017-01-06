@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.TreeMap;
 
 import okhttp3.Request;
 import retrofit2.Call;
@@ -200,7 +201,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                                         bytes = response.errorBody().bytes();
                                     } catch (IOException ignore) {
                                     }
-                                    onError(new NetworkException(response.raw().request().url().toString(), response.code(), response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
+                                    onError(new NetworkException(response.raw().request().url().toString(), response.code(), (TreeMap)response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
                                 }
                             }
                         }

@@ -83,7 +83,6 @@ public abstract class BaseProcessor {
             classGenerated = true;
         } catch (IOException e) {
             log(environment, e.getMessage(), Diagnostic.Kind.ERROR);
-            e.printStackTrace();
         }
     }
 

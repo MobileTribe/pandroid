@@ -78,26 +78,26 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
 
         //tag::Loader[]
         Bundle b = new Bundle();
-        b.putDouble("fibonacci", 28);
-        getLoaderManager().initLoader(0, b, new LoaderManager.LoaderCallbacks<Double>() {
+        b.putLong("fibonacci", 28);
+        getLoaderManager().initLoader(0, b, new LoaderManager.LoaderCallbacks<Long>() {
             @Override
-            public Loader<Double> onCreateLoader(int id, Bundle args) {
-                final double fibonacci = args.getDouble("fibonacci");
-                return new SimpleAsyncTaskLoader<Double>(getActivity()) {
+            public Loader<Long> onCreateLoader(int id, Bundle args) {
+                final long fibonacci = args.getLong("fibonacci");
+                return new SimpleAsyncTaskLoader<Long>(getActivity()) {
                     @Override
-                    public Double loadInBackground() {
+                    public Long loadInBackground() {
                         return fibonacci(fibonacci);
                     }
                 };
             }
 
             @Override
-            public void onLoadFinished(Loader<Double> loader, Double data) {
+            public void onLoadFinished(Loader<Long> loader, Long data) {
                 toastManager.makeToast(getActivity(), "Result : "+data, null);
             }
 
             @Override
-            public void onLoaderReset(Loader<Double> loader) {
+            public void onLoaderReset(Loader<Long> loader) {
 
             }
         });
@@ -105,7 +105,7 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
 
     }
 
-    private static double fibonacci(double n) {
+    private static long fibonacci(long n) {
         if (n == 1) {
             return 1;
         }
