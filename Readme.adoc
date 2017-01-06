@@ -24,6 +24,17 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.2.0* - (2017-01-06)
+
+
+*Features*
+- Performance - generate PandroidMapper to bind classes
+- Security proguard - rewrite rules to get full obfuscation
+*Update*
+- Remove reflexion to bind generated classes
+- Remove reflexion to inject with dagger
+- Remove old Event/EventReceiver concept
+
 ### *2.1.2* - (2016-12-15)
 
 *Update*

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.1.0-SNAPSHOT, Mon Dec 05 17:15:54 CET 2016">
+<meta name="author" content="Pandroid v2.2.0-SNAPSHOT, Fri Jan 06 11:01:10 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.1.0-SNAPSHOT, Mon Dec 05 17:15:54 CET 2016</span><br>
+<span id="author" class="author">Pandroid v2.2.0-SNAPSHOT, Fri Jan 06 11:01:10 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -999,32 +999,8 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
         <span class="comment">//This receiver will handle the NavigationLeftFragment and open it in the R.id.main_navigation_container container</span>
         FragmentEventReceiver navigationReceiver = <span class="keyword">new</span> FragmentEventReceiver().setContainerId(R.id.main_navigation_container).addFragment(NavigationLeftFragment.class);
         receivers.add(navigationReceiver);
-
-        receivers.add(<span class="keyword">new</span> FragmentEventReceiver().setContainerId(R.id.main_content_container)
-                .setAnim(<span class="keyword">new</span> <span class="type">int</span><span class="type">[]</span>{R.animator.demo_in, R.animator.demo_out, R.animator.demo_in, R.animator.demo_out})
-                .addFragment(ScannerFragment.class)
-                .addFragment(EventFragment.class)
-                .addFragment(RestFragment.class)
-                .addFragment(ListViewFragment.class)
-                .addFragment(RecyclerViewFragment.class)
-                .addFragment(SimpleRecyclerViewFragment.class)
-                .addFragment(AnimationFragment.class)
-                .addFragment(MvvmFragment.class)
-                .addFragment(ToastFragment.class)
-                .addFragment(PresenterFragment.class)
-        );
-        receivers.add(<span class="keyword">new</span> FragmentEventReceiver()
-                .setContainerId(R.id.main_content_container)
-                .setAnim(FragmentEventReceiver.ANIM_MATERIAL)
-                .addFragment(MaterialFragment.class)
-                .setBackStackTag(<span class="string"><span class="delimiter">&quot;</span><span class="content">material</span><span class="delimiter">&quot;</span></span>));
-        receivers.add(<span class="keyword">new</span> FragmentEventReceiver().setContainerId(R.id.main_content_container)
-                .setAnim(FragmentEventReceiver.ANIM_SLIDE)
-                .addFragment(EventSecondFragment.class)
-                .setBackStackTag(<span class="string"><span class="delimiter">&quot;</span><span class="content">back</span><span class="delimiter">&quot;</span></span>)
-        );
-        <span class="keyword">return</span> receivers;
-    }</code></pre>
+        <span class="comment">// ...</span>
+        <span class="comment">// return receivers;</span></code></pre>
 </div>
 </div>
 </div>
@@ -1160,7 +1136,7 @@ They are used to extract and share behaviors without any heritage.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>By default PandroidLifecycleDelegate is create in your PandroidApplication.</p>
+<p>By default PandroidLifecycleDelegate is created in your PandroidApplication.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1662,8 +1638,9 @@ See <a href="http://square.github.io/retrofit/">official documentation</a> to us
             <span class="directive">public</span> <span class="type">void</span> onSuccess(Response&lt;Review&gt; result) {
                 <span class="comment">//be careful the response could be an error code</span>
                 <span class="comment">//you have to check it yourself</span>
-                <span class="keyword">if</span> (result.isSuccessful())
-                    <span class="keyword">assert</span> result.body() <span class="keyword">instanceof</span> Review;
+                <span class="keyword">if</span> (result.isSuccessful()){
+                    logWrapper.d(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">result received has retrofit Response</span><span class="delimiter">&quot;</span></span>);
+                }
             }
 
             <span class="annotation">@Override</span>
@@ -2236,26 +2213,26 @@ To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">        Bundle b = <span class="keyword">new</span> Bundle();
-        b.putDouble(<span class="string"><span class="delimiter">&quot;</span><span class="content">fibonacci</span><span class="delimiter">&quot;</span></span>, <span class="integer">28</span>);
-        getLoaderManager().initLoader(<span class="integer">0</span>, b, <span class="keyword">new</span> LoaderManager.LoaderCallbacks&lt;<span class="predefined-type">Double</span>&gt;() {
+        b.putLong(<span class="string"><span class="delimiter">&quot;</span><span class="content">fibonacci</span><span class="delimiter">&quot;</span></span>, <span class="integer">28</span>);
+        getLoaderManager().initLoader(<span class="integer">0</span>, b, <span class="keyword">new</span> LoaderManager.LoaderCallbacks&lt;<span class="predefined-type">Long</span>&gt;() {
             <span class="annotation">@Override</span>
-            <span class="directive">public</span> Loader&lt;<span class="predefined-type">Double</span>&gt; onCreateLoader(<span class="type">int</span> id, Bundle args) {
-                <span class="directive">final</span> <span class="type">double</span> fibonacci = args.getDouble(<span class="string"><span class="delimiter">&quot;</span><span class="content">fibonacci</span><span class="delimiter">&quot;</span></span>);
-                <span class="keyword">return</span> <span class="keyword">new</span> SimpleAsyncTaskLoader&lt;<span class="predefined-type">Double</span>&gt;(getActivity()) {
+            <span class="directive">public</span> Loader&lt;<span class="predefined-type">Long</span>&gt; onCreateLoader(<span class="type">int</span> id, Bundle args) {
+                <span class="directive">final</span> <span class="type">long</span> fibonacci = args.getLong(<span class="string"><span class="delimiter">&quot;</span><span class="content">fibonacci</span><span class="delimiter">&quot;</span></span>);
+                <span class="keyword">return</span> <span class="keyword">new</span> SimpleAsyncTaskLoader&lt;<span class="predefined-type">Long</span>&gt;(getActivity()) {
                     <span class="annotation">@Override</span>
-                    <span class="directive">public</span> <span class="predefined-type">Double</span> loadInBackground() {
+                    <span class="directive">public</span> <span class="predefined-type">Long</span> loadInBackground() {
                         <span class="keyword">return</span> fibonacci(fibonacci);
                     }
                 };
             }
 
             <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> onLoadFinished(Loader&lt;<span class="predefined-type">Double</span>&gt; loader, <span class="predefined-type">Double</span> data) {
+            <span class="directive">public</span> <span class="type">void</span> onLoadFinished(Loader&lt;<span class="predefined-type">Long</span>&gt; loader, <span class="predefined-type">Long</span> data) {
                 toastManager.makeToast(getActivity(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Result : </span><span class="delimiter">&quot;</span></span>+data, <span class="predefined-constant">null</span>);
             }
 
             <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> onLoaderReset(Loader&lt;<span class="predefined-type">Double</span>&gt; loader) {
+            <span class="directive">public</span> <span class="type">void</span> onLoaderReset(Loader&lt;<span class="predefined-type">Long</span>&gt; loader) {
 
             }
         });</code></pre>
@@ -2398,7 +2375,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-05 17:11:46 +01:00
+Last updated 2017-01-03 18:39:38 +01:00
 </div>
 </div>
 </body>
