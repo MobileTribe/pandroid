@@ -71,8 +71,9 @@ public class ReviewManagerImpl implements ReviewManager {
             public void onSuccess(Response<Review> result) {
                 //be careful the response could be an error code
                 //you have to check it yourself
-                if (result.isSuccessful())
-                    assert result.body() instanceof Review;
+                if (result.isSuccessful()){
+                    logWrapper.d(TAG, "result received has retrofit Response");
+                }
             }
 
             @Override

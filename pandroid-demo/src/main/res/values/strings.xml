@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Pandroid démo</string>
 
-    <string name="error_gms_not_available">Les services Google play ne sont pas disponible</string>
-
     <string name="navigation_events">Bus d\'événements</string>
     <string name="navigation_scanner">Scanner</string>
     <string name="navigation_rest">Réseau</string>
@@ -29,7 +27,6 @@
     <string name="scanner_permission_camera_rationale">L\'accès à la camera est nécessaire pour la détection</string>
 
 
-    <string name="list_header">HEADER</string>
     <string name="list_header_listview">HEADER LISTVIEW</string>
     <string name="list_header_scrollview">HEADER SCROLLVIEW</string>
     <string name="list_header_disable">Désactiver le header</string>
