@@ -34,6 +34,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - Remove reflexion to bind generated classes
 - Remove reflexion to inject with dagger
 - Remove old Event/EventReceiver concept
+- Rename Pandroid annotation package name to com.leroymerlin.pandroid
 
 ### *2.1.2* - (2016-12-15)
 
