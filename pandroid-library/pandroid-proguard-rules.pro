@@ -8,10 +8,6 @@
 
 -keepclassmembers class * implements android.os.Parcelable { *; }
 
--keep @com.leroymerlin.pandroid.security.KeepClass class * {
-    *;
-}
-
 -keepclassmembers class * extends com.leroymerlin.pandroid.net.mock.ServiceMock{
     public <init>(...);
 }
