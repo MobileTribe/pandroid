@@ -63,7 +63,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
         for (Element element : elementsAnnotatedWith) {
             TypeElement typeElement = (TypeElement) element;
             ClassName modelClassName = ClassName.get(typeElement);
-
+            if (modelClassName.equals(ClassName.get(PandroidMapper.MAPPER_PACKAGE, PandroidMapper.MAPPER_IMPL_NAME))) {
+                continue; //ignore PandroidMappleImpl class
+            }
 
             DeclaredType type = null;
             DeclaredType target = null;

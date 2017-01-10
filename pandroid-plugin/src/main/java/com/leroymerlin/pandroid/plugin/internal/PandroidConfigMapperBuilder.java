@@ -1,6 +1,8 @@
 package com.leroymerlin.pandroid.plugin.internal;
 
+import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
 import com.leroymerlin.pandroid.app.PandroidMapper;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -45,6 +47,10 @@ public class PandroidConfigMapperBuilder {
         TypeSpec.Builder result =
                 TypeSpec.classBuilder(PandroidMapper.MAPPER_IMPL_NAME)
                         .addModifiers(Modifier.PUBLIC)
+                        .addAnnotation(AnnotationSpec.builder(PandroidGeneratedClass.class)
+                                .addMember("target", "$T.class", ClassName.VOID)
+                                .addMember("type", "$T.class", ClassName.VOID)
+                                .build())
                         .superclass(PandroidMapper.class)
                         .addField(FieldSpec.builder(ParameterizedTypeName.get(List.class, String.class), "LIBRARIES")
                                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC).initializer(tagInitBlockBuilder.build()).build());
