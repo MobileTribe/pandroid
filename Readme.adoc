@@ -24,8 +24,14 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.2.0* - (2017-01-06)
+### *2.2.1* - (2017-01-10)
 
+*Update*
+- Remove old KeepClass annotation (use support Keep instead)
+*Fix*
+- Compile error with project without annotation
+
+### *2.2.0* - (2017-01-06)
 
 *Features*
 - Performance - generate PandroidMapper to bind classes
