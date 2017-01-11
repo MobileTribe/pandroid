@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.leroymerlin.pandroid.R;
+import com.leroymerlin.pandroid.ui.animation.AnimUtils;
 import com.leroymerlin.pandroid.ui.animation.SimpleAnimatorListener;
 import com.leroymerlin.pandroid.ui.loader.ProgressWheel;
 import com.leroymerlin.pandroid.utils.DeviceUtils;
@@ -61,7 +62,11 @@ public class ProgressButtonLayout extends CircularFrameLayout {
             return;
         int duration = anim ? getResources().getInteger(R.integer.anim_speed) : 1;
         progressWheel.setVisibility(VISIBLE);
-        progressWheel.setCircleRadius(button.getHeight() / 2);
+        if (button.getMeasuredHeight() == 0) {
+            AnimUtils.mesureView(button);
+        }
+        int buttonHeight = button.getMeasuredHeight();
+        progressWheel.setCircleRadius(buttonHeight / 2);
         progressWheel.animate().setDuration(duration).alpha(1);
         progressWheel.spin();
 
@@ -79,10 +84,7 @@ public class ProgressButtonLayout extends CircularFrameLayout {
 
 
         initWidth = button.getWidth();
-
-        //setCenter(getWidth() / 2, getHeight() / 2);
-
-        animateToRadius(button.getHeight() / 2, duration, new SimpleAnimatorListener());
+        animateToRadius(buttonHeight / 2, duration, new SimpleAnimatorListener());
     }
 
     public void stopLoading(boolean anim) {
@@ -122,6 +124,7 @@ public class ProgressButtonLayout extends CircularFrameLayout {
             throw new IllegalStateException("ScrollView can host only one direct child");
         } else {
             button = (Button) child;
+            this.cachedCenterView = child;
             ((LayoutParams) params).gravity = Gravity.CENTER;
             super.addView(child, index, params);
             initChildView(getContext());

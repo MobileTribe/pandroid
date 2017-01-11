@@ -51,7 +51,7 @@ public class CircularFrameLayout extends FrameLayout {
     private int animationDuration = -1;
 
     private boolean viewAttached;
-    private View cachedCenterView;
+    protected View cachedCenterView;
     private int centerViewId;
 
     public CircularFrameLayout(Context context) {
@@ -133,7 +133,7 @@ public class CircularFrameLayout extends FrameLayout {
     }
 
     private void updateCenterView() {
-        if(centerViewId<=0)
+        if (centerViewId <= 0 && cachedCenterView == null)
             return;
         if (cachedCenterView == null) {
             cachedCenterView = findViewById(centerViewId);
@@ -249,8 +249,11 @@ public class CircularFrameLayout extends FrameLayout {
             circularReveal.cancel();
 
 
+        final boolean finalOpen = to >= getMaxRadius();
+
         if (!viewAttached) {
             setRevealRadius(to);
+            setClipOutEnable(!finalOpen);
         } else {
             if (from == Float.MIN_VALUE) {
                 from = mRadius;
@@ -260,7 +263,6 @@ public class CircularFrameLayout extends FrameLayout {
 
             final AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
             final float finalFrom = from;
-            final boolean finalOpen = to >= getMaxRadius();
             circularReveal.setInterpolator(interpolator);
             circularReveal.addListener(new Animator.AnimatorListener() {
 
