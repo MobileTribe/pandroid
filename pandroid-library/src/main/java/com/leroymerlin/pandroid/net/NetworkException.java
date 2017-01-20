@@ -75,7 +75,7 @@ public class NetworkException extends Exception {
         else
             return new String(body);
     }
-    
+
     public TreeMap<String, List<String>> getHeaders() {
         return headers;
     }
