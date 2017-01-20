@@ -35,8 +35,17 @@ class LibraryConfigurator {
             project.android.applicationVariants.all {
                 variant ->
                     variant.outputs.get(0).processManifest.doLast {
-                        File manifestFile = variant.outputs.get(0).processResources.manifestFile
-                        XMLUtils.appendToXML(manifestFile, "<manifest>" + manifest.call(manifestConfig) + "</manifest>")
+                        File[] manifestFiles = [
+                            variant.outputs.get(0).processManifest.manifestOutputFile,
+                            variant.outputs.get(0).processManifest.instantRunManifestOutputFile,
+                            variant.outputs.get(0).processManifest.aaptFriendlyManifestOutputFile
+                        ]
+                        manifestFiles.each {
+                            f ->
+                                if(f!=null && f.exists()){
+                                    XMLUtils.appendToXML(f, "<manifest>" + manifest.call(manifestConfig) + "</manifest>")
+                                }
+                        }
                     }
             }
         }
