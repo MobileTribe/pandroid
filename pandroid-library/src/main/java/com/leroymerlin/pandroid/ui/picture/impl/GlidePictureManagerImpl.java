@@ -137,6 +137,18 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
                     builder.dontAnimate();
                 }
 
+                if (this.scaleType == ImageView.ScaleType.FIT_CENTER) {
+                    builder.fitCenter();
+                } else if (this.scaleType == ImageView.ScaleType.CENTER_CROP) {
+                    builder.centerCrop();
+                }
+                if (this.target != null) {
+                    if (this.scaleType == null) {
+                        builder.dontTransform();
+                    } else {
+                        this.target.setScaleType(this.scaleType);
+                    }
+                }
 
                 final ImageLoadingListener loaderListener = this.listener;
                 final ImageView loaderTarget = this.target;

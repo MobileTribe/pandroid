@@ -54,9 +54,8 @@ public interface PictureManager {
         protected boolean animated = true;
         protected int placeHolder;
         protected int errorImage;
-
-
         protected int animator;
+        protected ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_CENTER;
 
         public Loader(Loader baseLoader) {
             if (baseLoader != null) {
@@ -96,6 +95,11 @@ public interface PictureManager {
 
         public Loader listener(ImageLoadingListener imageLoadingListener) {
             this.listener = imageLoadingListener;
+            return this;
+        }
+
+        public Loader scaleType(ImageView.ScaleType scaleType) {
+            this.scaleType = scaleType;
             return this;
         }
 
