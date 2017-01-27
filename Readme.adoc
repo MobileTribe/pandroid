@@ -15,7 +15,7 @@ image:https://api.bintray.com/packages/mobiletribe/maven/com.leroymerlin.pandroi
 
 Pandroid is a mobile archetype used for Android projects. It suggest a architecture for your mobile app and help you handle common problematic you meet in Android development.
 
-To discover what the panda can do, please see the link:{htmlPath}pandroid-doc/html/Tutorial.html[tutorial part] of this wiki.
+To discover what the panda can do, please see the link:{htmlPath}pandroid-doc/html/Tutorial.html#_picture[tutorial part] of this wiki.
 
 
 This library was originaly used by Leroy Merlin France mobile teams to develop all their Android applications.
@@ -23,6 +23,10 @@ In february 2015 Pandroid 1 was release for LM internal team. A year later the a
 A presentation is available about the road we traveled : https://prezi.com/xyuwjyycsbsh/mobile-archetype-pandroid-2/
 
 ## Roadmap
+
+### *2.2.3*
+*Update*
+- Refactor PictureManager (link:{htmlPath}pandroid-doc/html/Tutorial.html[see new example])
 
 ### *2.2.2*
 *Update*
