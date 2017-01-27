@@ -31,6 +31,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
 import dagger.Component;
+import dagger.Subcomponent;
 
 /**
  * Created by florian on 30/11/15.
@@ -48,7 +49,8 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     public List<String> getSupportedAnnotations() {
         return Lists.newArrayList(
                 PandroidGeneratedClass.class.getCanonicalName(),
-                Component.class.getCanonicalName()
+                Component.class.getCanonicalName(),
+                Subcomponent.class.getCanonicalName()
         );
     }
 
@@ -95,8 +97,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
         TypeElement baseComponentType = processingEnvironment.getElementUtils().getTypeElement("com.leroymerlin.pandroid.dagger.BaseComponent");
 
-
-        Set<? extends Element> daggerComponentElements = roundEnvironment.getElementsAnnotatedWith(Component.class);
+        ArrayList<Element> daggerComponentElements = new ArrayList<>();
+        daggerComponentElements.addAll(roundEnvironment.getElementsAnnotatedWith(Subcomponent.class));
+        daggerComponentElements.addAll(roundEnvironment.getElementsAnnotatedWith(Component.class));
         for (Element element : daggerComponentElements) {
             TypeElement typeElement = (TypeElement) element;
 
