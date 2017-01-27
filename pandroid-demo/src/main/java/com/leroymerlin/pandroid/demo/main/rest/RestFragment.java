@@ -16,6 +16,7 @@ import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.future.NetActionDelegate;
 import com.leroymerlin.pandroid.future.SimpleAsyncTaskLoader;
+import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
@@ -49,8 +50,25 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pictureManager.load("http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg",
-                (ImageView) view.findViewById(R.id.rest_iv));
+
+        pictureManager.newLoader()
+                .source("http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg")
+                .context(this)
+                .target((ImageView) view.findViewById(R.id.rest_iv))
+                .placeHolder(R.drawable.pandroid_img_nophoto)
+                .listener(new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingFailed(Object imageUri, ImageView view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(Object imageUri, ImageView view) {
+
+                    }
+                })
+                .load();
+
     }
     //end::Glide[]
 
@@ -93,7 +111,7 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
 
             @Override
             public void onLoadFinished(Loader<Long> loader, Long data) {
-                toastManager.makeToast(getActivity(), "Result : "+data, null);
+                toastManager.makeToast(getActivity(), "Result : " + data, null);
             }
 
             @Override
@@ -108,12 +126,10 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
     private static long fibonacci(long n) {
         if (n == 1) {
             return 1;
-        }
-        else if (n == 2) {
+        } else if (n == 2) {
             return 2;
-        }
-        else {
-            return fibonacci(n-1) + fibonacci(n-2);
+        } else {
+            return fibonacci(n - 1) + fibonacci(n - 2);
         }
     }
 }

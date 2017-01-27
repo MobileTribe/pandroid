@@ -88,7 +88,11 @@ public class DemoModule {
     @Singleton
     PictureManager providePictureManager(Context context) {
         GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context);
-        glidePictureManager.setPlaceHolder(R.drawable.pandroid_img_nophoto);
+        glidePictureManager.configure(
+                glidePictureManager
+                        .newLoader()
+                        .placeHolder(R.drawable.pandroid_img_nophoto)
+        );
         return glidePictureManager;
     }
     //end::Glide[]

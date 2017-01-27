@@ -3,7 +3,6 @@ package com.leroymerlin.pandroid.ui.picture.impl;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -15,6 +14,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.module.GlideModule;
 import com.bumptech.glide.request.RequestListener;
@@ -23,6 +24,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
+
+import java.net.URL;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -41,16 +45,16 @@ import javax.inject.Inject;
  */
 public class GlidePictureManagerImpl implements PictureManager, GlideModule {
 
-    private int placeHolder;
-    private int errorImage;
+    public static final String TAG = "GlidePictureManagerImpl";
+
     private final Context context;
+
+    private Loader defaultLoader;
 
     @Inject
     public GlidePictureManagerImpl(Context context) {
         this.context = context;
     }
-
-    public static final String TAG = GlidePictureManagerImpl.class.getSimpleName();
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
@@ -67,83 +71,8 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
     }
 
     @Override
-    public void load(String href, ImageView imageView) {
-        load(href, imageView, placeHolder, errorImage, null);
-    }
-
-    @Override
-    public void load(String href, ImageView imageView, @DrawableRes int placeholder, @DrawableRes int errorDrawable, ImageLoadingListener imageLoadingListener) {
-        load(Glide.with(context), href, imageView, placeholder, errorDrawable, imageLoadingListener);
-    }
-
-    @Override
-    public void load(Activity activity, String href, ImageView imageView) {
-        load(Glide.with(activity), href, imageView, placeHolder, errorImage, null);
-    }
-
-    @Override
-    public void load(Activity activity, String href, ImageView imageView, @DrawableRes int placeholder, @DrawableRes int error, ImageLoadingListener imageLoadingListener) {
-        load(Glide.with(activity), href, imageView, placeholder, error, imageLoadingListener);
-    }
-
-    @Override
-    public void load(Fragment fragment, String href, ImageView imageView) {
-        load(Glide.with(fragment), href, imageView, placeHolder, errorImage, null);
-    }
-
-    @Override
-    public void load(Fragment fragment, String href, ImageView imageView, @DrawableRes int placeholder, @DrawableRes int error, ImageLoadingListener imageLoadingListener) {
-        load(Glide.with(fragment), href, imageView, placeHolder, errorImage, imageLoadingListener);
-    }
-
-    private void load(RequestManager requestManager, final String href, final ImageView imageView, @DrawableRes int placeholder, @DrawableRes int errorDrawable, final ImageLoadingListener imageLoadingListener) {
-        DrawableRequestBuilder<String> builder = requestManager.load(href).diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false);
-        if (placeholder == 0) {
-            placeholder = this.placeHolder;
-        }
-        if (errorDrawable == 0) {
-            errorDrawable = this.errorImage;
-        }
-
-        if (placeholder > 0)
-            builder.placeholder(placeholder);
-        if (errorDrawable > 0)
-            builder.error(errorDrawable);
-        builder.crossFade();
-
-
-        if (imageLoadingListener != null) {
-            builder.listener(new RequestListener<String, GlideDrawable>() {
-                @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                    imageLoadingListener.onLoadingFailed(href, imageView);
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    imageLoadingListener.onLoadingComplete(href, imageView);
-                    return false;
-                }
-            });
-        }
-
-        if (imageView == null) {
-            builder.into(new SimpleTarget<GlideDrawable>() {
-                @Override
-                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-
-                }
-            });
-        } else {
-            builder.into(imageView);
-        }
-    }
-
-
-    @Override
-    public void remove(String href) {
-        throw new IllegalStateException("Not implemented with glide see : https://github.com/bumptech/glide/wiki/Caching-and-Cache-Invalidation");
+    public void configure(Loader defaultLoader) {
+        this.defaultLoader = defaultLoader;
     }
 
     @Override
@@ -152,11 +81,94 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
         Glide.get(context).clearMemory();
     }
 
-    public void setPlaceHolder(@DrawableRes int placeHolder) {
-        this.placeHolder = placeHolder;
+    @Override
+    public Loader newLoader() {
+        return new Loader(defaultLoader) {
+            @Override
+            public void loadInternal() {
+                RequestManager requestManager = null;
+                Object loadContext = null;
+                if (this.loadContext != null) {
+                    loadContext = this.loadContext.get();
+                }
+                if (loadContext instanceof Fragment) {
+                    requestManager = Glide.with((Fragment) loadContext);
+                } else if (loadContext instanceof Activity) {
+                    requestManager = Glide.with((Activity) loadContext);
+                } else {
+                    requestManager = Glide.with(context);
+                }
+
+
+                LazyHeaders.Builder headerBuilder = new LazyHeaders.Builder();
+                for (Map.Entry<String, String> value : this.headers.entrySet()) {
+                    headerBuilder.addHeader(value.getKey(), value.getValue());
+                }
+
+                Object glideUrl = null;
+                Object sourceModel = this.sourceModel;
+                if (sourceModel instanceof String) {
+                    glideUrl = new GlideUrl((String) sourceModel, headerBuilder.build());
+                } else if (sourceModel instanceof URL) {
+                    glideUrl = new GlideUrl((URL) sourceModel, headerBuilder.build());
+                } else {
+                    glideUrl = sourceModel;
+                }
+
+
+                DrawableRequestBuilder builder = requestManager.load(glideUrl);
+
+                builder.diskCacheStrategy(this.diskCache ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE);
+                builder.skipMemoryCache(!this.memoryCache);
+
+                if (this.placeHolder > 0) {
+                    builder.placeholder(this.placeHolder);
+                }
+                if (this.errorImage > 0) {
+                    builder.error(this.errorImage);
+                }
+                if (this.animated) {
+                    if (this.animator > 0) {
+                        builder.animate(this.animator);
+                    } else {
+                        builder.crossFade();
+                    }
+                } else {
+                    builder.dontAnimate();
+                }
+
+
+                final ImageLoadingListener loaderListener = this.listener;
+                final ImageView loaderTarget = this.target;
+                if (loaderListener != null) {
+                    builder.listener(new RequestListener<Object, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, Object model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            loaderListener.onLoadingFailed(model, loaderTarget);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, Object model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            loaderListener.onLoadingComplete(model, loaderTarget);
+                            return false;
+                        }
+                    });
+                }
+
+                if (loaderTarget == null) {
+                    builder.into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+
+                        }
+                    });
+                } else {
+                    builder.into(loaderTarget);
+                }
+            }
+        };
     }
 
-    public void setErrorImage(@DrawableRes int errorImage) {
-        this.errorImage = errorImage;
-    }
+
 }

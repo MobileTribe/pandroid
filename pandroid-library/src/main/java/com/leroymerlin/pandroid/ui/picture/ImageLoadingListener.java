@@ -1,18 +1,18 @@
 //tag::ImageLoadingListener[]
 package com.leroymerlin.pandroid.ui.picture;
 
-import android.view.View;
+import android.widget.ImageView;
 //end::ImageLoadingListener[]
 
 /**
  * @author Adrien Le Roy
  */
 //tag::ImageLoadingListener[]
-public interface ImageLoadingListener {
+public interface ImageLoadingListener<T> {
 
-    void onLoadingFailed(String imageUri, View view);
+    void onLoadingFailed(T imageUri, ImageView view);
 
-    void onLoadingComplete(String imageUri, View view);
+    void onLoadingComplete(T imageUri, ImageView view);
 
 }
 //end::PictureManager[]

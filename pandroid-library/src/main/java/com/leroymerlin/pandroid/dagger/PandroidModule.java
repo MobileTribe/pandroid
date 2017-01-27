@@ -12,13 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Singleton;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.platform.Platform;
 
 /**
  * Created by mehdi on 30/11/2015.
@@ -80,8 +83,12 @@ public class PandroidModule {
     }
 
     @Provides
-    protected OkHttpClient.Builder provideOkHttpClient(List<KeyManager> keyManagers, List<TrustManager> trustManagers, LogWrapper logWrapper) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    @Singleton
+    protected SSLContext provideSslContext(List<KeyManager> keyManagers, List<TrustManager> trustManagers, LogWrapper logWrapper) {
+        return getSslContext(keyManagers, trustManagers, logWrapper);
+    }
+
+    protected SSLContext getSslContext(List<KeyManager> keyManagers, List<TrustManager> trustManagers, LogWrapper logWrapper) {
         KeyManager[] keyManagersArray = null;
         if (keyManagers != null && keyManagers.size() > 0) {
             keyManagersArray = new KeyManager[keyManagers.size()];
@@ -95,10 +102,25 @@ public class PandroidModule {
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagersArray, trustManagersArray, null);
-            builder.sslSocketFactory(sslContext.getSocketFactory());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            return sslContext;
         } catch (Exception e) {
             logWrapper.e(TAG, e);
         }
+        return null;
+    }
+
+    @Provides
+    protected OkHttpClient.Builder provideOkHttpClient(SSLContext sslContext) {
+        return getOkHttpClientBuilder(sslContext);
+    }
+
+    protected OkHttpClient.Builder getOkHttpClientBuilder(SSLContext sslContext) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+        builder.sslSocketFactory(sslSocketFactory, Platform.get().trustManager(sslSocketFactory));
         return builder;
     }
+
+
 }
