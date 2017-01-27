@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.2.0-SNAPSHOT, Fri Jan 06 11:01:10 CET 2017">
+<meta name="author" content="Pandroid v2.2.3-SNAPSHOT, Fri Jan 27 13:45:33 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.2.0-SNAPSHOT, Fri Jan 06 11:01:10 CET 2017</span><br>
+<span id="author" class="author">Pandroid v2.2.3-SNAPSHOT, Fri Jan 27 13:45:33 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1731,7 +1731,11 @@ Options are available such as adding a placeholder image or a delegate method (l
     <span class="annotation">@Singleton</span>
     PictureManager providePictureManager(<span class="predefined-type">Context</span> context) {
         GlidePictureManagerImpl glidePictureManager = <span class="keyword">new</span> GlidePictureManagerImpl(context);
-        glidePictureManager.setPlaceHolder(R.drawable.pandroid_img_nophoto);
+        glidePictureManager.configure(
+                glidePictureManager
+                        .newLoader()
+                        .placeHolder(R.drawable.pandroid_img_nophoto)
+        );
         <span class="keyword">return</span> glidePictureManager;
     }</code></pre>
 </div>
@@ -1751,8 +1755,25 @@ Options are available such as adding a placeholder image or a delegate method (l
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onViewCreated(<span class="predefined-type">View</span> view, Bundle savedInstanceState) {
         <span class="local-variable">super</span>.onViewCreated(view, savedInstanceState);
-        pictureManager.load(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg</span><span class="delimiter">&quot;</span></span>,
-                (<span class="predefined-type">ImageView</span>) view.findViewById(R.id.rest_iv));
+
+        pictureManager.newLoader()
+                .source(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg</span><span class="delimiter">&quot;</span></span>)
+                .context(<span class="local-variable">this</span>)
+                .target((<span class="predefined-type">ImageView</span>) view.findViewById(R.id.rest_iv))
+                .placeHolder(R.drawable.pandroid_img_nophoto)
+                .listener(<span class="keyword">new</span> ImageLoadingListener() {
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> onLoadingFailed(<span class="predefined-type">Object</span> imageUri, <span class="predefined-type">ImageView</span> view) {
+
+                    }
+
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> onLoadingComplete(<span class="predefined-type">Object</span> imageUri, <span class="predefined-type">ImageView</span> view) {
+
+                    }
+                })
+                .load();
+
     }</code></pre>
 </div>
 </div>
@@ -2228,7 +2249,7 @@ To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.</p>
 
             <span class="annotation">@Override</span>
             <span class="directive">public</span> <span class="type">void</span> onLoadFinished(Loader&lt;<span class="predefined-type">Long</span>&gt; loader, <span class="predefined-type">Long</span> data) {
-                toastManager.makeToast(getActivity(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Result : </span><span class="delimiter">&quot;</span></span>+data, <span class="predefined-constant">null</span>);
+                toastManager.makeToast(getActivity(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Result : </span><span class="delimiter">&quot;</span></span> + data, <span class="predefined-constant">null</span>);
             }
 
             <span class="annotation">@Override</span>
