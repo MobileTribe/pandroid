@@ -28,6 +28,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 *Update*
 - SDK Build Tools to 25.0.2
 - GMS to 10.0.1
+- NetworkException : Add getters for headers and response time
 *Fix*
 - Error with instant run and external library with manifest content
 

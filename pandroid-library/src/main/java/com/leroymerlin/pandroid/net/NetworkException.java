@@ -74,6 +74,13 @@ public class NetworkException extends Exception {
             return null;
         else
             return new String(body);
+    }
 
+    public TreeMap<String, List<String>> getHeaders() {
+        return headers;
+    }
+
+    public long getNetworkTime() {
+        return networkTime;
     }
 }
