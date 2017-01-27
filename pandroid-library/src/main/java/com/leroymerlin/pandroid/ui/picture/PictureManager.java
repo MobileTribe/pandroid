@@ -37,7 +37,7 @@ public interface PictureManager {
      *
      * @return new loader model
      */
-    Loader newLoader();
+    Loader loader();
 
 
     abstract class Loader {

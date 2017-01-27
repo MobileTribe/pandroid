@@ -82,7 +82,7 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
     }
 
     @Override
-    public Loader newLoader() {
+    public Loader loader() {
         return new Loader(defaultLoader) {
             @Override
             public void loadInternal() {

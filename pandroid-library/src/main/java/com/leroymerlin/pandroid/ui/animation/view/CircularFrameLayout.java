@@ -331,6 +331,7 @@ public class CircularFrameLayout extends FrameLayout {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected Animator getAnimation(float from, float to) {
+        updateCenterView();
         if (LOLLIPOP_PLUS && centerViewId <= 0) {
             return ViewAnimationUtils.createCircularReveal(this, (int) mCenterX, (int) mCenterY, from, to);
         } else {

@@ -51,7 +51,7 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        pictureManager.newLoader()
+        pictureManager.loader()
                 .source("http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg")
                 .context(this)
                 .target((ImageView) view.findViewById(R.id.rest_iv))

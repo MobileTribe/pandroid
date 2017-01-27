@@ -90,7 +90,7 @@ public class DemoModule {
         GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context);
         glidePictureManager.configure(
                 glidePictureManager
-                        .newLoader()
+                        .loader()
                         .placeHolder(R.drawable.pandroid_img_nophoto)
         );
         return glidePictureManager;
