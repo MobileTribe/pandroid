@@ -55,7 +55,7 @@ public interface PictureManager {
         protected int placeHolder;
         protected int errorImage;
         protected int animator;
-        protected ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_CENTER;
+        protected ImageView.ScaleType scaleType;
 
         public Loader(Loader baseLoader) {
             if (baseLoader != null) {
@@ -64,7 +64,6 @@ public interface PictureManager {
         }
 
         /**
-         *
          * @param loadContext
          * @return
          */
@@ -74,7 +73,6 @@ public interface PictureManager {
         }
 
         /**
-         *
          * @param sourceModel
          * @return
          */
