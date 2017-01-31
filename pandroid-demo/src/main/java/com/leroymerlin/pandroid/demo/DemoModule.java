@@ -13,7 +13,7 @@ import com.leroymerlin.pandroid.demo.globals.review.ReviewService;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.net.PandroidCallAdapterFactory;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
-import com.leroymerlin.pandroid.ui.picture.impl.GlidePictureManagerImpl;
+import com.leroymerlin.pandroid.ui.picture.glide.GlidePictureManagerImpl;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 import com.leroymerlin.pandroid.ui.toast.impl.SuperToastManagerImpl;
 
@@ -86,8 +86,8 @@ public class DemoModule {
     //tag::Glide[]
     @Provides
     @Singleton
-    PictureManager providePictureManager(Context context) {
-        GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context);
+    PictureManager providePictureManager(Context context, OkHttpClient.Builder okHttpClientBuilder) {
+        GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context, okHttpClientBuilder.build());
         glidePictureManager.configure(
                 glidePictureManager
                         .loader()

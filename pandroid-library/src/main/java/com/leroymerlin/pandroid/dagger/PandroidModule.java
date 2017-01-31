@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Singleton;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -82,6 +81,7 @@ public class PandroidModule {
         return new ArrayList<>();
     }
 
+
     @Provides
     @Singleton
     protected SSLContext provideSslContext(List<KeyManager> keyManagers, List<TrustManager> trustManagers, LogWrapper logWrapper) {
@@ -102,7 +102,6 @@ public class PandroidModule {
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagersArray, trustManagersArray, null);
-            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             return sslContext;
         } catch (Exception e) {
             logWrapper.e(TAG, e);
@@ -117,8 +116,8 @@ public class PandroidModule {
 
     protected OkHttpClient.Builder getOkHttpClientBuilder(SSLContext sslContext) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-        builder.sslSocketFactory(sslSocketFactory, Platform.get().trustManager(sslSocketFactory));
+        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+        builder.sslSocketFactory(socketFactory, Platform.get().trustManager(socketFactory));
         return builder;
     }
 

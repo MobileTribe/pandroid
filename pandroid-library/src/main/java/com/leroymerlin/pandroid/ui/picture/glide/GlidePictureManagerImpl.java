@@ -1,4 +1,4 @@
-package com.leroymerlin.pandroid.ui.picture.impl;
+package com.leroymerlin.pandroid.ui.picture.glide;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache;
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.model.stream.HttpUrlGlideUrlLoader;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.module.GlideModule;
 import com.bumptech.glide.request.RequestListener;
@@ -25,10 +26,13 @@ import com.bumptech.glide.request.target.Target;
 import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
 
 
 /**
@@ -48,12 +52,14 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
     public static final String TAG = "GlidePictureManagerImpl";
 
     private final Context context;
+    private final OkHttpClient client;
 
     private Loader defaultLoader;
 
     @Inject
-    public GlidePictureManagerImpl(Context context) {
+    public GlidePictureManagerImpl(Context context, OkHttpClient client) {
         this.context = context;
+        this.client = client;
     }
 
     @Override
@@ -68,6 +74,8 @@ public class GlidePictureManagerImpl implements PictureManager, GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
+
+        glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
     }
 
     @Override
