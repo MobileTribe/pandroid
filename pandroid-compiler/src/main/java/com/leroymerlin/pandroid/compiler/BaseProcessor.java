@@ -12,6 +12,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
@@ -21,10 +22,12 @@ import javax.tools.Diagnostic;
 public abstract class BaseProcessor {
 
     protected final Elements mElementsUtils;
+    protected final Types mTypesUtils;
     private boolean classGenerated;
 
-    public BaseProcessor(Elements elements) {
+    public BaseProcessor(Elements elements, Types types) {
         mElementsUtils = elements;
+        mTypesUtils = types;
     }
 
 

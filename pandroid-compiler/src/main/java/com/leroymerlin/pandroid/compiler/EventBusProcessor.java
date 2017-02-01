@@ -31,6 +31,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
@@ -39,8 +40,8 @@ import javax.tools.Diagnostic;
 public class EventBusProcessor extends BaseProcessor {
 
 
-    public EventBusProcessor(Elements elements) {
-        super(elements);
+    public EventBusProcessor(Elements elements, Types types) {
+        super(elements, types);
     }
 
     @Override

@@ -25,6 +25,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 /**
  * Created by Mehdi on 07/11/2016.
@@ -33,8 +34,8 @@ import javax.lang.model.util.Elements;
 public class LifecycleDelegateProcessor extends BaseProcessor {
 
 
-    public LifecycleDelegateProcessor(Elements elements) {
-        super(elements);
+    public LifecycleDelegateProcessor(Elements elements, Types types) {
+        super(elements, types);
     }
 
     @Override

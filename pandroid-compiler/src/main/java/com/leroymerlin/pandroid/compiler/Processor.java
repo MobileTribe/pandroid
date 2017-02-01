@@ -15,6 +15,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 @AutoService(javax.annotation.processing.Processor.class)
@@ -23,6 +24,8 @@ public class Processor extends AbstractProcessor {
 
     private ProcessingEnvironment mProcessingEnvironment;
     private Elements mElementsUtils;
+    private Types mTypesUtils;
+
     private ArrayList<BaseProcessor> processors;
     private double duration;
 
@@ -32,13 +35,14 @@ public class Processor extends AbstractProcessor {
         super.init(processingEnv);
         mProcessingEnvironment = processingEnv;
         mElementsUtils = processingEnv.getElementUtils();
+        mTypesUtils = processingEnv.getTypeUtils();
 
 
         processors = new ArrayList<BaseProcessor>();
-        processors.add(new EventBusProcessor(mElementsUtils));
-        processors.add(new LifecycleDelegateProcessor(mElementsUtils));
-        processors.add(new DataBindingProcessor(mElementsUtils));
-        processors.add(new GeneratedClassMapperProcessor(mElementsUtils));
+        processors.add(new EventBusProcessor(mElementsUtils, mTypesUtils));
+        processors.add(new LifecycleDelegateProcessor(mElementsUtils, mTypesUtils));
+        processors.add(new DataBindingProcessor(mElementsUtils, mTypesUtils));
+        processors.add(new GeneratedClassMapperProcessor(mElementsUtils, mTypesUtils));
 
         duration = 0;
 

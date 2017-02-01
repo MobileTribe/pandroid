@@ -26,9 +26,11 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 import dagger.Component;
 import dagger.Subcomponent;
@@ -39,11 +41,14 @@ import dagger.Subcomponent;
 public class GeneratedClassMapperProcessor extends BaseProcessor {
 
 
+    private static final String TARGET_VAR_NAME = "target";
+    private static final String COMPONENT_VAR_NAME = "component";
     private boolean fileSaved;
 
-    public GeneratedClassMapperProcessor(Elements elements) {
-        super(elements);
+    public GeneratedClassMapperProcessor(Elements elements, Types types) {
+        super(elements, types);
     }
+
 
     @Override
     public List<String> getSupportedAnnotations() {
@@ -55,11 +60,10 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     }
 
     Map<DeclaredType, Map<DeclaredType, TypeElement>> dataMap = new HashMap<>();
-    Map<TypeMirror, List<TypeName>> injectList = new HashMap<>();
+    BlockList<ComponentBlock> componentBlocks = new BlockList<>();
 
     @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
-
 
         Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith(PandroidGeneratedClass.class);
         for (Element element : elementsAnnotatedWith) {
@@ -134,9 +138,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
             String wrapperName = null;
             TypeElement lastWrapper = null;
-            int i = 0;
+            int classIndex = 0;
             do {
-                wrapperName = PandroidMapper.WRAPPER_NAME + "$_" + i++;
+                wrapperName = PandroidMapper.WRAPPER_NAME + "$_" + classIndex++;
 
                 TypeElement libWrapper = processingEnvironment.getElementUtils().getTypeElement(PandroidMapper.MAPPER_PACKAGE + "." + wrapperName);
                 if (libWrapper == null) {
@@ -204,29 +208,15 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             // ##### INJECT METHOD #####
             MethodSpec.Builder injectMethodBuilder = MethodSpec.methodBuilder(PandroidMapper.WRAPPER_INJECT_METHOD_NAME)
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .addParameter(TypeName.OBJECT, "component")
-                    .addParameter(TypeName.OBJECT, "target");
+                    .addParameter(TypeName.OBJECT, COMPONENT_VAR_NAME)
+                    .addParameter(TypeName.OBJECT, TARGET_VAR_NAME);
 
             if (lastWrapper != null) {
-                injectMethodBuilder.addStatement("$T.$L(component, target)", lastWrapper, PandroidMapper.WRAPPER_INJECT_METHOD_NAME);
-            }
-            CodeBlock.Builder code = CodeBlock.builder();
-
-            for (Map.Entry<TypeMirror, List<TypeName>> set : injectList.entrySet()) {
-                code.beginControlFlow("if(component instanceof $T)", set.getKey());
-
-                for (TypeName typeName : set.getValue()) {
-                    code
-                            .beginControlFlow("if(target instanceof $T)", typeName)
-                            .addStatement("(($T)component).inject(($T)target)", set.getKey(), typeName)
-                            .endControlFlow();
-
-                }
-                code.endControlFlow();
-
+                injectMethodBuilder.addStatement("$T.$L(component, $L)", lastWrapper, PandroidMapper.WRAPPER_INJECT_METHOD_NAME, TARGET_VAR_NAME);
             }
 
-            injectMethodBuilder.addCode(code.build());
+            CodeBlock codeBlock = componentBlocks.toCodeBlock(COMPONENT_VAR_NAME, null);
+            injectMethodBuilder.addCode(codeBlock);
             wrapperBuilder.addMethod(injectMethodBuilder.build());
 
             saveClass(processingEnvironment, PandroidMapper.MAPPER_PACKAGE, wrapperBuilder);
@@ -237,23 +227,21 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     }
 
     private void extractInjectMethod(TypeElement typeElement) {
-        List<TypeName> types = new ArrayList<>();
+
+        ComponentBlock currentBlock = new ComponentBlock(typeElement.asType());
         for (Element content : typeElement.getEnclosedElements()) {
             if (content.getKind().equals(ElementKind.METHOD) && content.getSimpleName().toString().startsWith("inject")) {
                 ExecutableElement method = (ExecutableElement) content;
                 if (method.getParameters().size() == 1) {
-                    TypeMirror paramType = method.getParameters().get(0).asType();
-                    TypeName e = ClassName.get(paramType);
-                    if (e instanceof ParameterizedTypeName) {
-                        e = ((ParameterizedTypeName) e).rawType;
-                    }
-                    types.add(e);
+                    VariableElement variableElement = (VariableElement) method.getParameters().get(0);
+                    TypeMirror paramType = variableElement.asType();
+                    currentBlock.injects.add(new Block(paramType));
                 }
             }
         }
-        if (!types.isEmpty()) {
-            injectList.put(typeElement.asType(), types);
-        }
+
+        if (!currentBlock.injects.isEmpty())
+            componentBlocks.add(currentBlock);
 
     }
 
@@ -263,4 +251,102 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     }
 
 
+    class Block implements Comparable<Block> {
+        final TypeMirror type;
+
+        TypeName getTypeName() {
+            TypeName e = ClassName.get(type);
+            if (e instanceof ParameterizedTypeName) {
+                e = ((ParameterizedTypeName) e).rawType;
+            }
+            return e;
+        }
+
+        public Block(TypeMirror type) {
+            this.type = type;
+        }
+
+        BlockList<Block> childs = new BlockList<>();
+
+        @Override
+        public int compareTo(Block block) {
+            if (mTypesUtils.isSubtype(block.type, type)) {
+                return 1;
+            } else if (mTypesUtils.isSubtype(type, block.type)) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
+        public CodeBlock toCodeBlock(TypeName parentType) {
+            CodeBlock.Builder code = CodeBlock.builder();
+            code.addStatement("(($T)$L).inject(($T)$L)", parentType, COMPONENT_VAR_NAME, this.getTypeName(), TARGET_VAR_NAME);
+            code.add(childs.toCodeBlock(TARGET_VAR_NAME, parentType));
+            return code.build();
+        }
+    }
+
+    class ComponentBlock extends Block {
+        BlockList<Block> injects = new BlockList<>();
+
+        public ComponentBlock(TypeMirror type) {
+            super(type);
+        }
+
+        @Override
+        public CodeBlock toCodeBlock(TypeName parentType) {
+            CodeBlock.Builder code = CodeBlock.builder();
+            code.add(childs.toCodeBlock(COMPONENT_VAR_NAME, parentType));
+            code.add(injects.toCodeBlock(TARGET_VAR_NAME, parentType));
+
+
+            return code.build();
+
+        }
+    }
+
+
+    class BlockList<T extends Block> extends ArrayList<T> {
+        @Override
+        public boolean add(T block) {
+            for (int i = 0; i < size(); i++) {
+                Block blockIndex = get(i);
+                int result = blockIndex.compareTo(block);
+                if (result > 0) {
+                    blockIndex.childs.add(block);
+                    return true;
+                } else if (result < 0) {
+                    remove(i);
+                    block.childs.add(blockIndex);
+                    add(i, block);
+                    return true;
+                }
+            }
+            return super.add(block);
+        }
+
+        public CodeBlock toCodeBlock(String varName, TypeName parentComponent) {
+            CodeBlock.Builder code = CodeBlock.builder();
+
+            for (int i = 0; i < size(); i++) {
+                T componentBlock = get(i);
+                if (i == 0) {
+                    code.beginControlFlow("if($L instanceof $T)", varName, componentBlock.getTypeName());
+                } else {
+                    code.nextControlFlow("else if($L instanceof $T)", varName, componentBlock.getTypeName());
+                }
+                TypeName parentType = parentComponent;
+                if (componentBlock instanceof ComponentBlock) {
+                    parentType = componentBlock.getTypeName();
+                }
+                code.add(componentBlock.toCodeBlock(parentType));
+            }
+
+            if (!isEmpty()) {
+                code.endControlFlow();
+            }
+            return code.build();
+        }
+    }
 }

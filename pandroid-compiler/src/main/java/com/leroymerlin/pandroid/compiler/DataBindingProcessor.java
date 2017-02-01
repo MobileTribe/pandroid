@@ -22,6 +22,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
@@ -47,8 +48,9 @@ public class DataBindingProcessor extends BaseProcessor {
         put(ClassName.get(Object.class), ClassName.get("android.databinding", "ObservableField"));
     }};
 
-    public DataBindingProcessor(Elements elements) {
-        super(elements);
+    public DataBindingProcessor(Elements elements, Types types) {
+        super(elements, types);
+
     }
 
     @Override
