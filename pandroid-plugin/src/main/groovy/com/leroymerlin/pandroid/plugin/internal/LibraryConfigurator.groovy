@@ -14,21 +14,26 @@ class LibraryConfigurator {
     Closure manifest;
     Closure gradle;
 
-    Object[] manifestConfig = new Object[0];
 
     public LibraryConfigurator(String name) {
         this.name = name;
     }
 
-    public void manifestConfig(Object... objects){
-        this.manifestConfig = objects;
+    def config = [:]
+
+    void setProperty(String name, value) {
+        config[name] = value
+    }
+
+    def methodMissing(String name, args) {
+        return setProperty(name, args[0])
     }
 
     public void apply(Project project, Closure closure) throws ParserConfigurationException, SAXException, IOException {
 
-        if(closure!=null){
+        if (closure != null) {
             closure.setDelegate(this)
-            closure.run()
+            closure.call()
         }
         if (manifest != null) {
 
@@ -36,14 +41,14 @@ class LibraryConfigurator {
                 variant ->
                     variant.outputs.get(0).processManifest.doLast {
                         File[] manifestFiles = [
-                            variant.outputs.get(0).processManifest.manifestOutputFile,
-                            variant.outputs.get(0).processManifest.instantRunManifestOutputFile,
-                            variant.outputs.get(0).processManifest.aaptFriendlyManifestOutputFile
+                                variant.outputs.get(0).processManifest.manifestOutputFile,
+                                variant.outputs.get(0).processManifest.instantRunManifestOutputFile,
+                                variant.outputs.get(0).processManifest.aaptFriendlyManifestOutputFile
                         ]
                         manifestFiles.each {
                             f ->
-                                if(f!=null && f.exists()){
-                                    XMLUtils.appendToXML(f, "<manifest>" + manifest.call(manifestConfig) + "</manifest>")
+                                if (f != null && f.exists()) {
+                                    XMLUtils.appendToXML(f, "<manifest>" + manifest.call(config) + "</manifest>")
                                 }
                         }
                     }
@@ -52,7 +57,7 @@ class LibraryConfigurator {
 
         if (gradle != null) {
             gradle.setDelegate(project);
-            gradle.run();
+            gradle.call(config);
         }
 
     }
