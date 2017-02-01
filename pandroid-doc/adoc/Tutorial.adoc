@@ -395,7 +395,7 @@ pandroid
 {
     dependencies{
         library ("crashlytics"){
-            manifestConfig "YOUR_CRASHLYTICS_API_KEY"
+            apiKey "YOUR_CRASHLYTICS_API_KEY"
         }
     }
 }
@@ -544,7 +544,9 @@ Glide is an optional library. To use it you need to add the dependency to the Pa
 ----
 pandroid{
     dependencies{
-        library 'glide'
+        library('glide'){
+            glideModule 'package.YourGlideModule' // optional (default is com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule)
+        }
     }
 }
 ----
