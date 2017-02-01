@@ -1,5 +1,7 @@
 package com.leroymerlin.pandroid.dagger;
 
+import javax.inject.Singleton;
+
 import dagger.Component;
 
 /**
@@ -8,6 +10,7 @@ import dagger.Component;
 @Component(
         modules = PandroidModule.class
 )
+@Singleton
 public interface PandroidComponent extends BaseComponent {
 
 

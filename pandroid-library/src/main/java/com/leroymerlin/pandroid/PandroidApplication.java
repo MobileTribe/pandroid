@@ -20,8 +20,6 @@ import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.log.PandroidLogger;
 
-import java.lang.reflect.Method;
-
 import javax.inject.Inject;
 
 
@@ -68,7 +66,7 @@ public class PandroidApplication extends Application {
         this.mBaseComponent = mBaseComponent;
     }
 
-    protected BaseComponent getBaseComponent() {
+    public BaseComponent getBaseComponent() {
         if (mBaseComponent == null) {
             mBaseComponent = createBaseComponent();
         }

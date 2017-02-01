@@ -86,8 +86,8 @@ public class DemoModule {
     //tag::Glide[]
     @Provides
     @Singleton
-    PictureManager providePictureManager(Context context, OkHttpClient.Builder okHttpClientBuilder) {
-        GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context, okHttpClientBuilder.build());
+    PictureManager providePictureManager(Context context) {
+        GlidePictureManagerImpl glidePictureManager = new GlidePictureManagerImpl(context);
         glidePictureManager.configure(
                 glidePictureManager
                         .loader()

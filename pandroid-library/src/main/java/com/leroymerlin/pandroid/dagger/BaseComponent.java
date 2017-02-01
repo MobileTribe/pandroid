@@ -10,6 +10,8 @@ import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
+import okhttp3.OkHttpClient;
+
 /**
  * Created by mehdi on 03/12/2015.
  */
@@ -18,6 +20,8 @@ public interface BaseComponent {
     LogWrapper logWrapper();
 
     EventBusManager eventBusManager();
+
+    OkHttpClient.Builder okHttpClientBuilder();
 
     void inject(FragmentEventReceiver<ReceiversProvider> receiver);
 
@@ -28,5 +32,6 @@ public interface BaseComponent {
     void inject(PandroidFragment<FragmentOpener> pandroidFragment);
 
     void inject(PandroidDialogFragment<FragmentOpener> pandroidFragment);
+
 
 }

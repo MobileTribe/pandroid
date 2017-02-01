@@ -1,7 +1,7 @@
 package com.leroymerlin.pandroid.demo;
 
 import com.leroymerlin.pandroid.analytics.AnalyticsManager;
-import com.leroymerlin.pandroid.dagger.BaseComponent;
+import com.leroymerlin.pandroid.dagger.PandroidComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
@@ -31,7 +31,7 @@ import dagger.Component;
 )
 
 @Singleton
-public interface DemoComponent extends BaseComponent {
+public interface DemoComponent extends PandroidComponent {
 
     AnalyticsManager analytycsManager();
 
