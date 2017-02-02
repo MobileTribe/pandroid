@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.2.3-SNAPSHOT, Fri Jan 27 14:39:19 CET 2017">
+<meta name="author" content="Pandroid v2.2.3-SNAPSHOT, Thu Feb 02 10:09:48 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.2.3-SNAPSHOT, Fri Jan 27 14:39:19 CET 2017</span><br>
+<span id="author" class="author">Pandroid v2.2.3-SNAPSHOT, Thu Feb 02 10:09:48 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1341,20 +1341,20 @@ to use two famous pattern MVVM and MVP</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">buildscript {
+<pre class="CodeRay highlight"><code data-lang="java">    buildscript {
     repositories {
         maven { url <span class="string"><span class="delimiter">'</span><span class="content">https://maven.fabric.io/public</span><span class="delimiter">'</span></span> }
     }
     dependencies {
         classpath <span class="string"><span class="delimiter">'</span><span class="content">io.fabric.tools:gradle:1.21.5</span><span class="delimiter">'</span></span>
     }
-}
+    }
 
 pandroid
 {
     dependencies{
         library (<span class="string"><span class="delimiter">&quot;</span><span class="content">crashlytics</span><span class="delimiter">&quot;</span></span>){
-            manifestConfig <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_CRASHLYTICS_API_KEY</span><span class="delimiter">&quot;</span></span>
+            apiKey <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_CRASHLYTICS_API_KEY</span><span class="delimiter">&quot;</span></span>
         }
     }
 }</code></pre>
@@ -1713,7 +1713,9 @@ Options are available such as adding a placeholder image or a delegate method (l
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">pandroid{
     dependencies{
-        library <span class="string"><span class="delimiter">'</span><span class="content">glide</span><span class="delimiter">'</span></span>
+        library(<span class="string"><span class="delimiter">'</span><span class="content">glide</span><span class="delimiter">'</span></span>){
+            glideModule <span class="string"><span class="delimiter">'</span><span class="content">package.YourGlideModule</span><span class="delimiter">'</span></span> <span class="comment">// optional (default is com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule)</span>
+        }
     }
 }</code></pre>
 </div>
@@ -2396,7 +2398,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-01-03 18:39:38 +01:00
+Last updated 2017-02-01 16:42:24 +01:00
 </div>
 </div>
 </body>

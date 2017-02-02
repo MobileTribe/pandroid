@@ -24,11 +24,13 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.2.3*
+### *2.2.3* - (2017-02-02)
 *Update*
-- Refactor PictureManager (link:{htmlPath}pandroid-doc/html/Tutorial.html[see new example])
+- Change optional library param dsl (link:{htmlPath}pandroid-doc/html/Tutorial.html#crashlytics[see crashlytics])
+- Refactor PictureManager (link:{htmlPath}pandroid-doc/html/Tutorial.html#picture[see new implementation])
+- Improve generated class performance
 
-### *2.2.2*
+### *2.2.2* - (2017-01-20)
 *Update*
 - SDK Build Tools to 25.0.2
 - GMS to 10.0.1
