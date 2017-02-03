@@ -12,11 +12,11 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
@@ -42,7 +42,10 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
 
     private static final String TARGET_VAR_NAME = "target";
+    private static final String TYPE_VAR_NAME = "type";
     private static final String COMPONENT_VAR_NAME = "component";
+    private static final String INSTANCEOF_BLOCK_CONDITION = "$L instanceof $T";
+    private static final String CLASS_EQUALS_BLOCK_CONDITION = "$L.equals($T.class)";
     private boolean fileSaved;
 
     public GeneratedClassMapperProcessor(Elements elements, Types types) {
@@ -59,8 +62,18 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
         );
     }
 
-    Map<DeclaredType, Map<DeclaredType, TypeElement>> dataMap = new HashMap<>();
-    BlockList<ComponentBlock> componentBlocks = new BlockList<>();
+    //Map<DeclaredType, Map<DeclaredType, TypeElement>> dataMap = new HashMap<>();
+    private BlockList<GenerateBlock> generatedBlocks = new BlockList<GenerateBlock>(CLASS_EQUALS_BLOCK_CONDITION){
+        private static final long serialVersionUID = 22771856657051246L;
+
+        // Generated block can't have child is they check class equality
+        @Override
+        public boolean add(GenerateBlock block) {
+            super.add(0, block);
+            return true;
+        }
+    };
+    private BlockList<ComponentBlock> componentBlocks = new BlockList<>(INSTANCEOF_BLOCK_CONDITION);
 
     @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
@@ -92,10 +105,15 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             }
 
             if (type != null && target != null) {
-                if (!dataMap.containsKey(type)) {
-                    dataMap.put(type, new HashMap<DeclaredType, TypeElement>());
+
+                GenerateBlock generatedBlock = new GenerateBlock(type);
+                int index = generatedBlocks.indexOf(generatedBlock);
+                if (index >= 0) {
+                    generatedBlock = generatedBlocks.get(index);
+                } else {
+                    generatedBlocks.add(generatedBlock);
                 }
-                dataMap.get(type).put(target, typeElement);
+                generatedBlock.create.add(new CreateBlock(target, typeElement));
             }
         }
 
@@ -114,6 +132,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
         }
 
 
+        //   RUN ONLY ON LAST ROUND (no generated classes detected)
         if (!fileSaved && !isClassGenerated() && !roundEnvironment.processingOver()) {
 
 
@@ -124,19 +143,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                 library = true;
             }
 
-            /*String packageName = null;
-            for (Element element : pandroidMapperImplType.getEnclosedElements()) {
-                if (PandroidMapper.PACKAGE_ATTR.equals(element.getSimpleName().toString())) {
-                    packageName = (String) ((VariableElement) element).getConstantValue();
-                    break;
-                }
-            }
-
-            if (packageName == null) {
-                log(processingEnvironment, "Can't find packageName", Diagnostic.Kind.ERROR);
-            }*/
-
-            String wrapperName = null;
+            String wrapperName;
             TypeElement lastWrapper = null;
             int classIndex = 0;
             do {
@@ -168,40 +175,16 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                     .addTypeVariable(t)
                     .returns(returnType)
-                    .addParameter(ParameterizedTypeName.get(ClassName.get(Class.class), t), "type")
-                    .addParameter(TypeName.OBJECT, "target")
+                    .addParameter(ParameterizedTypeName.get(ClassName.get(Class.class), t), TYPE_VAR_NAME)
+                    .addParameter(TypeName.OBJECT, TARGET_VAR_NAME)
 
                     .addStatement("$T result = new $T()", returnType, ParameterizedTypeName.get(ClassName.get(ArrayList.class), t));
             if (lastWrapper != null) {
                 methodBuilder.addStatement("result.addAll($T.$L(type, target))", lastWrapper, PandroidMapper.WRAPPER_GENERATED_METHOD_NAME);
             }
 
-            CodeBlock.Builder codeBuilder = CodeBlock.builder();
-            for (Map.Entry<DeclaredType, Map<DeclaredType, TypeElement>> entry : dataMap.entrySet()) {
-                codeBuilder.beginControlFlow("if(type.equals($T.class))", entry.getKey());
-                for (Map.Entry<DeclaredType, TypeElement> content : entry.getValue().entrySet()) {
-                    codeBuilder.beginControlFlow("if($T.class.isAssignableFrom(target.getClass()))", content.getKey());
-                    TypeElement generatedClass = content.getValue();
-                    for (Element enclosed : generatedClass.getEnclosedElements()) {
-                        if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
-                            ExecutableElement constructorElement = (ExecutableElement) enclosed;
-                            if (constructorElement.getModifiers().contains(Modifier.PUBLIC)) {
-                                if (constructorElement.getParameters().size() == 0) {
-                                    codeBuilder.addStatement("result.add(($T)new $T())", t, generatedClass);
-                                    break;
-                                } else if (constructorElement.getParameters().size() == 1) {
-                                    codeBuilder.addStatement("result.add(($T)new $T(($T)target))", t, generatedClass, constructorElement.getParameters().get(0).asType());
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    codeBuilder.endControlFlow();
-                }
-                codeBuilder.endControlFlow();
-            }
+            methodBuilder.addCode(generatedBlocks.toCodeBlock(TYPE_VAR_NAME, null));
 
-            methodBuilder.addCode(codeBuilder.build());
             methodBuilder.addStatement("return result");
             wrapperBuilder.addMethod(methodBuilder.build());
 
@@ -233,9 +216,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             if (content.getKind().equals(ElementKind.METHOD) && content.getSimpleName().toString().startsWith("inject")) {
                 ExecutableElement method = (ExecutableElement) content;
                 if (method.getParameters().size() == 1) {
-                    VariableElement variableElement = (VariableElement) method.getParameters().get(0);
+                    VariableElement variableElement = method.getParameters().get(0);
                     TypeMirror paramType = variableElement.asType();
-                    currentBlock.injects.add(new Block(paramType));
+                    currentBlock.injects.add(new InjectBlock(paramType));
                 }
             }
         }
@@ -251,8 +234,15 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     }
 
 
-    class Block implements Comparable<Block> {
+    abstract class Block implements Comparable<Block> {
         final TypeMirror type;
+
+        BlockList<Block> childs;
+
+        Block(TypeMirror type, String condition) {
+            this.type = type;
+            childs = new BlockList<>(condition);
+        }
 
         TypeName getTypeName() {
             TypeName e = ClassName.get(type);
@@ -262,14 +252,15 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             return e;
         }
 
-        public Block(TypeMirror type) {
-            this.type = type;
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof TypeMirror && o.equals(type) || o instanceof Block && ((Block) o).type.equals(type);
+
         }
 
-        BlockList<Block> childs = new BlockList<>();
 
         @Override
-        public int compareTo(Block block) {
+        public int compareTo(@Nonnull Block block) {
             if (mTypesUtils.isSubtype(block.type, type)) {
                 return 1;
             } else if (mTypesUtils.isSubtype(type, block.type)) {
@@ -279,6 +270,66 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             }
         }
 
+        public abstract CodeBlock toCodeBlock(TypeName parentType);
+    }
+
+    // GENERATE BLOCKS
+
+    private class GenerateBlock extends Block {
+        BlockList<CreateBlock> create = new BlockList<>(INSTANCEOF_BLOCK_CONDITION);
+
+        GenerateBlock(TypeMirror type) {
+            super(type, CLASS_EQUALS_BLOCK_CONDITION);
+        }
+
+        @Override
+        public CodeBlock toCodeBlock(TypeName parentType) {
+            CodeBlock.Builder code = CodeBlock.builder();
+            code.add(childs.toCodeBlock(TYPE_VAR_NAME, getTypeName()));
+            code.add(create.toCodeBlock(TARGET_VAR_NAME, getTypeName()));
+            return code.build();
+        }
+    }
+
+    private class CreateBlock extends Block {
+
+        private final TypeElement typeElement;
+
+        CreateBlock(TypeMirror type, TypeElement typeElement) {
+            super(type, INSTANCEOF_BLOCK_CONDITION);
+            this.typeElement = typeElement;
+        }
+
+        @Override
+        public CodeBlock toCodeBlock(TypeName parentType) {
+            CodeBlock.Builder code = CodeBlock.builder();
+
+            for (Element enclosed : typeElement.getEnclosedElements()) {
+                if (enclosed.getKind() == ElementKind.CONSTRUCTOR) {
+                    ExecutableElement constructorElement = (ExecutableElement) enclosed;
+                    if (constructorElement.getModifiers().contains(Modifier.PUBLIC)) {
+                        if (constructorElement.getParameters().size() == 0) {
+                            code.addStatement("result.add((T)new $T())", typeElement);
+                            break;
+                        } else if (constructorElement.getParameters().size() == 1) {
+                            code.addStatement("result.add((T)new $T(($T)$L))", typeElement, type, TARGET_VAR_NAME);
+                            break;
+                        }
+                    }
+                }
+            }
+            return code.build();
+        }
+    }
+
+    // INJECT BLOCKS
+    private class InjectBlock extends Block {
+
+        InjectBlock(TypeMirror type) {
+            super(type, INSTANCEOF_BLOCK_CONDITION);
+        }
+
+        @Override
         public CodeBlock toCodeBlock(TypeName parentType) {
             CodeBlock.Builder code = CodeBlock.builder();
             code.addStatement("(($T)$L).inject(($T)$L)", parentType, COMPONENT_VAR_NAME, this.getTypeName(), TARGET_VAR_NAME);
@@ -287,11 +338,11 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
         }
     }
 
-    class ComponentBlock extends Block {
-        BlockList<Block> injects = new BlockList<>();
+    private class ComponentBlock extends Block {
+        BlockList<InjectBlock> injects = new BlockList<>(INSTANCEOF_BLOCK_CONDITION);
 
-        public ComponentBlock(TypeMirror type) {
-            super(type);
+        ComponentBlock(TypeMirror type) {
+            super(type, INSTANCEOF_BLOCK_CONDITION);
         }
 
         @Override
@@ -299,15 +350,20 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             CodeBlock.Builder code = CodeBlock.builder();
             code.add(childs.toCodeBlock(COMPONENT_VAR_NAME, parentType));
             code.add(injects.toCodeBlock(TARGET_VAR_NAME, parentType));
-
-
             return code.build();
-
         }
     }
 
 
-    class BlockList<T extends Block> extends ArrayList<T> {
+    private class BlockList<T extends Block> extends ArrayList<T> {
+
+        private static final long serialVersionUID = -951463758540572154L;
+        final String condition;
+
+        BlockList(String condition) {
+            this.condition = condition;
+        }
+
         @Override
         public boolean add(T block) {
             for (int i = 0; i < size(); i++) {
@@ -326,15 +382,15 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             return super.add(block);
         }
 
-        public CodeBlock toCodeBlock(String varName, TypeName parentComponent) {
+        CodeBlock toCodeBlock(String varName, TypeName parentComponent) {
             CodeBlock.Builder code = CodeBlock.builder();
 
             for (int i = 0; i < size(); i++) {
                 T componentBlock = get(i);
                 if (i == 0) {
-                    code.beginControlFlow("if($L instanceof $T)", varName, componentBlock.getTypeName());
+                    code.beginControlFlow("if(" + condition + ")", varName, componentBlock.getTypeName());
                 } else {
-                    code.nextControlFlow("else if($L instanceof $T)", varName, componentBlock.getTypeName());
+                    code.nextControlFlow("else if(" + condition + ")", varName, componentBlock.getTypeName());
                 }
                 TypeName parentType = parentComponent;
                 if (componentBlock instanceof ComponentBlock) {
