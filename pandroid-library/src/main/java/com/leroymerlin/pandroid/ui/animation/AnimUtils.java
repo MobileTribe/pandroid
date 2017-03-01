@@ -63,10 +63,12 @@ public class AnimUtils {
      */
     public static int[] getViewSize(@NotNull View view) {
         if (view.getHeight() == 0 && view.getWidth() == 0) {// try to calculate size
-            if (view.getParent() != null && view.getParent() instanceof View) {
-                mesureView((View) view.getParent());
-            } else {
-                mesureView(view);
+            if (view.getMeasuredWidth() == 0 && view.getMeasuredHeight() == 0) {
+                if (view.getParent() != null && view.getParent() instanceof View) {
+                    mesureView((View) view.getParent());
+                } else {
+                    mesureView(view);
+                }
             }
             return new int[]{
                     view.getMeasuredWidth(), view.getMeasuredHeight()

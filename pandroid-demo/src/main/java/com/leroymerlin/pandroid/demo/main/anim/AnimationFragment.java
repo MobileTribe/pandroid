@@ -92,13 +92,15 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
                         toastManager.makeToast(getActivity(), "Animation end", null);
                     }
                 };
-                if (circularFrameLayout.isClipOutEnable()) {
+                if (!circularFrameLayout.isOpen()) {
                     circularFrameLayout.open(animatorListener);
                 } else {
                     if (v == movingView) {
                         circularFrameLayout.setCenterOnChild(v.getId());
+                        circularFrameLayout.setCenterCanMove(true);
                     } else {
                         circularFrameLayout.setCenter(AnimUtils.getCenterPositionRelativeTo(v, circularFrameLayout));
+                        circularFrameLayout.setCenterCanMove(false);
 
                     }
                     circularFrameLayout.animateToRadius(v.getWidth(), getResources().getInteger(R.integer.anim_speed), animatorListener);

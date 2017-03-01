@@ -15,6 +15,7 @@
     </declare-styleable>
 
     <declare-styleable name="CircularFrameLayout">
+        <attr name="centerMove" format="boolean" />
         <attr name="clipOut" format="boolean" />
         <attr name="centerX" format="dimension" />
         <attr name="centerY" format="dimension" />

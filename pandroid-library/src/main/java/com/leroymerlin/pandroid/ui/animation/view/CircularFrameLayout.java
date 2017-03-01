@@ -45,14 +45,19 @@ public class CircularFrameLayout extends FrameLayout {
     float mCenterX;
     float mCenterY;
     float mRadius;
+    boolean centerCanMove;
 
 
     private final static boolean LOLLIPOP_PLUS = SDK_INT >= LOLLIPOP;
     private int animationDuration = -1;
+    private float cachedMaxRadius = -1;
 
     private boolean viewAttached;
     protected View cachedCenterView;
     private int centerViewId;
+    private boolean wasAttached;
+    private Runnable firstAnimation;
+    private boolean mMaxRadius;
 
     public CircularFrameLayout(Context context) {
         this(context, null);
@@ -73,10 +78,9 @@ public class CircularFrameLayout extends FrameLayout {
             mRadius = a.getDimension(R.styleable.CircularFrameLayout_revealRadius, mRadius);
             mCenterX = a.getDimension(R.styleable.CircularFrameLayout_centerX, mCenterX);
             mCenterY = a.getDimension(R.styleable.CircularFrameLayout_centerY, mCenterY);
+            centerCanMove = a.getBoolean(R.styleable.CircularFrameLayout_centerMove, false);
             setCenterOnChild(a.getResourceId(R.styleable.CircularFrameLayout_centerOn, -1));
             setClipOutEnable(a.getBoolean(R.styleable.CircularFrameLayout_clipOut, mClipOutEnable));
-
-
             a.recycle();
         }
     }
@@ -108,6 +112,7 @@ public class CircularFrameLayout extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         viewAttached = true;
+        wasAttached = true;
     }
 
     @Override
@@ -117,10 +122,50 @@ public class CircularFrameLayout extends FrameLayout {
     }
 
     @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        if (firstAnimation != null) {
+            firstAnimation.run();
+            firstAnimation = null;
+        }
+        if (!mClipOutEnable || isOpen()) {
+            return super.drawChild(canvas, child, drawingTime);
+        }
+        updateCenterView();
+        final int state = canvas.save();
+        mRevealPath.reset();
+        mRevealPath.addCircle(mCenterX, mCenterY, getRevealRadius(), Path.Direction.CW);
+        canvas.clipPath(mRevealPath);
+        boolean isInvalidate = super.drawChild(canvas, child, drawingTime);
+        canvas.restoreToCount(state);
+        return isInvalidate;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        cachedMaxRadius = -1;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        updateCenterView();
+        float x = ev.getX() - mCenterX;
+        float y = ev.getY() - mCenterY;
+        if ((!mClipOutEnable && !isAnimated()) || Math.sqrt(x * x + y * y) <= getRevealRadius())
+            return super.dispatchTouchEvent(ev);
+        else
+            return false;
+    }
+
+    @Override
     public void setBackground(Drawable background) {
         //Background is not supported in circularFrameLayout
     }
 
+    @Override
+    public void setBackgroundResource(int resid) {
+        //Background is not supported in circularFrameLayout
+    }
 
     public void setCenterOnChild(@IdRes int viewId) {
         if (viewId > 0) {
@@ -169,12 +214,8 @@ public class CircularFrameLayout extends FrameLayout {
         }
 
         if (mCenterX != centerX || mCenterY != centerY) {
-            boolean wasOpen = isOpen();
             mCenterX = centerX;
             mCenterY = centerY;
-            if (wasOpen) {
-                setRevealRadius(getMaxRadius());
-            }
             invalidate();
         }
     }
@@ -205,7 +246,9 @@ public class CircularFrameLayout extends FrameLayout {
      */
     public void setRevealRadius(float radius) {
         if (mRadius != radius) {
+            mMaxRadius = radius == getMaxRadius();
             mRadius = radius;
+            setVisibility(isOpen() ? VISIBLE : INVISIBLE);
             invalidate();
         }
     }
@@ -216,6 +259,9 @@ public class CircularFrameLayout extends FrameLayout {
      * @hide
      */
     public float getRevealRadius() {
+        if (mMaxRadius) {
+            mRadius = getMaxRadius();
+        }
         return mRadius;
     }
 
@@ -230,39 +276,48 @@ public class CircularFrameLayout extends FrameLayout {
     }
 
     public void animateToRadius(float radius, int duration, final Animator.AnimatorListener listener) {
-        animate(Float.MIN_VALUE, radius, duration, listener);
+        animate(getRevealRadius(), radius, duration, listener);
     }
 
 
     private Animator circularReveal;
 
     public boolean isOpen() {
-        return getMaxRadius() == getRevealRadius();
+        return getMaxRadius() <= getRevealRadius();
     }
 
     public boolean isClose() {
-        return 0 == getRevealRadius();
+        return 0 >= getRevealRadius();
     }
 
-    public void animate(float from, final float to, final int duration, final Animator.AnimatorListener listener) {
-        if (circularReveal != null && circularReveal.isRunning())
+    public void animate(final float from, final float to, final int duration, final Animator.AnimatorListener listener) {
+        if (circularReveal != null && circularReveal.isRunning()) {
+            float currentRadius = getRevealRadius();
             circularReveal.cancel();
-
-
-        final boolean finalOpen = to >= getMaxRadius();
-
-        if (!viewAttached) {
-            setRevealRadius(to);
-            setClipOutEnable(!finalOpen);
-        } else {
-            if (from == Float.MIN_VALUE) {
-                from = mRadius;
+            circularReveal = null;
+            if (currentRadius == from && currentRadius != getRevealRadius()) { //
+                animate(getRevealRadius(), to, duration, listener);
+                return;
             }
+        }
+        if (!viewAttached) {
+            if (wasAttached) {
+                setRevealRadius(to);
+                setClipOutEnable(!isOpen() && !isClose());
+            } else {
+                firstAnimation = new Runnable() {
+                    @Override
+                    public void run() {
+                        animate(from, to, duration, listener);
+                    }
+                };
+            }
+        } else {
+            final boolean finalOpen = to >= getMaxRadius();
+
             circularReveal = getAnimation(from, to);
             circularReveal.setDuration(duration);
-
             final AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-            final float finalFrom = from;
             circularReveal.setInterpolator(interpolator);
             circularReveal.addListener(new Animator.AnimatorListener() {
 
@@ -271,8 +326,7 @@ public class CircularFrameLayout extends FrameLayout {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    setVisibility(VISIBLE);
-                    setClipOutEnable(!LOLLIPOP_PLUS || centerViewId > 0);
+                    setClipOutEnable(!useCircularRevealAnimation());
                     startTime = System.currentTimeMillis();
                     if (listener != null)
                         listener.onAnimationStart(animation);
@@ -284,11 +338,9 @@ public class CircularFrameLayout extends FrameLayout {
                         return;
 
                     if (to == 0) {
-                        setVisibility(INVISIBLE);
                         setClipOutEnable(false);
                     } else if (finalOpen) {
                         setClipOutEnable(false);
-
                     } else {
                         setClipOutEnable(true);
                     }
@@ -309,7 +361,7 @@ public class CircularFrameLayout extends FrameLayout {
                     }
                     float value = interpolator.getInterpolation((float) (endTime - startTime) / animation.getDuration());
 
-                    setRevealRadius(finalFrom + (to - finalFrom) * value);
+                    setRevealRadius(from + (to - from) * value);
 
                 }
 
@@ -324,75 +376,38 @@ public class CircularFrameLayout extends FrameLayout {
 
     }
 
-    @Override
-    public void invalidate() {
-        super.invalidate();
-    }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected Animator getAnimation(float from, float to) {
         updateCenterView();
-        if (LOLLIPOP_PLUS && centerViewId <= 0) {
+        if (useCircularRevealAnimation()) {
             return ViewAnimationUtils.createCircularReveal(this, (int) mCenterX, (int) mCenterY, from, to);
         } else {
             return ObjectAnimator.ofFloat(this, "revealRadius", from, to);
         }
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        if (!mClipOutEnable) {
-            super.draw(canvas);
-            return;
-        }
-
-        final int state = canvas.save();
-
-        mRevealPath.reset();
-        mRevealPath.addCircle(mCenterX, mCenterY, mRadius, Path.Direction.CW);
-
-        canvas.clipPath(mRevealPath);
-        super.draw(canvas);
-        canvas.restoreToCount(state);
+    private boolean useCircularRevealAnimation() {
+        return LOLLIPOP_PLUS && (centerViewId <= 0 || !centerCanMove);
     }
 
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        if (!mClipOutEnable) {
-            return super.drawChild(canvas, child, drawingTime);
-        }
 
-        updateCenterView();
-        final int state = canvas.save();
-
-        mRevealPath.reset();
-        mRevealPath.addCircle(mCenterX, mCenterY, mRadius, Path.Direction.CW);
-
-        canvas.clipPath(mRevealPath);
-        boolean isInvalidate = super.drawChild(canvas, child, drawingTime);
-        canvas.restoreToCount(state);
-        return isInvalidate;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        float x = ev.getX() - mCenterX;
-        float y = ev.getY() - mCenterY;
-        if ((!mClipOutEnable && !isAnimated()) || Math.sqrt(x * x + y * y) <= mRadius)
-            return super.dispatchTouchEvent(ev);
-        else
-            return false;
+    public void setCenterCanMove(boolean canMove) {
+        this.centerCanMove = canMove;
     }
 
 
     public float getMaxRadius() {
-        int[] size = AnimUtils.getViewSize(this);
-        int w = size[0];
-        int h = size[1];
-        double xSize = Math.max(mCenterX, w - mCenterX);
-        double ySize = Math.max(mCenterY, h - mCenterY);
-        double diago = Math.sqrt(xSize * xSize + ySize * ySize);
-        return (float) diago;
+        if (cachedMaxRadius <= 0) {
+            updateCenterView();
+            int[] size = AnimUtils.getViewSize(this);
+            int w = size[0];
+            int h = size[1];
+            double xSize = Math.max(mCenterX, w - mCenterX);
+            double ySize = Math.max(mCenterY, h - mCenterY);
+            double diago = Math.sqrt(xSize * xSize + ySize * ySize);
+            cachedMaxRadius = (float) diago;
+        }
+        return cachedMaxRadius;
     }
 
 
