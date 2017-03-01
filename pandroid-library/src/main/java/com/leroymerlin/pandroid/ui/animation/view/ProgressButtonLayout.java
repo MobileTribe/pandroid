@@ -1,12 +1,16 @@
 package com.leroymerlin.pandroid.ui.animation.view;
 
 import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.ui.animation.AnimUtils;
@@ -63,6 +67,18 @@ public class ProgressButtonLayout extends CircularFrameLayout {
         progressWheel.setCircleRadius(buttonHeight / 2);
         progressWheel.animate().setDuration(duration).alpha(1);
         progressWheel.spin();
+        if (contentView instanceof TextView) {
+            int color = ((TextView) contentView).getTextColors().getDefaultColor();
+            ValueAnimator textColorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), color, Color.argb(0, Color.red(color), Color.green(color), Color.blue(color)));
+            textColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    ((TextView) contentView).setTextColor((Integer) animator.getAnimatedValue());
+                }
+            });
+            textColorAnimator.setDuration(duration);
+            textColorAnimator.start();
+        }
         animateToRadius(buttonHeight / 2, duration, new SimpleAnimatorListener());
     }
 
@@ -72,6 +88,20 @@ public class ProgressButtonLayout extends CircularFrameLayout {
         int duration = anim ? getResources().getInteger(R.integer.anim_speed) : 1;
         progressWheel.stopSpinning();
         progressWheel.animate().setDuration(duration).alpha(0);
+
+        if (contentView instanceof TextView) {
+            int color = ((TextView) contentView).getTextColors().getDefaultColor();
+            ValueAnimator textColorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), color, Color.argb(255, Color.red(color), Color.green(color), Color.blue(color)));
+            textColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    ((TextView) contentView).setTextColor((Integer) animator.getAnimatedValue());
+                }
+            });
+            textColorAnimator.setDuration(duration);
+            textColorAnimator.start();
+        }
+
         open(new SimpleAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -88,6 +118,9 @@ public class ProgressButtonLayout extends CircularFrameLayout {
             throw new IllegalStateException("ScrollView can host only one direct child");
         } else {
             contentView = child;
+            if (contentView instanceof TextView) {
+                contentView.setTag(((TextView) contentView).getTextColors());
+            }
             this.cachedCenterView = child;
             ((LayoutParams) params).gravity = Gravity.CENTER;
             super.addView(child, index, params);
