@@ -14,10 +14,10 @@
             android:id="@+id/animation_tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/navigation_animation"
             android:layout_marginLeft="20dp"
+            android:gravity="center"
             android:paddingLeft="20dp"
+            android:text="@string/navigation_animation"
             android:textColor="@color/pandroid_red"
             android:textSize="@dimen/xlarge_text" />
 
@@ -58,9 +58,9 @@
             android:id="@+id/animation_circular"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            app:centerOn="@+id/animation_test_btn4"
             app:clipOut="true"
-            app:revealRadius="100dp"
-            app:centerOn="@+id/animation_test_btn4">
+            app:revealRadius="100dp">
 
             <View
                 android:layout_width="match_parent"
@@ -91,12 +91,23 @@
                 android:layout_gravity="bottom|right" />
 
             <Button
-                android:id="@id/animation_test_btn4"
+                android:id="@+id/animation_test_btn4"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center" />
 
 
         </com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout>
+
+        <com.leroymerlin.pandroid.ui.animation.view.ProgressButtonLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/animation_btn_load"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="@string/animation_load" />
+        </com.leroymerlin.pandroid.ui.animation.view.ProgressButtonLayout>
     </LinearLayout>
 </com.leroymerlin.pandroid.ui.animation.view.AnimatedScrollView>

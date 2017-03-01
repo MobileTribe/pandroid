@@ -44,7 +44,8 @@ public class CircularFrameLayout extends FrameLayout {
 
     float mCenterX;
     float mCenterY;
-    float mRadius;
+    private float mRadius = -1;
+    private boolean mMaxRadius;
     boolean centerCanMove;
 
 
@@ -57,7 +58,6 @@ public class CircularFrameLayout extends FrameLayout {
     private int centerViewId;
     private boolean wasAttached;
     private Runnable firstAnimation;
-    private boolean mMaxRadius;
 
     public CircularFrameLayout(Context context) {
         this(context, null);
@@ -76,11 +76,16 @@ public class CircularFrameLayout extends FrameLayout {
                     R.styleable.CircularFrameLayout);
 
             mRadius = a.getDimension(R.styleable.CircularFrameLayout_revealRadius, mRadius);
+            if (mRadius == -1) {
+                mMaxRadius = true;
+            }
             mCenterX = a.getDimension(R.styleable.CircularFrameLayout_centerX, mCenterX);
             mCenterY = a.getDimension(R.styleable.CircularFrameLayout_centerY, mCenterY);
             centerCanMove = a.getBoolean(R.styleable.CircularFrameLayout_centerMove, false);
             setCenterOnChild(a.getResourceId(R.styleable.CircularFrameLayout_centerOn, -1));
             setClipOutEnable(a.getBoolean(R.styleable.CircularFrameLayout_clipOut, mClipOutEnable));
+
+
             a.recycle();
         }
     }
@@ -248,7 +253,7 @@ public class CircularFrameLayout extends FrameLayout {
         if (mRadius != radius) {
             mMaxRadius = radius == getMaxRadius();
             mRadius = radius;
-            setVisibility(isOpen() ? VISIBLE : INVISIBLE);
+            setVisibility(!isClose() ? VISIBLE : INVISIBLE);
             invalidate();
         }
     }

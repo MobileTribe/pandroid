@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,12 +21,14 @@ import com.leroymerlin.pandroid.ui.animation.Rotate3dAnimation;
 import com.leroymerlin.pandroid.ui.animation.SimpleAnimatorListener;
 import com.leroymerlin.pandroid.ui.animation.ViewInfosContainer;
 import com.leroymerlin.pandroid.ui.animation.view.CircularFrameLayout;
+import com.leroymerlin.pandroid.ui.animation.view.ProgressButtonLayout;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 import com.leroymerlin.pandroid.utils.DeviceUtils;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -175,5 +178,19 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
                 rotateView.startAnimation(rotate3dAnimation);
             }
         });
+    }
+
+    @OnClick(R.id.animation_btn_load)
+    public void onLoadClicked(Button load){
+        final ProgressButtonLayout progressButtonLayout = (ProgressButtonLayout) load.getParent();
+        progressButtonLayout.load(true);
+
+        load.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressButtonLayout.stopLoading(true);
+            }
+        }, 2000);
+
     }
 }
