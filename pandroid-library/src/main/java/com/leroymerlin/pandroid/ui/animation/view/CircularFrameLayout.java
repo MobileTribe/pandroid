@@ -272,8 +272,7 @@ public class CircularFrameLayout extends FrameLayout {
 
 
     public void open(final Animator.AnimatorListener listener) {
-        float radius = getMaxRadius();
-        animateToRadius(radius, getAnimationDuration(), listener);
+        animateToRadius(Float.MAX_VALUE, getAnimationDuration(), listener);
     }
 
     public void close(final Animator.AnimatorListener listener) {
@@ -281,7 +280,7 @@ public class CircularFrameLayout extends FrameLayout {
     }
 
     public void animateToRadius(float radius, int duration, final Animator.AnimatorListener listener) {
-        animate(getRevealRadius(), radius, duration, listener);
+        animate(Float.MIN_VALUE, radius, duration, listener);
     }
 
 
@@ -295,90 +294,94 @@ public class CircularFrameLayout extends FrameLayout {
         return 0 >= getRevealRadius();
     }
 
-    public void animate(final float from, final float to, final int duration, final Animator.AnimatorListener listener) {
-        if (circularReveal != null && circularReveal.isRunning()) {
-            float currentRadius = getRevealRadius();
-            circularReveal.cancel();
-            circularReveal = null;
-            if (currentRadius == from && currentRadius != getRevealRadius()) { //
-                animate(getRevealRadius(), to, duration, listener);
-                return;
-            }
-        }
-        if (!viewAttached) {
-            if (wasAttached) {
+    public void animate(final float initFrom, final float initTo, final int duration, final Animator.AnimatorListener listener) {
+
+        if (!viewAttached && !wasAttached) {
+            firstAnimation = new Runnable() {
+                @Override
+                public void run() {
+                    animate(initFrom, initTo, duration, listener);
+                }
+            };
+        } else {
+            final float to = initTo == Float.MAX_VALUE ? getMaxRadius() : initTo;
+            if (!viewAttached) {
                 setRevealRadius(to);
                 setClipOutEnable(!isOpen() && !isClose());
             } else {
-                firstAnimation = new Runnable() {
-                    @Override
-                    public void run() {
-                        animate(from, to, duration, listener);
-                    }
-                };
-            }
-        } else {
-            final boolean finalOpen = to >= getMaxRadius();
-
-            circularReveal = getAnimation(from, to);
-            circularReveal.setDuration(duration);
-            final AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
-            circularReveal.setInterpolator(interpolator);
-            circularReveal.addListener(new Animator.AnimatorListener() {
-
-                boolean cancelled;
-                double startTime;
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    setClipOutEnable(!useCircularRevealAnimation());
-                    startTime = System.currentTimeMillis();
-                    if (listener != null)
-                        listener.onAnimationStart(animation);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (cancelled)
+                final float from = initFrom == Float.MIN_VALUE ? getRevealRadius() : initFrom;
+                if (circularReveal != null && circularReveal.isRunning()) {
+                    float currentRadius = getRevealRadius();
+                    circularReveal.cancel();
+                    circularReveal = null;
+                    if (currentRadius == from && currentRadius != getRevealRadius()) { //
+                        animate(getRevealRadius(), to, duration, listener);
                         return;
-
-                    if (to == 0) {
-                        setClipOutEnable(false);
-                    } else if (finalOpen) {
-                        setClipOutEnable(false);
-                    } else {
-                        setClipOutEnable(true);
                     }
-                    setRevealRadius(!finalOpen ? to : getMaxRadius());
-
-
-                    if (listener != null)
-                        listener.onAnimationEnd(animation);
                 }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    long endTime = System.currentTimeMillis();
+                final boolean finalOpen = to >= getMaxRadius();
 
-                    cancelled = true;
-                    if (listener != null) {
-                        listener.onAnimationCancel(animation);
+                circularReveal = getAnimation(from, to);
+                circularReveal.setDuration(duration);
+                final AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+                circularReveal.setInterpolator(interpolator);
+                circularReveal.addListener(new Animator.AnimatorListener() {
+
+                    boolean cancelled;
+                    double startTime;
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        setClipOutEnable(!useCircularRevealAnimation());
+                        startTime = System.currentTimeMillis();
+                        if (listener != null)
+                            listener.onAnimationStart(animation);
                     }
-                    float value = interpolator.getInterpolation((float) (endTime - startTime) / animation.getDuration());
 
-                    setRevealRadius(from + (to - from) * value);
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (cancelled)
+                            return;
 
-                }
+                        if (to == 0) {
+                            setClipOutEnable(false);
+                        } else if (finalOpen) {
+                            setClipOutEnable(false);
+                        } else {
+                            setClipOutEnable(true);
+                        }
+                        setRevealRadius(!finalOpen ? to : getMaxRadius());
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    if (listener != null)
-                        listener.onAnimationRepeat(animation);
-                }
-            });
-            circularReveal.start();
+
+                        if (listener != null)
+                            listener.onAnimationEnd(animation);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        long endTime = System.currentTimeMillis();
+
+                        cancelled = true;
+                        if (listener != null) {
+                            listener.onAnimationCancel(animation);
+                        }
+                        float value = interpolator.getInterpolation((float) (endTime - startTime) / animation.getDuration());
+
+                        setRevealRadius(from + (to - from) * value);
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                        if (listener != null)
+                            listener.onAnimationRepeat(animation);
+                    }
+                });
+                circularReveal.start();
+
+            }
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
