@@ -106,7 +106,8 @@ To add the needed dependencies you have to declare it in the pandroid extension 
 ----
 pandroid{
     library('libName') { //Regex matching declared configurator will bring the dependency
-        manifestConfig 'param1', 'param2', 'param3'  //needed configuration in manifest
+        libParam1 'param1'
+        libParam2 'param2'
     }
 }
 ----
@@ -124,17 +125,18 @@ pandroid{
         'name.of.my.lib' {
             gradle {
             //This part will be applyed on your build.gradle
+                config ->
                 dependencies {
                    compile ('name.of.my.lib:version')
                 }
             manifest {
             //This part will be merged to your manifest
-                    params ->
+                config ->
                         '''
         <application>
             <meta-data
                 android:name="my.lib.ApiKey"
-                android:value="''' + params[0] + '''" />
+                android:value="''' + config.libParam1 + '''" />
         </application>
     '''
     }
