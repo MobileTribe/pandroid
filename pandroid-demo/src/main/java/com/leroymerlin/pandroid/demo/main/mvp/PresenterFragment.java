@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
-import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by Mehdi on 08/11/2016.
@@ -35,11 +35,9 @@ public class PresenterFragment extends PandroidFragment<FragmentOpener> implemen
 
     //end::PandroidBindLifeCycleDelegateAnnotationUseCase[]
 
-    @BindView(R.id.text1)
+    @BindView(R.id.presenter_btn)
     TextView mTextView;
 
-    @Inject
-    ReviewManager mReviewManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +58,9 @@ public class PresenterFragment extends PandroidFragment<FragmentOpener> implemen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+    @OnClick(R.id.presenter_btn)
+    public void onTextClicked(){
         mTestPresenter.load();
     }
 

@@ -8,14 +8,12 @@ import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by florian on 26/11/15.
  */
-public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
+public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         CancellableActionDelegate.ActionDelegateRegister {
 
     public static final String TAG = "PandroidLifecycleDelegate";
@@ -50,7 +48,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onInit(Object target) {
+    public void onInit(T target) {
         super.onInit(target);
         for (int i = 0; i < lifecycleDelegates.size(); i++) {
             lifecycleDelegates.get(i).onInit(target);
@@ -59,7 +57,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onCreateView(Object target, View view, Bundle savedInstanceState) {
+    public void onCreateView(T target, View view, Bundle savedInstanceState) {
         super.onCreateView(target, view, savedInstanceState);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onCreateView(target, view, savedInstanceState);
@@ -68,7 +66,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onResume(Object target) {
+    public void onResume(T target) {
         super.onResume(target);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onResume(target);
@@ -77,7 +75,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onPause(Object target) {
+    public void onPause(T target) {
         super.onPause(target);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onPause(target);
@@ -86,7 +84,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onSaveView(Object target, Bundle outState) {
+    public void onSaveView(T target, Bundle outState) {
         super.onSaveView(target, outState);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onSaveView(target, outState);
@@ -95,7 +93,7 @@ public class PandroidDelegate extends SimpleLifecycleDelegate<Object> implements
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onDestroyView(Object target) {
+    public void onDestroyView(T target) {
         super.onDestroyView(target);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onDestroyView(target);

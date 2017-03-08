@@ -1,5 +1,9 @@
 package com.leroymerlin.pandroid.demo.main.mvp;
 
+import android.os.Bundle;
+import android.view.View;
+
+import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.future.NetActionDelegate;
@@ -7,16 +11,22 @@ import com.leroymerlin.pandroid.mvp.Presenter;
 
 import javax.inject.Inject;
 
+import icepick.Icicle;
+
 /**
  * Created by Mehdi on 08/11/2016.
  */
 public class TestPresenter extends Presenter<TestPresenter.TestPresenterView> {
 
-    private ReviewManager mReviewManager;
+    ReviewManager mReviewManager;
+
+    @Icicle
+    Review review;
 
     @Inject
     public TestPresenter(ReviewManager reviewManager) {
         super();
+        addLifecycleDelegate(new IcepickLifecycleDelegate());
         mReviewManager = reviewManager;
     }
 
@@ -25,11 +35,20 @@ public class TestPresenter extends Presenter<TestPresenter.TestPresenterView> {
         super.onInit(target);
     }
 
-    public void load() {
-        mReviewManager.getReview("1", new NetActionDelegate<Review>(this) {
+
+    @Override
+    public void onCreateView(TestPresenterView target, View view, Bundle savedInstanceState) {
+        super.onCreateView(target, view, savedInstanceState);
+        load();
+    }
+
+    void load() {
+
+        NetActionDelegate<Review> delegate = new NetActionDelegate<Review>(this) {
 
             @Override
             protected void success(Review result) {
+                review = result;
                 final TestPresenterView view = getView();
                 if (view != null) {
                     view.onDataLoaded(result.getBody());
@@ -43,11 +62,17 @@ public class TestPresenter extends Presenter<TestPresenter.TestPresenterView> {
                     view.onError(errorMessage);
                 }
             }
-        });
+        };
+        if (review != null) {
+            delegate.onSuccess(review);
+        } else {
+            mReviewManager.getReview("1", delegate);
+        }
     }
 
     interface TestPresenterView {
         void onDataLoaded(String value);
+
         void onError(String error);
     }
 
