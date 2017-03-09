@@ -63,7 +63,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
     }
 
     //Map<DeclaredType, Map<DeclaredType, TypeElement>> dataMap = new HashMap<>();
-    private BlockList<GenerateBlock> generatedBlocks = new BlockList<GenerateBlock>(CLASS_EQUALS_BLOCK_CONDITION){
+    private BlockList<GenerateBlock> generatedBlocks = new BlockList<GenerateBlock>(CLASS_EQUALS_BLOCK_CONDITION) {
         private static final long serialVersionUID = 22771856657051246L;
 
         // Generated block can't have child is they check class equality
@@ -366,7 +366,8 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
         @Override
         public boolean add(T block) {
-            for (int i = 0; i < size(); i++) {
+            int i = 0;
+            while (i < size()) {
                 Block blockIndex = get(i);
                 int result = blockIndex.compareTo(block);
                 if (result > 0) {
@@ -375,8 +376,8 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                 } else if (result < 0) {
                     remove(i);
                     block.childs.add(blockIndex);
-                    add(i, block);
-                    return true;
+                } else {
+                    i++;
                 }
             }
             return super.add(block);
