@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.2.3-SNAPSHOT, Thu Feb 02 10:09:48 CET 2017">
+<meta name="author" content="Pandroid v2.2.4-SNAPSHOT, Thu Mar 09 10:27:51 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.2.3-SNAPSHOT, Thu Feb 02 10:09:48 CET 2017</span><br>
+<span id="author" class="author">Pandroid v2.2.4-SNAPSHOT, Thu Mar 09 10:27:51 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -751,7 +751,8 @@ to configure before any usage. If you forget to specify the optional library, yo
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">pandroid{
     library(<span class="string"><span class="delimiter">'</span><span class="content">libName</span><span class="delimiter">'</span></span>) { <span class="comment">//Regex matching declared configurator will bring the dependency</span>
-        manifestConfig <span class="string"><span class="delimiter">'</span><span class="content">param1</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">param2</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">param3</span><span class="delimiter">'</span></span>  <span class="comment">//needed configuration in manifest</span>
+        libParam1 <span class="string"><span class="delimiter">'</span><span class="content">param1</span><span class="delimiter">'</span></span>
+        libParam2 <span class="string"><span class="delimiter">'</span><span class="content">param2</span><span class="delimiter">'</span></span>
     }
 }</code></pre>
 </div>
@@ -773,17 +774,18 @@ It allows you to modify the gradle&#8217;s configuration and the manifest of you
         <span class="string"><span class="delimiter">'</span><span class="content">name.of.my.lib</span><span class="delimiter">'</span></span> {
             gradle {
             <span class="comment">//This part will be applyed on your build.gradle</span>
+                config -&gt;
                 dependencies {
                    compile (<span class="string"><span class="delimiter">'</span><span class="content">name.of.my.lib:version</span><span class="delimiter">'</span></span>)
                 }
             manifest {
             <span class="comment">//This part will be merged to your manifest</span>
-                    params -&gt;
+                config -&gt;
                         <span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="content">
         &lt;application&gt;
             &lt;meta-data
                 android:name=&quot;my.lib.ApiKey&quot;
-                android:value=&quot;</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span> + params[<span class="integer">0</span>] + <span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="content">&quot; /&gt;
+                android:value=&quot;</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span> + config.libParam1 + <span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="content">&quot; /&gt;
         &lt;/application&gt;
     </span><span class="delimiter">'</span></span><span class="string"><span class="delimiter">'</span><span class="delimiter">'</span></span>
     }
@@ -2398,7 +2400,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-01 16:42:24 +01:00
+Last updated 2017-03-03 15:18:34 +01:00
 </div>
 </div>
 </body>
