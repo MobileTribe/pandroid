@@ -217,7 +217,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                 ExecutableElement method = (ExecutableElement) content;
                 if (method.getParameters().size() == 1) {
                     VariableElement variableElement = method.getParameters().get(0);
-                    TypeMirror paramType = variableElement.asType();
+                    TypeMirror paramType = mTypesUtils.erasure(variableElement.asType());
                     currentBlock.injects.add(new InjectBlock(paramType));
                 }
             }
@@ -261,9 +261,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
 
         @Override
         public int compareTo(@Nonnull Block block) {
-            if (mTypesUtils.isSubtype(block.type, type)) {
+            if (mTypesUtils.isAssignable(block.type, type)) {
                 return 1;
-            } else if (mTypesUtils.isSubtype(type, block.type)) {
+            } else if (mTypesUtils.isAssignable(type, block.type)) {
                 return -1;
             } else {
                 return 0;
