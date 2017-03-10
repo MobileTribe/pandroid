@@ -166,9 +166,11 @@ apply plugin 'com.google.gms.google-services'
                         config.glideModule = "com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule"
                     }
                     '''
-    <meta-data
-            android:name="''' + config.glideModule + '''"
-            android:value="GlideModule" />
+    <application>
+        <meta-data
+                android:name="''' + config.glideModule + '''"
+                android:value="GlideModule" />
+    </application>
 '''
             }
         }
