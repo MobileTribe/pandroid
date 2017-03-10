@@ -304,6 +304,9 @@ public class CircularFrameLayout extends FrameLayout {
                 }
             };
         } else {
+            //if animation was planed we cancel it
+            firstAnimation = null;
+
             final float to = initTo == Float.MAX_VALUE ? getMaxRadius() : initTo;
             if (!viewAttached) {
                 setRevealRadius(to);

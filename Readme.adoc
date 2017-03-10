@@ -24,7 +24,11 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.2.5* - (2017-03-09)
+###
+*Fix*
+- Issue with CircularFrameLayout with multiple animation at start
+
+### *2.2.5* - (2017-03-10)
 *Fix*
 - Fix error with generated inject mapper method
 
