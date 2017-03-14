@@ -24,9 +24,10 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-###
+### *2.2.6* - (2017-03-14)
 *Fix*
 - Issue with CircularFrameLayout with multiple animation at start
+- Fix error with generated Pandroid classes
 
 ### *2.2.5* - (2017-03-10)
 *Fix*
