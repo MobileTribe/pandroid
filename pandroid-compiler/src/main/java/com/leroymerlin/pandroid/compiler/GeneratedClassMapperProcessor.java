@@ -107,6 +107,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
             if (type != null && target != null) {
 
                 GenerateBlock generatedBlock = new GenerateBlock(type);
+
                 int index = generatedBlocks.indexOf(generatedBlock);
                 if (index >= 0) {
                     generatedBlock = generatedBlocks.get(index);
@@ -114,6 +115,7 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     generatedBlocks.add(generatedBlock);
                 }
                 generatedBlock.create.add(new CreateBlock(target, typeElement));
+
             }
         }
 
@@ -318,6 +320,9 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     }
                 }
             }
+
+            code.add(childs.toCodeBlock(TARGET_VAR_NAME, parentType));
+
             return code.build();
         }
     }

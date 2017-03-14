@@ -3,11 +3,11 @@ package com;
 import com.leroymerlin.pandroid.annotations.EventReceiver;
 
 
-public class EventBusTestClass extends EventBusTestClassParent{
+public class EventBusTestClassParent {
 
 
     @EventReceiver
-    public void onEventReceived(){
+    public void onParentReceived(){
 
     }
 
