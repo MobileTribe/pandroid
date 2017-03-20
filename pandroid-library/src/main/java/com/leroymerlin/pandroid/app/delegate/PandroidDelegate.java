@@ -80,6 +80,9 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onPause(target);
         }
+        for (CancellableActionDelegate delegate : delegates) {
+            delegate.cancel();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -97,9 +100,6 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         super.onDestroyView(target);
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onDestroyView(target);
-        }
-        for (CancellableActionDelegate delegate : delegates) {
-            delegate.cancel();
         }
     }
 

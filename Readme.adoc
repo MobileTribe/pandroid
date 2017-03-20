@@ -24,6 +24,10 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.2.7* - (207-03-20)
+*Fix*
+- Cancel ActionDelegate is done in onPause instead of onDestroyView
+
 ### *2.2.6* - (2017-03-14)
 *Fix*
 - Issue with CircularFrameLayout with multiple animation at start
