@@ -22,7 +22,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -32,8 +31,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.security.auth.x500.X500Principal;
@@ -48,6 +45,7 @@ public class RsaAesCryptoManager implements CryptoManager {
 
     private static final String KEYPAIR_ALGO = "RSA";
     private static final String RSA_FORMAT = "RSA/ECB/PKCS1Padding";
+
     private static final String KEY_ALIAS = "_k_";
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
 
@@ -181,11 +179,6 @@ public class RsaAesCryptoManager implements CryptoManager {
         }
     }
 
-    private byte[] get256BitsKey(String seed) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(seed.getBytes());
-        return md.digest();
-    }
 
     @Override
     public String asymmetricEncrypt(String data) {
@@ -234,39 +227,22 @@ public class RsaAesCryptoManager implements CryptoManager {
     @Override
     public String symetricEncrypt(String seed, String data) {
         try {
-            //return CryptoUtils.encrypt(seed, value);
-            byte[] encryptionKey = get256BitsKey(seed);
-
-            SecretKey key = new SecretKeySpec(encryptionKey, "AES");
-
-            byte[] clearText = data.getBytes("UTF-8");
-            // Cipher is not thread safe
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            return new String(Base64.encode(cipher.doFinal(clearText), Base64.NO_WRAP), "UTF-8");
+            return AESEncryption.symetricEncrypt(seed, data);
         } catch (Exception e) {
             logWrapper.w(TAG, e);
+            return null;
         }
-        return null;
     }
 
     @Override
     public String symetricDecrypt(String seed, String encryptedData) {
         try {
-            byte[] encryptionKey = get256BitsKey(seed);
-
-            SecretKey key = new SecretKeySpec(encryptionKey, "AES");
-            ;
-            byte[] encrypedPwdBytes = Base64.decode(encryptedData, Base64.NO_WRAP);
-            // cipher is not thread safe
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] decrypedValueBytes = (cipher.doFinal(encrypedPwdBytes));
-            return new String(decrypedValueBytes, "UTF-8");
+            return AESEncryption.symetricDecrypt(seed, encryptedData);
         } catch (Exception e) {
             logWrapper.w(TAG, e);
+            return null;
         }
-
-        return null;
     }
+
+
 }
