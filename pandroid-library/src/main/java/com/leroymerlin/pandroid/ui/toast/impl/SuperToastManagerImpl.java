@@ -7,11 +7,10 @@ import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.github.johnpersano.supertoasts.SuperActivityToast;
-import com.github.johnpersano.supertoasts.SuperToast;
-import com.github.johnpersano.supertoasts.util.OnClickWrapper;
-import com.github.johnpersano.supertoasts.util.OnDismissWrapper;
-import com.github.johnpersano.supertoasts.util.Wrappers;
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.SuperToast;
+import com.github.johnpersano.supertoasts.library.utils.ListenerUtils;
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
@@ -27,11 +26,12 @@ import javax.inject.Singleton;
 @Singleton
 public class SuperToastManagerImpl implements ToastManager {
 
+
     @Inject
     public SuperToastManagerImpl() {
     }
 
-    private SuperActivityToast makeCustomToast(Activity activity, SuperToast.Type type, String text, int style, int duration) {
+    private SuperActivityToast makeCustomToast(Activity activity, int type, String text, int style, int duration) {
         SuperActivityToast toast = new SuperActivityToast(activity, type);
         toast.setText(text);
         applyStyle(toast, activity, style);
@@ -43,7 +43,7 @@ public class SuperToastManagerImpl implements ToastManager {
 
         toast.setTouchToDismiss(true);
 
-        toast.setAnimations(SuperToast.Animations.POPUP);
+        toast.setAnimations(Style.ANIMATIONS_POP);
         return toast;
     }
 
@@ -53,8 +53,8 @@ public class SuperToastManagerImpl implements ToastManager {
         }
         TypedArray attributes = activity.obtainStyledAttributes(style, R.styleable.ToastAppearance);
         int textColor = attributes.getColor(R.styleable.ToastAppearance_toastTextColor, ContextCompat.getColor(activity, R.color.white));
-        int backgroundColor = attributes.getResourceId(R.styleable.ToastAppearance_toastBackground, R.color.pandroid_green);
-        toast.setBackground(backgroundColor);
+        int backgroundColor = attributes.getColor(R.styleable.ToastAppearance_toastBackground, ContextCompat.getColor(activity, R.color.pandroid_green));
+        toast.setColor(backgroundColor);
         toast.setTextColor(textColor);
         attributes.recycle();
     }
@@ -62,21 +62,19 @@ public class SuperToastManagerImpl implements ToastManager {
     private ToastNotifier getNotifier(final SuperActivityToast toast, final ToastListener listener) {
 
         if (listener != null) {
-            OnDismissWrapper onDismissWrapper = new OnDismissWrapper(listener.getTag(), new SuperToast.OnDismissListener() {
+            toast.setOnDismissListener(listener.getTag(), new SuperToast.OnDismissListener() {
                 @Override
-                public void onDismiss(View view) {
+                public void onDismiss(View view, Parcelable token) {
                     listener.onDismiss();
                 }
             });
-            toast.setOnDismissWrapper(onDismissWrapper);
 
-            OnClickWrapper onClickWrapper = new OnClickWrapper(listener.getTag(), new SuperToast.OnClickListener() {
+            toast.setOnButtonClickListener(listener.getTag(), null, new SuperActivityToast.OnButtonClickListener() {
                 @Override
-                public void onClick(View view, Parcelable parcelable) {
+                public void onClick(View view, Parcelable token) {
                     listener.onActionClicked();
                 }
             });
-            toast.setOnClickWrapper(onClickWrapper);
 
 
         }
@@ -103,22 +101,26 @@ public class SuperToastManagerImpl implements ToastManager {
 
     @Override
     public void onRestoreState(Bundle outState, Activity activity, Collection<ToastListener> TaggedListener) {
-        Wrappers wrappers = new Wrappers();
+        ListenerUtils listenerUtils = ListenerUtils.newInstance();
         for (final ToastListener taggedListener : TaggedListener) {
-            wrappers.add(new OnDismissWrapper(taggedListener.getTag(), new SuperToast.OnDismissListener() {
-                @Override
-                public void onDismiss(View view) {
-                    ((ToastListener) taggedListener).onDismiss();
-                }
-            }));
-            wrappers.add(new OnClickWrapper(taggedListener.getTag(), new SuperToast.OnClickListener() {
-                @Override
-                public void onClick(View view, Parcelable parcelable) {
-                    ((ToastListener) taggedListener).onActionClicked();
-                }
-            }));
+            listenerUtils
+                    .putListener(taggedListener.getTag(), new SuperActivityToast.OnButtonClickListener() {
+                        @Override
+                        public void onClick(View view, Parcelable token) {
+                            ((ToastListener) taggedListener).onActionClicked();
+                        }
+                    })
+                    .putListener(taggedListener.getTag(), new SuperToast.OnDismissListener() {
+                        @Override
+                        public void onDismiss(View view, Parcelable token) {
+                            ((ToastListener) taggedListener).onDismiss();
+
+                        }
+                    });
+            listenerUtils.getOnButtonClickListenerHashMap();
+
         }
-        SuperActivityToast.onRestoreState(outState, activity, wrappers);
+        SuperActivityToast.onRestoreState(activity, outState, listenerUtils);
     }
 
     @Override
@@ -133,9 +135,10 @@ public class SuperToastManagerImpl implements ToastManager {
 
     @Override
     public ToastNotifier makeToast(Activity activity, String text, ToastListener listener, int style, int duration) {
-        final SuperActivityToast toast = makeCustomToast(activity, SuperToast.Type.STANDARD, text, style, duration);
+        final SuperActivityToast toast = makeCustomToast(activity, Style.TYPE_STANDARD, text, style, duration);
+        ToastNotifier notifier = getNotifier(toast, listener);
         toast.show();
-        return getNotifier(toast, listener);
+        return notifier;
     }
 
     @Override
@@ -150,10 +153,11 @@ public class SuperToastManagerImpl implements ToastManager {
 
     @Override
     public ToastNotifier makeImageToast(Activity activity, String text, int drawableResource, ToastListener listener, int style, int duration) {
-        final SuperActivityToast toast = makeCustomToast(activity, SuperToast.Type.STANDARD, text, style, duration);
-        toast.setIcon(drawableResource, SuperToast.IconPosition.LEFT);
+        final SuperActivityToast toast = makeCustomToast(activity, Style.TYPE_STANDARD, text, style, duration);
+        toast.setIconResource(Style.ICONPOSITION_LEFT, drawableResource);
+        ToastNotifier notifier = getNotifier(toast, listener);
         toast.show();
-        return getNotifier(toast, listener);
+        return notifier;
     }
 
     @Override
@@ -168,12 +172,13 @@ public class SuperToastManagerImpl implements ToastManager {
 
     @Override
     public ToastNotifier makeActionToast(Activity activity, String text, String buttonText, int icon, ToastListener listener, int style, int duration) {
-        SuperActivityToast toast = makeCustomToast(activity, SuperToast.Type.BUTTON, text, style, duration);
+        SuperActivityToast toast = makeCustomToast(activity, Style.TYPE_BUTTON, text, style, duration);
         if (icon > 0)
-            toast.setButtonIcon(icon);
+            toast.setButtonIconResource(icon);
         toast.setButtonText(buttonText);
+        ToastNotifier notifier = getNotifier(toast, listener);
         toast.show();
-        return getNotifier(toast, listener);
+        return notifier;
     }
 
     @Override
@@ -188,10 +193,11 @@ public class SuperToastManagerImpl implements ToastManager {
 
     @Override
     public ToastNotifier makeLoaderToast(Activity activity, String text, boolean undefinedLoad, ToastListener listener, int style, int duration) {
-        SuperActivityToast toast = makeCustomToast(activity, SuperToast.Type.PROGRESS_HORIZONTAL, text, style, duration);
+        SuperActivityToast toast = makeCustomToast(activity, Style.TYPE_PROGRESS_CIRCLE, text, style, duration);
         toast.setProgressIndeterminate(undefinedLoad);
+        ToastNotifier notifier = getNotifier(toast, listener);
         toast.show();
-        return getNotifier(toast, listener);
+        return notifier;
     }
 
     @Override

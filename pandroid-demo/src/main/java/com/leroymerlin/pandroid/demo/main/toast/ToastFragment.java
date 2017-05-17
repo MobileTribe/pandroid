@@ -83,7 +83,7 @@ public class ToastFragment extends PandroidFragment<FragmentOpener> {
                 action.run();
                 break;
             case R.id.toast_icon:
-                toastManager.makeImageToast(getActivity(), v.getText().toString(), R.drawable.icon_light_exit, null, R.style.Toast_Error);
+                toastManager.makeImageToast(getActivity(), v.getText().toString(), R.drawable.ic_error_outline_24dp, null, R.style.Toast_Error);
                 break;
 
         }

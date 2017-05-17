@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.demo.main.event;
 
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import icepick.Icicle;
 
 /**
  * Created by florian on 09/12/15.
@@ -33,7 +33,7 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
     @BindView(R.id.event_text_to_send)
     TextView tvMessage;
 
-    @Icicle
+    @Keep
     String test;
 
     @Nullable

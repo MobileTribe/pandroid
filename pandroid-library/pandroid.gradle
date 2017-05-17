@@ -46,9 +46,12 @@ pandroid {
         }
         "com.github.frankiesardo:icepick" { // IcepickLifecycleDelegate
             gradle {
+                repositories {
+                    maven {url "https://clojars.org/repo/"}
+                }
                 dependencies {
-                    compile "com.github.frankiesardo:icepick:$libraryIcepickVersion"
-                    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+                    compile "frankiesardo:icepick:$libraryIcepickVersion"
+                    provided "frankiesardo:icepick-processor:$libraryIcepickVersion"
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.demo.main.mvp;
 
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.view.View;
 
 import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
@@ -11,7 +12,6 @@ import com.leroymerlin.pandroid.mvp.Presenter;
 
 import javax.inject.Inject;
 
-import icepick.Icicle;
 
 /**
  * Created by Mehdi on 08/11/2016.
@@ -20,7 +20,7 @@ public class TestPresenter extends Presenter<TestPresenter.TestPresenterView> {
 
     ReviewManager mReviewManager;
 
-    @Icicle
+    @Keep
     Review review;
 
     @Inject

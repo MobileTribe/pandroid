@@ -50,8 +50,8 @@ class PandroidPluginTest {
 
         //project.apply from: 'local.properties'
         project.android {
-            compileSdkVersion 23
-            buildToolsVersion "23.0.2"
+            compileSdkVersion 25
+            buildToolsVersion "25.0.3"
         }
     }
 

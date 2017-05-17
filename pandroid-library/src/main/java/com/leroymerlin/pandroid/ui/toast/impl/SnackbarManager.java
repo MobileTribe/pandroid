@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.johnpersano.supertoasts.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.ui.loader.ProgressWheel;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;

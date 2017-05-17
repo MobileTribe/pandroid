@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
-apply plugin: 'delivery'
+apply plugin: 'com.leroymerlin.delivery'
 
 
 android {
@@ -41,7 +41,7 @@ dependencies {
     provided project(':pandroid-annotations')
 
     compile optionalLibs
-    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+    provided "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
 
@@ -64,10 +64,10 @@ dependencies {
 delivery {
     signingProperties {
         all {
-            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_dev.properties")
+            propertiesFile = file("${System.properties['user.home']}/.gradle/signing_dev.properties")
         }
         release {
-            propertiesFile = project.file("${System.properties['user.home']}/.gradle/signing_prod.properties")
+            propertiesFile = file("${System.properties['user.home']}/.gradle/signing_prod.properties")
         }
 
     }

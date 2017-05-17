@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.leroymerlin.pandroid.demo">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <application
-        android:allowBackup="false"
+        android:allowBackup="false" tools:replace="allowBackup"
         android:icon="@drawable/pandroid_ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
