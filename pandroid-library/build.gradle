@@ -65,3 +65,23 @@ dependencies {
 
     provided 'org.jetbrains:annotations-java5:15.0'
 }
+
+
+
+delivery{
+    flows{
+        documentation{
+            task 'createDoc'
+            add 'pandroid-doc/html/.'
+        }
+
+    }
+}
+
+
+task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidoctor', false))
+
+
+project.afterEvaluate({
+    tasks.findByPath('releaseGitStepPrepareReleaseVersion').dependsOn += tasks.findByPath('documentationFlow')
+})
