@@ -79,5 +79,5 @@ task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidocto
 project.afterEvaluate({
     def docFlow = tasks.findByPath('documentationFlow')
     tasks.findByPath('releaseGitStepCommitVersionFiles').dependsOn += docFlow
-    docFlow.mustRunAfter tasks.findByPath('releaseGitStepPrepareVersionFiles')
+    docFlow.mustRunAfter tasks.findByPath('releaseGitStepGenerateVersionFiles')
 })
