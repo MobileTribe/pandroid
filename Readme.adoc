@@ -13,9 +13,9 @@ image:https://api.bintray.com/packages/mobiletribe/maven/com.leroymerlin.pandroi
 
 ## Note
 
-Pandroid is a mobile archetype used for Android projects. It suggest a architecture for your mobile app and help you handle common problematic you meet in Android development.
+Pandroid is a mobile archetype used for Android projects. It suggest an architecture for your mobile app and help you handle common problematic you meet in Android development.
 
-To discover what the panda can do, please see the link:{htmlPath}pandroid-doc/html/Tutorial.html#_picture[tutorial part] of this wiki.
+To discover what the panda can do, please see the link:{htmlPath}pandroid-doc/html/Tutorial.html[tutorial part] of this wiki.
 
 
 This library was originaly used by Leroy Merlin France mobile teams to develop all their Android applications.
@@ -24,7 +24,18 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.2.7* - (207-03-20)
+
+### *2.3.+* - (soon)
+*Features*
+- RX integration
+- Android studio template
+- Databinding v2.0
+
+### *2.3.0* - (2017-05-17)
+*Update*
+- Update libraries to last version
+
+### *2.2.7* - (2017-03-20)
 *Fix*
 - Cancel ActionDelegate is done in onPause instead of onDestroyView
 

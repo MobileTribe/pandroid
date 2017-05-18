@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.event;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+
 import com.leroymerlin.pandroid.demo.main.MainActivity;
 
 import org.junit.Before;

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: '../pandroid-library/dagger.gradle'
-apply plugin: 'delivery'
+apply plugin: 'com.leroymerlin.delivery'
 
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)

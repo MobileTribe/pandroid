@@ -135,6 +135,9 @@ public class CircularFrameLayout extends FrameLayout {
         if (!mClipOutEnable || isOpen()) {
             return super.drawChild(canvas, child, drawingTime);
         }
+        if(isClose()){
+            return false;
+        }
         updateCenterView();
         final int state = canvas.save();
         mRevealPath.reset();
@@ -336,6 +339,7 @@ public class CircularFrameLayout extends FrameLayout {
 
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        setVisibility(VISIBLE);
                         setClipOutEnable(!useCircularRevealAnimation());
                         startTime = System.currentTimeMillis();
                         if (listener != null)

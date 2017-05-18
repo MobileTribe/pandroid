@@ -60,7 +60,10 @@ dependencies {
                 transitive = true;
             }
     }
-    provided "com.github.frankiesardo:icepick-processor:$libraryIcepickVersion"
+    provided "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
+    provided 'org.jetbrains:annotations-java5:15.0'
 }
+
+

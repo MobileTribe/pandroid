@@ -54,7 +54,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
     }
 
     @Override
-    public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    public CallAdapter<?, PandroidCall> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
         if (returnType instanceof ParameterizedType && (((ParameterizedType) returnType).getRawType() == PandroidCall.class || ((ParameterizedType) returnType).getRawType() == Call.class)) {
             Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
             return new ResponseCallAdapter(actualTypeArguments[0], annotations);
@@ -62,14 +62,14 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
         return null;
     }
 
-    final class ResponseCallAdapter implements CallAdapter<PandroidCall<?>> {
+    final class ResponseCallAdapter<R> implements CallAdapter<R, PandroidCall<?>> {
         private boolean needResponse;
         private Type responseType;
         private ServiceMock serviceMock;
 
         ResponseCallAdapter(Type responseType, Annotation[] annotations) {
             this.responseType = responseType;
-            if(responseType instanceof ParameterizedType && (((ParameterizedType) responseType).getRawType()).equals(Response.class)){
+            if (responseType instanceof ParameterizedType && (((ParameterizedType) responseType).getRawType()).equals(Response.class)) {
                 Type[] actualTypeArguments = ((ParameterizedType) responseType).getActualTypeArguments();
                 this.responseType = actualTypeArguments[0];
                 this.needResponse = true;
@@ -92,8 +92,9 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
             return responseType;
         }
 
+
         @Override
-        public <R> PandroidCall<?> adapt(final Call<R> call) {
+        public PandroidCall<?> adapt(final Call<R> call) {
             Call<R> callWrapper = call;
             if (serviceMock != null && serviceMock.isEnable() && mockEnable) {
                 callWrapper = new Call<R>() {
@@ -201,13 +202,14 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                                         bytes = response.errorBody().bytes();
                                     } catch (IOException ignore) {
                                     }
-                                    onError(new NetworkException(response.raw().request().url().toString(), response.code(), (TreeMap)response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
+                                    onError(new NetworkException(response.raw().request().url().toString(), response.code(), (TreeMap) response.headers().toMultimap(), new Exception(response.message()), bytes, System.currentTimeMillis() - startTime));
                                 }
                             }
                         }
 
                         @Override
                         public void onFailure(Call<R> call, final Throwable t) {
+
                             onError(new Exception(t));
                         }
 

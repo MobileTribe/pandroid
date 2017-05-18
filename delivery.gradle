@@ -1,4 +1,4 @@
-apply plugin: 'delivery'
+apply plugin: 'com.leroymerlin.delivery'
 
 
 delivery {

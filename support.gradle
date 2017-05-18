@@ -18,7 +18,7 @@ ext.optionalLibs = [
 
         "com.jakewharton:butterknife:$libraryButterknifeVersion", //ButterknifeLifecycleDelegate
 
-        "com.github.frankiesardo:icepick:$libraryIcepickVersion",//IcepickLifecycleDelegate
+        "frankiesardo:icepick:$libraryIcepickVersion",//IcepickLifecycleDelegate
 
         "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion", //Retrofit
         "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion",

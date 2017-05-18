@@ -57,11 +57,27 @@ install.dependsOn pandroidInstall
 task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
     project(it)
 }.collect { it.getTasksByName('uploadArtifacts', false) });
-uploadArchives.dependsOn pandroidUploadArchives
+uploadArtifacts.dependsOn pandroidUploadArchives
 
-/*
-afterEvaluate{
-    getTasksByName('updateVersionsFile', false)[0].dependsOn += project(':pandroid-doc').getTasksByName('asciidoctor', false);
+
+
+delivery{
+    flows{
+        documentation{
+            step 'documentation', 'Generate documentation'
+            task 'createDoc'
+            add 'pandroid-doc/html/.'
+        }
+
+    }
 }
 
-*/
+
+task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidoctor', false))
+
+
+project.afterEvaluate({
+    def docFlow = tasks.findByPath('documentationFlow')
+    tasks.findByPath('releaseGitStepCommitVersionFiles').dependsOn += docFlow
+    docFlow.mustRunAfter tasks.findByPath('releaseGitStepGenerateVersionFiles')
+})

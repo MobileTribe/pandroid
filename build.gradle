@@ -4,8 +4,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.leroymerlin.plugins:delivery-plugin:2.0.0-BETA10'
+        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.leroymerlin.plugins:delivery-plugin:3.0.0-BETA7'
     }
 }
 
@@ -15,7 +15,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
-
+        maven { url "https://clojars.org/repo/" }
     }
 
 }
@@ -33,7 +33,6 @@ buildscript {
         }
     }
     dependencies {
-
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2.1"
     }
 }

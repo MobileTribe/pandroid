@@ -38,7 +38,7 @@ class SecureProperty {
             variant ->
 
                 String name = variant.name
-                if(variant.flavorName.equals(this.name)){
+                if (variant.flavorName.equals(this.name)) {
                     applyBuildConfigField(project, variant);
                 }
         }
@@ -68,8 +68,11 @@ class SecureProperty {
         props.each {
             key, value
                 ->
-                    String encrypt = AESEncryption.symetricEncrypt(sha1, value);
-                    variant.buildConfigField("String", "SECURE_" + key, "\"$encrypt\"")
+                String encrypt = null;
+                try {
+                    encrypt = AESEncryption.symetricEncrypt(sha1, value);
+                } catch (Exception ignore) {}
+                variant.buildConfigField("String", "SECURE_" + key, "\"$encrypt\"")
         }
     }
 
