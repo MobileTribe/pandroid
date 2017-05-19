@@ -65,7 +65,7 @@ delivery{
     flows{
         documentation{
             step 'documentation', 'Generate documentation'
-            task 'createDoc'
+            task 'createDoc', true
             add 'pandroid-doc/html/.'
         }
 
