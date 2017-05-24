@@ -76,6 +76,7 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
             @Override
             public void onClick(View v) {
                 ViewInfosContainer ivInfos = new ViewInfosContainer(ivMaterial, view);
+                tvTitle.setTag("coucou");
                 ViewInfosContainer tvInfos = new ViewInfosContainer(tvTitle, view);
 
                 //tag::FragmentWithOpener[]
