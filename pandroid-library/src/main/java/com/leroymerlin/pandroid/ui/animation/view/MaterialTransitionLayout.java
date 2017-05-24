@@ -7,12 +7,15 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import com.leroymerlin.pandroid.ui.animation.ViewInfosContainer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by florian on 19/10/2015.
@@ -35,8 +39,9 @@ public class MaterialTransitionLayout extends FrameLayout {
     private CircularFrameLayout circularFrameLayout;
     private int revealLayout;
 
-    public int ANIM_FADE_DURATION;
-    private int ANIM_MOVE_DURATION;
+    protected int ANIM_FADE_DURATION;
+    protected int animMoveDuration;
+    protected Interpolator interpolator = new AccelerateDecelerateInterpolator();
 
 
     public MaterialTransitionLayout(Context context, AttributeSet attrs) {
@@ -46,7 +51,7 @@ public class MaterialTransitionLayout extends FrameLayout {
 
     private void initView(Context context, AttributeSet attrs) {
         ANIM_FADE_DURATION = getResources().getInteger(R.integer.fast_anim_speed);
-        ANIM_MOVE_DURATION = (getResources().getInteger(R.integer.medium_anim_speed));
+        animMoveDuration = (getResources().getInteger(R.integer.medium_anim_speed));
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MaterialTransitionLayout);
             circularFrameLayout = new CircularFrameLayout(context);
@@ -62,7 +67,7 @@ public class MaterialTransitionLayout extends FrameLayout {
         if (child.getId() == revealLayout) {
             circularFrameLayout.addView(child, params);
         } else {
-            super.addView(child, index, params);
+            super.addView(child, Math.max(0, getChildCount() - 1), params);
         }
     }
 
@@ -70,6 +75,23 @@ public class MaterialTransitionLayout extends FrameLayout {
     private HashMap<ViewInfosContainer, ViewInfosContainer> animatedMap = new HashMap<>();
     private int[] revealCenter;
     private boolean opening = true;
+
+
+    public void setAnimMoveDuration(int animMoveDuration) {
+        this.animMoveDuration = animMoveDuration;
+    }
+
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
+    }
+
+    public View addAnimationWithViewId(ViewInfosContainer fromInfos, int targetId) {
+        return addAnimation(fromInfos, new ViewInfosContainer(findTargetViewById(targetId), this));
+    }
+
+    public View addAnimationWithViewTag(ViewInfosContainer fromInfos, Object targetTag) {
+        return addAnimation(fromInfos, new ViewInfosContainer(findTargetViewByTag(targetTag), this));
+    }
 
     public View addAnimation(ViewInfosContainer fromInfos, ViewInfosContainer toInfos) {
 
@@ -80,7 +102,7 @@ public class MaterialTransitionLayout extends FrameLayout {
             PandroidLogger.getInstance().wtf(TAG, e);
             return null;
         }
-        View targetView = findTargetView(toInfos.viewId);
+        View targetView = findTargetView(toInfos);
         opening = true;
 
         if (targetView instanceof ImageView && transitionView instanceof ImageView) {
@@ -92,12 +114,9 @@ public class MaterialTransitionLayout extends FrameLayout {
         addView(transitionView);
         fromInfos.applyOn(transitionView);
         transitionView.setId(targetView.getId());
+        transitionView.setTag(targetView.getTag());
         animatedMap.put(toInfos, fromInfos);
         return transitionView;
-    }
-
-    public View addAnimation(ViewInfosContainer fromInfos, int targetId) {
-        return addAnimation(fromInfos, new ViewInfosContainer(findTargetView(targetId), this));
     }
 
     private List<Animator> createViewAnimators(final View transitionView, final ViewInfosContainer fromInfos, final ViewInfosContainer toInfos) {
@@ -155,6 +174,11 @@ public class MaterialTransitionLayout extends FrameLayout {
         ObjectAnimator animatorTranslationY = ObjectAnimator.ofFloat(transitionView, "y", toInfos.getY());
         animators.add(animatorTranslationY);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            animators.add(ObjectAnimator.ofFloat(transitionView, "elevation", toInfos.elevation));
+        }
+
+
         ValueAnimator animWidth = ValueAnimator.ofInt(fromInfos.getWidth(), toInfos.getWidth());
         animWidth.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -211,34 +235,42 @@ public class MaterialTransitionLayout extends FrameLayout {
             @Override
             public void run() {
                 List<Animator> animators = new ArrayList<>();
-                for (ViewInfosContainer toInfos : animatedMap.keySet()) {
-                    View targetView = findTargetView(toInfos.viewId);
-                    View transitionView = findTransitionView(toInfos.viewId);
+                for (Map.Entry<ViewInfosContainer, ViewInfosContainer> entry : animatedMap.entrySet()) {
+                    View targetView = findTargetView(entry.getKey());
+                    View transitionView = findTransitionView(entry.getKey());
                     ViewInfosContainer targetInfos = new ViewInfosContainer(targetView, MaterialTransitionLayout.this);
                     if (opening) {
-                        animators.addAll(createViewAnimators(transitionView, animatedMap.get(toInfos), targetInfos));
+                        animators.addAll(createViewAnimators(transitionView, entry.getValue(), targetInfos));
                     } else {
-                        targetView.setVisibility(INVISIBLE);
-                        animators.addAll(createViewAnimators(transitionView, targetInfos, animatedMap.get(toInfos)));
+                        //targetView.setVisibility(INVISIBLE);
+                        animators.addAll(createViewAnimators(transitionView, targetInfos, entry.getValue()));
                     }
 
                 }
                 AnimatorSet animatorSet = new AnimatorSet();
 
-                if (!opening)
+                if (!opening) {
                     circularFrameLayout.animate().alpha(0).setDuration(ANIM_FADE_DURATION).start();
-                else {
+                } else {
                     circularFrameLayout.setAlpha(0);
                 }
 
                 animatorSet.playTogether(animators);
-                animatorSet.setDuration(ANIM_MOVE_DURATION);
+                animatorSet.setDuration(animMoveDuration);
+                animatorSet.setInterpolator(interpolator);
                 if (opening) {
                     animatorSet.addListener(
                             new SimpleAnimatorListener() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     super.onAnimationEnd(animation);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        float elevation = 0;
+                                        for (int i = 0; i < getChildCount(); i++) {
+                                            elevation = Math.max(getChildAt(i).getElevation(), elevation);
+                                        }
+                                        circularFrameLayout.setElevation(elevation);
+                                    }
                                     circularFrameLayout.setVisibility(VISIBLE);
                                     SimpleAnimatorListener endAnimListener = new SimpleAnimatorListener(listener) {
                                         @Override
@@ -252,7 +284,7 @@ public class MaterialTransitionLayout extends FrameLayout {
                                         if (revealCenter.length > 1)
                                             circularFrameLayout.setCenter(revealCenter[0], revealCenter[1]);
                                         else {
-                                            ViewInfosContainer viewInfos = new ViewInfosContainer(findTargetView(revealCenter[0]), MaterialTransitionLayout.this);
+                                            ViewInfosContainer viewInfos = new ViewInfosContainer(findTargetViewById(revealCenter[0]), MaterialTransitionLayout.this);
                                             int[] center = viewInfos.getCenter();
                                             circularFrameLayout.setCenter(center[0], center[1]);
                                         }
@@ -281,21 +313,39 @@ public class MaterialTransitionLayout extends FrameLayout {
 
     }
 
-    public View findTargetView(int viewID) {
+    public View findTargetViewById(int viewID) {
         return circularFrameLayout.findViewById(viewID);
     }
 
-    public View findTransitionView(int viewID) {
-        for (int i = 1; i < getChildCount(); i++) {
-            if (getChildAt(i).getId() == viewID)
-                return getChildAt(i);
+    public View findTargetViewByTag(Object tag) {
+        return circularFrameLayout.findViewWithTag(tag);
+    }
+
+    public View findTargetView(ViewInfosContainer infosContainer) {
+        if (infosContainer.getTag() != null) {
+            View targetViewByTag = findTargetViewByTag(infosContainer.getTag());
+            if (targetViewByTag != null)
+                return targetViewByTag;
+        }
+        return findTargetViewById(infosContainer.getViewId());
+    }
+
+    public View findTransitionView(ViewInfosContainer infosContainer) {
+        for (int i = 0; i < getChildCount() - 1; i++) {
+            if (infosContainer.getTag() != null) {
+                if (infosContainer.getTag().equals(getChildAt(i).getTag()))
+                    return getChildAt(i);
+            } else if (infosContainer.getViewId() > 0) {
+                if (getChildAt(i).getId() == infosContainer.getViewId())
+                    return getChildAt(i);
+            }
         }
         return null;
     }
 
     private void setTransitionViewsVisibility(int visibility) {
         for (ViewInfosContainer toInfos : animatedMap.keySet()) {
-            findTransitionView(toInfos.viewId).setVisibility(visibility);
+            findTransitionView(toInfos).setVisibility(visibility);
         }
     }
 
@@ -314,10 +364,13 @@ public class MaterialTransitionLayout extends FrameLayout {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    for (ViewInfosContainer toInfos : map.keySet()) {
-                        ViewInfosContainer fromInfos = new ViewInfosContainer(findTargetView(toInfos.viewId), MaterialTransitionLayout.this);
-                        addAnimation(fromInfos, fromInfos).setVisibility(INVISIBLE);
-                        animatedMap.put(fromInfos, map.get(fromInfos));
+                    for (Map.Entry<ViewInfosContainer, ViewInfosContainer> entry : map.entrySet()) {
+                        View targetView = findTargetView(entry.getKey());
+                        if (targetView != null) {
+                            ViewInfosContainer fromInfos = new ViewInfosContainer(targetView, MaterialTransitionLayout.this);
+                            addAnimation(fromInfos, fromInfos).setVisibility(INVISIBLE);
+                            animatedMap.put(fromInfos, entry.getValue());
+                        }
                     }
                 }
             });

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.3.0-SNAPSHOT, Thu May 18 18:13:55 CEST 2017">
+<meta name="author" content="Pandroid v2.3.1, Wed May 24 17:08:56 CEST 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.3.0-SNAPSHOT, Thu May 18 18:13:55 CEST 2017</span><br>
+<span id="author" class="author">Pandroid v2.3.1, Wed May 24 17:08:56 CEST 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1103,8 +1103,9 @@ the event and find the right receiver</p>
             <span class="keyword">case</span> FIRST_START:
                 <span class="comment">//the field mOpener is the Fragment Opener that was send to the event bus to open the fragment</span>
                 <span class="comment">//here this opener is a MaterialOpener</span>
-                materialTransitionLayout.addAnimation(mOpener.ivInfos, R.id.material_iv);
-                materialTransitionLayout.addAnimation(mOpener.tvInfos, R.id.material_tv);</code></pre>
+                getView().findViewById(R.id.material_tv).setTag(<span class="string"><span class="delimiter">&quot;</span><span class="content">coucou</span><span class="delimiter">&quot;</span></span>);
+                materialTransitionLayout.addAnimationWithViewId(mOpener.ivInfos, R.id.material_iv);
+                materialTransitionLayout.addAnimationWithViewTag(mOpener.tvInfos, <span class="string"><span class="delimiter">&quot;</span><span class="content">coucou</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 </div>

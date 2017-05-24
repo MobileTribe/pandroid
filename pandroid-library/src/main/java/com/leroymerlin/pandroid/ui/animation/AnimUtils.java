@@ -1,5 +1,7 @@
 package com.leroymerlin.pandroid.ui.animation;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -89,5 +91,17 @@ public class AnimUtils {
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         view.measure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static float getElevationRelativeTo(@NotNull View view, View root) {
+        if (root == null) {
+            return view.getElevation();
+        }
+        if (view == root) {
+            return view.getElevation();
+        } else {
+            return view.getElevation() + getElevationRelativeTo((View) view.getParent(), root);
+        }
     }
 }

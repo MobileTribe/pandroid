@@ -33,5 +33,13 @@
             android:src="@drawable/pandroid_ic_launcher"
             android:layout_gravity="center"/>
 
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:elevation="2dp"
+            android:src="@drawable/pandroid_ic_launcher"
+            android:layout_gravity="center"/>
+
+
     </FrameLayout>
 </com.leroymerlin.pandroid.ui.animation.view.MaterialTransitionLayout>

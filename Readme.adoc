@@ -31,6 +31,10 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - Android studio template
 - Databinding v2.0
 
+### *2.3.1* - (2017-05-24)
+*Refactor*
+- MaterialTransitionLayout
+
 ### *2.3.0* - (2017-05-17)
 *Update*
 - Update libraries to last version

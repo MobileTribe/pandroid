@@ -2,12 +2,14 @@ package com.leroymerlin.pandroid.ui.animation;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
+import com.leroymerlin.pandroid.BuildConfig;
 import com.leroymerlin.pandroid.R;
 
 import java.io.Serializable;
@@ -20,8 +22,13 @@ public class ViewInfosContainer implements Parcelable, Serializable {
 
     private static final long serialVersionUID = -3514235930169078450L;
 
+
     public Class<? extends View> viewClass;
-    public int viewId;
+
+
+    private int viewId;
+    private Serializable viewTagS;
+    private Parcelable viewTagP;
     public Integer backgroundColor;
     public int[] padding;
     public float[] position;
@@ -29,6 +36,7 @@ public class ViewInfosContainer implements Parcelable, Serializable {
     public int textColor;
     public float textSize;
     private int textGravity;
+    public float elevation;
 
     public ViewInfosContainer() {
     }
@@ -46,7 +54,20 @@ public class ViewInfosContainer implements Parcelable, Serializable {
         }
 
         viewId = view.getId();
+        Object tag = view.getTag();
+        if (tag != null) {
+            if (tag instanceof Parcelable) {
+                this.viewTagP = (Parcelable) tag;
+            } else if (tag instanceof Serializable) {
+                this.viewTagS = (Serializable) tag;
+            }
+        }
         viewClass = view.getClass();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.elevation = AnimUtils.getElevationRelativeTo(view, parent);
+        }
+
 
         if (view instanceof TextView) {
             textColor = ((TextView) view).getCurrentTextColor();
@@ -55,39 +76,23 @@ public class ViewInfosContainer implements Parcelable, Serializable {
         }
     }
 
-    protected ViewInfosContainer(Parcel in) {
-        viewClass = (Class<? extends View>) in.readSerializable();
-        viewId = in.readInt();
-        backgroundColor = (Integer) in.readSerializable();
-        padding = in.createIntArray();
-        position = in.createFloatArray();
-        size = in.createIntArray();
-        textColor = in.readInt();
-        textSize = in.readFloat();
-        textGravity = in.readInt();
-    }
-
-    public static final Creator<ViewInfosContainer> CREATOR = new Creator<ViewInfosContainer>() {
-        @Override
-        public ViewInfosContainer createFromParcel(Parcel in) {
-            return new ViewInfosContainer(in);
-        }
-
-        @Override
-        public ViewInfosContainer[] newArray(int size) {
-            return new ViewInfosContainer[size];
-        }
-    };
 
     public void applyOn(View view) {
         view.setX(position[0]);
         view.setY(position[1]);
         view.setId(viewId);
-        if (backgroundColor !=null)
+        view.setTag(getTag());
+        if (backgroundColor != null)
             view.setBackgroundColor(backgroundColor);
         view.getLayoutParams().width = size[0];
         view.getLayoutParams().height = size[1];
         view.setPadding(padding[0], padding[1], padding[2], padding[3]);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setElevation(elevation);
+        }
+
+
         if (view instanceof TextView) {
             ((TextView) view).setTextColor(textColor);
             ((TextView) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
@@ -117,16 +122,46 @@ public class ViewInfosContainer implements Parcelable, Serializable {
     }
 
 
+    protected ViewInfosContainer(Parcel in) {
+        viewClass = (Class<? extends View>) in.readSerializable();
+        viewId = in.readInt();
+        viewTagS = in.readSerializable();
+        viewTagP = in.readParcelable(getClass().getClassLoader());
+        backgroundColor = (Integer) in.readSerializable();
+        padding = in.createIntArray();
+        position = in.createFloatArray();
+        size = in.createIntArray();
+        textColor = in.readInt();
+        textSize = in.readFloat();
+        textGravity = in.readInt();
+        elevation = in.readFloat();
+    }
+
+    public static final Creator<ViewInfosContainer> CREATOR = new Creator<ViewInfosContainer>() {
+        @Override
+        public ViewInfosContainer createFromParcel(Parcel in) {
+            return new ViewInfosContainer(in);
+        }
+
+        @Override
+        public ViewInfosContainer[] newArray(int size) {
+            return new ViewInfosContainer[size];
+        }
+    };
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof ViewInfosContainer) {
-            return ((ViewInfosContainer) o).viewId == viewId;
+            return (((ViewInfosContainer) o).viewId == viewId && viewId > 0) || (((ViewInfosContainer) o).getTag() != null && ((ViewInfosContainer) o).getTag().equals(getTag()));
         }
         return super.equals(o);
     }
 
     @Override
     public int hashCode() {
+        if (getTag() != null) {
+            return getTag().hashCode();
+        }
         return viewId;
     }
 
@@ -139,6 +174,8 @@ public class ViewInfosContainer implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(viewClass);
         dest.writeInt(viewId);
+        dest.writeSerializable(viewTagS);
+        dest.writeParcelable(viewTagP, flags);
         dest.writeSerializable(backgroundColor);
         dest.writeIntArray(padding);
         dest.writeFloatArray(position);
@@ -146,5 +183,14 @@ public class ViewInfosContainer implements Parcelable, Serializable {
         dest.writeInt(textColor);
         dest.writeFloat(textSize);
         dest.writeInt(textGravity);
+        dest.writeFloat(elevation);
+    }
+
+    public int getViewId() {
+        return viewId;
+    }
+
+    public Object getTag() {
+        return viewTagP == null ? viewTagS : viewTagP;
     }
 }
