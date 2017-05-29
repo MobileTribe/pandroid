@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -217,7 +218,7 @@ public class MaterialTransitionLayout extends FrameLayout {
         return this;
     }
 
-    public void close(Animator.AnimatorListener listener) {
+    public void close(@Nullable Animator.AnimatorListener listener) {
         opening = false;
         open(listener);
     }
@@ -230,7 +231,7 @@ public class MaterialTransitionLayout extends FrameLayout {
         open(null);
     }
 
-    public void open(final Animator.AnimatorListener listener) {
+    public void open(@Nullable final Animator.AnimatorListener listener) {
         Runnable action = new Runnable() {
             @Override
             public void run() {
@@ -297,7 +298,7 @@ public class MaterialTransitionLayout extends FrameLayout {
                                 }
                             }
                     );
-                } else {
+                } else if (listener != null) {
                     animatorSet.addListener(listener);
                 }
                 animatorSet.start();

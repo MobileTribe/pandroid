@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.ui.animation;
 
 import android.animation.Animator;
+import android.support.annotation.Nullable;
 
 /**
  * Created by florian on 21/10/2015.
@@ -14,7 +15,7 @@ public class SimpleAnimatorListener implements Animator.AnimatorListener {
 
     }
 
-    public SimpleAnimatorListener(Animator.AnimatorListener wrapListener) {
+    public SimpleAnimatorListener(@Nullable Animator.AnimatorListener wrapListener) {
         this.wrapListener = wrapListener;
     }
 
