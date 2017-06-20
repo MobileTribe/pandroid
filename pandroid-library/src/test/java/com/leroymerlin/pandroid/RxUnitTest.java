@@ -1,6 +1,5 @@
 package com.leroymerlin.pandroid;
 
-import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.leroymerlin.pandroid.future.RxActionDelegate;
 
 import junit.framework.Assert;

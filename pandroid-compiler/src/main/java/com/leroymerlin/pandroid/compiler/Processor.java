@@ -42,6 +42,7 @@ public class Processor extends AbstractProcessor {
         processors.add(new EventBusProcessor(mElementsUtils, mTypesUtils));
         processors.add(new LifecycleDelegateProcessor(mElementsUtils, mTypesUtils));
         processors.add(new DataBindingProcessor(mElementsUtils, mTypesUtils));
+        processors.add(new RxWrapperProcessor(mElementsUtils, mTypesUtils));
         processors.add(new GeneratedClassMapperProcessor(mElementsUtils, mTypesUtils));
 
         duration = 0;

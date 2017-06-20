@@ -19,6 +19,7 @@ import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
 import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
+import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 
@@ -84,6 +85,10 @@ public class NavigationLeftFragment extends PandroidFragment {
                         break;
                     case R.id.navigation_mvp:
                         startFragment(PresenterFragment.class);
+                        handle = true;
+                        break;
+                    case R.id.navigation_rx:
+                        startFragment(RxFragment.class);
                         handle = true;
                         break;
                 }

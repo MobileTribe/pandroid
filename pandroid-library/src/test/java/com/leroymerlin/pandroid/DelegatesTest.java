@@ -1,6 +1,5 @@
 package com.leroymerlin.pandroid;
 
-import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.leroymerlin.pandroid.future.ChainedActionDelegate;
 
 import org.junit.Assert;

@@ -103,8 +103,8 @@ public class RxActionDelegate<T> extends CancellableActionDelegate<T> {
             this.error = error;
         }
 
-        public boolean failed() {
-            return error != null;
+        public boolean hasResult() {
+            return result != null;
         }
 
     }

@@ -52,5 +52,10 @@
             android:checkable="false"
             android:title="@string/mvp" />
 
+        <item
+            android:id="@+id/navigation_rx"
+            android:checkable="false"
+            android:title="@string/rx" />
+
     </group>
 </menu>

@@ -45,6 +45,7 @@
     <string name="product_id">Id</string>
     <string name="product_name">Name</string>
     <string name="animation_load">Start loading</string>
+    <string name="rx">Rx Android</string>
 
 
 </resources>
