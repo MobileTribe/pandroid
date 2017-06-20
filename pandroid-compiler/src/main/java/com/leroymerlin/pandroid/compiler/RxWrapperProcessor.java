@@ -39,7 +39,6 @@ public class RxWrapperProcessor extends BaseProcessor {
     static final ClassName SINGLE_TYPE = ClassName.get("io.reactivex", "Single");
     static final ClassName OBSERVABLE_TYPE = ClassName.get("io.reactivex", "Observable");
     static final ClassName RXACTIONDELEGATE_TYPE = ClassName.get("com.leroymerlin.pandroid.future", "RxActionDelegate");
-    static final ClassName RXACTIONDELEGATE_TYPE = ClassName.get("com.leroymerlin.pandroid.future", "ActionDelegate");
     static final ClassName RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("OnSubscribeAction");
     static final ClassName RXACTIONDELEGATE_RESULT_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("Result");
 
