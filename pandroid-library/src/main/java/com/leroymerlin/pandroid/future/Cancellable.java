@@ -8,4 +8,10 @@ public interface Cancellable {
     void cancel();
 
     boolean isCancelled();
+
+    interface CancellableRegister {
+        void registerDelegate(Cancellable delegate);
+
+        boolean unregisterDelegate(Cancellable delegate);
+    }
 }

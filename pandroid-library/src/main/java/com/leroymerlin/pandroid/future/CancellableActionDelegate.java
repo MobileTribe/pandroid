@@ -72,15 +72,11 @@ public abstract class CancellableActionDelegate<T> implements ProgressActionDele
         void onCancel();
     }
 
-    public CancellableActionDelegate<T> register(ActionDelegateRegister register) {
+    public CancellableActionDelegate<T> register(CancellableRegister register) {
         register.registerDelegate(this);
         return this;
     }
 
 
-    public interface ActionDelegateRegister {
-        void registerDelegate(CancellableActionDelegate delegate);
 
-        boolean unregisterDelegate(CancellableActionDelegate delegate);
-    }
 }

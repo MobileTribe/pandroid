@@ -11,6 +11,7 @@ import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.event.OnBackListener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
@@ -27,7 +28,7 @@ import javax.inject.Inject;
  * Back event and fragment back stack changed are treated to.
  * If static field TAG is set PandroidActivity inject Broadcast receiver himself
  */
-public class PandroidActivity extends AppCompatActivity implements CancellableActionDelegate.ActionDelegateRegister, ReceiversProvider {
+public class PandroidActivity extends AppCompatActivity implements Cancellable.CancellableRegister, ReceiversProvider {
 
     //tag::PandroidActivityInjection[]
     @Inject
@@ -116,12 +117,12 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     @Override
-    public void registerDelegate(CancellableActionDelegate delegate) {
+    public void registerDelegate(Cancellable delegate) {
         pandroidDelegate.registerDelegate(delegate);
     }
 
     @Override
-    public boolean unregisterDelegate(CancellableActionDelegate delegate) {
+    public boolean unregisterDelegate(Cancellable delegate) {
         return pandroidDelegate.unregisterDelegate(delegate);
     }
 

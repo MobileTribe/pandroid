@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.leroymerlin.pandroid.app.ResumeState;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 
 import java.util.ArrayList;
@@ -14,10 +15,10 @@ import java.util.List;
  * Created by florian on 26/11/15.
  */
 public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
-        CancellableActionDelegate.ActionDelegateRegister {
+        CancellableActionDelegate.CancellableRegister {
 
     public static final String TAG = "PandroidLifecycleDelegate";
-    private List<CancellableActionDelegate> delegates = new ArrayList<>();
+    private List<Cancellable> cancellables = new ArrayList<>();
     private List<LifecycleDelegate> lifecycleDelegates = new ArrayList<>();
 
     public ResumeState getResumeState() {
@@ -41,8 +42,8 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         return null;
     }
 
-    public List<CancellableActionDelegate> getLifecycleDelegates() {
-        return delegates;
+    public List<LifecycleDelegate> getLifecycleDelegates() {
+        return lifecycleDelegates;
     }
 
 
@@ -80,7 +81,7 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         for (LifecycleDelegate lifecycleDelegate : lifecycleDelegates) {
             lifecycleDelegate.onPause(target);
         }
-        for (CancellableActionDelegate delegate : delegates) {
+        for (Cancellable delegate : cancellables) {
             delegate.cancel();
         }
     }
@@ -105,16 +106,16 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
 
 
     @Override
-    public void registerDelegate(CancellableActionDelegate delegate) {
-        this.delegates.add(delegate);
+    public void registerDelegate(Cancellable delegate) {
+        this.cancellables.add(delegate);
         if (!viewExist) {
             delegate.cancel();
         }
     }
 
     @Override
-    public boolean unregisterDelegate(CancellableActionDelegate delegate) {
-        return this.delegates.remove(delegate);
+    public boolean unregisterDelegate(Cancellable delegate) {
+        return this.cancellables.remove(delegate);
     }
 
 }

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.leroymerlin.pandroid.future.ActionDelegate;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.net.http.Mock;
@@ -163,7 +164,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public void enqueue(final ActionDelegate delegate) {
-            if (delegate instanceof CancellableActionDelegate)
+            if (delegate instanceof Cancellable)
                 ((CancellableActionDelegate) delegate).addCancelListener(new CancellableActionDelegate.CancelListener() {
                     @Override
                     public void onCancel() {

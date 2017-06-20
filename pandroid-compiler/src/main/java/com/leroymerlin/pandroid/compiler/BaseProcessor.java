@@ -16,7 +16,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
- * Created by florian on 16/12/2016.
+ * Created by paillardf on 16/12/2016.
  */
 
 public abstract class BaseProcessor {

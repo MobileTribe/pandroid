@@ -36,7 +36,7 @@ import dagger.Component;
 import dagger.Subcomponent;
 
 /**
- * Created by florian on 30/11/15.
+ * Created by paillardf on 30/11/15.
  */
 public class GeneratedClassMapperProcessor extends BaseProcessor {
 

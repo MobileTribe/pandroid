@@ -10,7 +10,7 @@ public abstract class NetActionDelegate<T> extends CancellableActionDelegate<T> 
     private static String TAG = "NetActionDelegate";
 
 
-    public NetActionDelegate(ActionDelegateRegister actionDelegateRegister) {
+    public NetActionDelegate(CancellableRegister actionDelegateRegister) {
         super();
         actionDelegateRegister.registerDelegate(this);
     }

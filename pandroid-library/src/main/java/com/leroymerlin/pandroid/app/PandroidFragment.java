@@ -13,6 +13,7 @@ import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  * PandroidFragment is a Fragment that simplify the fragment cycle of life by introducing onResume(ResumeState) method.
  * If static field TAG is set PandroidFragment inject Broadcast receiver himself
  */
-public class PandroidFragment<T extends FragmentOpener> extends Fragment implements CancellableActionDelegate.ActionDelegateRegister, ReceiversProvider {
+public class PandroidFragment<T extends FragmentOpener> extends Fragment implements CancellableActionDelegate.CancellableRegister, ReceiversProvider {
 
     /**
      * Default logger
@@ -128,12 +129,12 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     }
 
     @Override
-    public void registerDelegate(CancellableActionDelegate delegate) {
+    public void registerDelegate(Cancellable delegate) {
         pandroidDelegate.registerDelegate(delegate);
     }
 
     @Override
-    public boolean unregisterDelegate(CancellableActionDelegate delegate) {
+    public boolean unregisterDelegate(Cancellable delegate) {
         return pandroidDelegate.unregisterDelegate(delegate);
     }
 
