@@ -6,9 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.demo.models.Product;
 import com.leroymerlin.pandroid.event.FragmentOpener;
+
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -26,4 +30,5 @@ public class RxFragment extends PandroidFragment<FragmentOpener> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_rx, container, false);
     }
+
 }
