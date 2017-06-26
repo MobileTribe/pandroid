@@ -10,6 +10,7 @@ import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManagerImpl;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewService;
+import com.leroymerlin.pandroid.demo.globals.review.RxReviewManager;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.net.PandroidCallAdapterFactory;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
@@ -53,8 +54,15 @@ public class DemoModule {
     //end::Retrofit[]
 
     @Provides
+    @Singleton
     ReviewManager provideReviewManager(ReviewManagerImpl reviewManager) {
         return reviewManager;
+    }
+
+    @Provides
+    @Singleton
+    RxReviewManager provideRxReviewManager(ReviewManager reviewManager) {
+        return new RxReviewManager(reviewManager);
     }
 
     //tag::provideAnalyticsManager[]

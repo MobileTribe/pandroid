@@ -11,6 +11,7 @@ import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
 import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
+import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
@@ -58,5 +59,7 @@ public interface DemoComponent extends PandroidComponent {
     void inject(ToastFragment toastFragment);
 
     void inject(PresenterFragment presenterFragment);
+
+    void inject(RxFragment rxFragment);
 
 }

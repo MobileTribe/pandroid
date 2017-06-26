@@ -9,6 +9,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
@@ -43,6 +45,9 @@ class RxWrapperProcessor extends BaseProcessor {
     private static final ClassName RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("OnSubscribeAction");
     private static final ClassName RXACTIONDELEGATE_RESULT_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("Result");
     private TypeMirror ACTIONDELEGATE_TYPE;
+
+
+    private static final String TARGET_VAR = "mTarget";
 
 
     RxWrapperProcessor(Elements elements, Types types) {
@@ -74,12 +79,23 @@ class RxWrapperProcessor extends BaseProcessor {
         for (TypeElement classType : classesToProcess) {
             ClassName className = ClassName.get(classType);
             boolean inInterface = classType.getKind().isInterface();
-            String mTargetVar = "mTarget";
-            TypeSpec.Builder modelBuilder = TypeSpec.classBuilder("Rx" + ProcessorUtils.capitalize(className.simpleName()))
-                    .addModifiers(classType.getModifiers().toArray(new Modifier[classType.getModifiers().size()]));
+            List<TypeVariableName> typeVariableNames = new ArrayList<>();
+            for (TypeParameterElement element : classType.getTypeParameters()) {
+                typeVariableNames.add(TypeVariableName.get(element));
+            }
+
+            ArrayList<Modifier> modifiers = new ArrayList<>(classType.getModifiers());
             if (inInterface) {
-                modelBuilder.addSuperinterface(className)
-                        .addField(className, mTargetVar, Modifier.PRIVATE, Modifier.FINAL);
+                modifiers.remove(Modifier.ABSTRACT);
+            }
+
+            TypeSpec.Builder modelBuilder = TypeSpec.classBuilder("Rx" + ProcessorUtils.capitalize(className.simpleName()))
+                    .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
+                    .addTypeVariables(typeVariableNames);
+
+            if (inInterface) {
+                modelBuilder.addSuperinterface(TypeName.get(classType.asType()))
+                        .addField(className, TARGET_VAR, Modifier.PRIVATE, Modifier.FINAL);
                 //add contructor
                 MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
                         .addModifiers(Modifier.PUBLIC)
@@ -87,11 +103,33 @@ class RxWrapperProcessor extends BaseProcessor {
                                 className.packageName(),
                                 className.simpleName()
                         ), "target")
-                        .addStatement("this.$L = $L", mTargetVar, "target");
+                        .addStatement("this.$L = $L", TARGET_VAR, "target");
 
                 modelBuilder.addMethod(constructorBuilder.build());
+
+                List<ExecutableElement> methodToImplement = new ArrayList<>(ElementFilter.methodsIn(classType.getEnclosedElements()));
+                for (TypeMirror interfaceMirror : classType.getInterfaces()) {
+                    List<ExecutableElement> methods = ElementFilter.methodsIn(mTypesUtils.asElement(interfaceMirror).getEnclosedElements());
+                    for (ExecutableElement newMethod : methods) {
+                        boolean addMethod = true;
+                        for (ExecutableElement m : methodToImplement) {
+                            if (ProcessorUtils.sameMethods(mTypesUtils, m, newMethod)) {
+                                addMethod = false;
+                                break;
+                            }
+                        }
+                        if (addMethod) {
+                            methodToImplement.add(newMethod);
+                        }
+                    }
+                }
+
+                for (ExecutableElement m : methodToImplement) {
+                    wrapInterfaceMethod(modelBuilder, m);
+                }
+
             } else {
-                modelBuilder.superclass(className);
+                modelBuilder.superclass(TypeName.get(classType.asType()));
                 for (ExecutableElement method : ElementFilter.constructorsIn(classType.getEnclosedElements())) {
                     if (!method.getModifiers().contains(Modifier.PRIVATE)) {
 
@@ -115,18 +153,21 @@ class RxWrapperProcessor extends BaseProcessor {
                 RxWrapper rxWrapperAnnotation = method.getAnnotation(RxWrapper.class);
                 if (rxWrapperAnnotation != null) {
 
+                    TypeName baseReturnType = methodData.returnType;
+                    TypeName returnType = rxWrapperAnnotation.wrapResult() ? ParameterizedTypeName.get(RXACTIONDELEGATE_RESULT_TYPE, baseReturnType) : baseReturnType;
+
                     boolean single = !rxWrapperAnnotation.stream();
-                    boolean returnVoid = methodData.returnType.equals(TypeName.VOID);
+                    boolean returnVoid = returnType.equals(TypeName.VOID);
                     if (returnVoid && methodData.delegateParameter == null) {
                         throw new IllegalStateException("Method should have an ActionDelegate type in the parameters to be RxWrapped. " + className.toString() + ":" + method.getSimpleName().toString());
                     }
 
-                    ParameterizedTypeName singleType = ParameterizedTypeName.get(SINGLE_TYPE, methodData.returnType);
+                    ParameterizedTypeName singleType = ParameterizedTypeName.get(SINGLE_TYPE, returnType);
 
                     if (methodData.delegateParameter != null) { //Action delegate replacement
 
-                        ParameterizedTypeName observableType = ParameterizedTypeName.get(OBSERVABLE_TYPE, ParameterizedTypeName.get(RXACTIONDELEGATE_RESULT_TYPE, methodData.returnType));
-                        ParameterizedTypeName rxSubscribeActionType = ParameterizedTypeName.get(RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE, methodData.returnType);
+                        ParameterizedTypeName observableType = ParameterizedTypeName.get(OBSERVABLE_TYPE, returnType);
+                        ParameterizedTypeName rxSubscribeActionType = ParameterizedTypeName.get(RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE, baseReturnType);
 
 
                         TypeSpec onSubscribeActionClass = TypeSpec.anonymousClassBuilder("")
@@ -143,9 +184,11 @@ class RxWrapperProcessor extends BaseProcessor {
 
                         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(createWrapMethodName(method.getSimpleName().toString()))
                                 .addModifiers(Modifier.PUBLIC)
+                                .addExceptions(methodData.exceptions)
+                                .addTypeVariables(methodData.typeVariableNames)
                                 .addParameters(methodData.parameterSpecsWithoutDelegate)
                                 .returns(single ? singleType : observableType)
-                                .addStatement("return $T.$L($L)", RXACTIONDELEGATE_TYPE, single ? "single" : "observable", onSubscribeActionClass);
+                                .addStatement("return $T.$L($L)", RXACTIONDELEGATE_TYPE, (single ? "single" : "observable") + (rxWrapperAnnotation.wrapResult() ? "Wrapped" : ""), onSubscribeActionClass);
 
                         modelBuilder.addMethod(methodBuilder.build());
                     } else { //method replacement
@@ -153,23 +196,26 @@ class RxWrapperProcessor extends BaseProcessor {
                             throw new IllegalStateException("Can't wrappe a method as Observable. Please remove stream or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
                         }
 
-                        ParameterizedTypeName callableType = ParameterizedTypeName.get(CALLABLE_TYPE, methodData.returnType);
 
+                        MethodSpec.Builder callMethodBuilder = MethodSpec.methodBuilder("call")
+                                .addAnnotation(Override.class)
+                                .addException(Exception.class)
+                                .addModifiers(Modifier.PUBLIC)
+                                .returns(TypeName.OBJECT);
+                        if (rxWrapperAnnotation.wrapResult()) {
+                            callMethodBuilder.addStatement("return ($T) $T.wrap($L($L))", returnType, RXACTIONDELEGATE_TYPE, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+                        } else {
+                            callMethodBuilder.addStatement("return ($T) $L($L)", returnType, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+
+                        }
                         TypeSpec callableClass = TypeSpec.anonymousClassBuilder("")
-                                .addSuperinterface(callableType)
-                                .addMethod(
-                                        MethodSpec.methodBuilder("call")
-                                                .addAnnotation(Override.class)
-                                                .addException(Exception.class)
-                                                .addModifiers(Modifier.PUBLIC)
-                                                .returns(methodData.returnType)
-                                                .addStatement("return $L($L)", method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs))
-                                                .build()
-                                ).build();
+                                .addSuperinterface(CALLABLE_TYPE)
+                                .addMethod(callMethodBuilder.build()).build();
 
 
                         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(createWrapMethodName(method.getSimpleName().toString()))
                                 .addModifiers(Modifier.PUBLIC)
+                                .addTypeVariables(methodData.typeVariableNames)
                                 .addParameters(methodData.parameterSpecs)
                                 .returns(singleType)
                                 .addStatement("return $T.fromCallable($L)", SINGLE_TYPE, callableClass);
@@ -178,35 +224,23 @@ class RxWrapperProcessor extends BaseProcessor {
 
                     }
                 }
-
-
-                List<ParameterSpec> parameterSpecs = new ArrayList<>();
-                String parameters = "";
-                for (int i = 0; i < method.getParameters().size(); i++) {
-                    VariableElement variableElement = method.getParameters().get(i);
-                    parameterSpecs.add(ParameterSpec.builder(TypeName.get(variableElement.asType()), variableElement.getSimpleName().toString()).build());
-                    parameters += variableElement.getSimpleName();
-                    if (i < method.getParameters().size() - 1) {
-                        parameters += ", ";
-                    }
-                }
-
-                if (inInterface) {
-                    TypeName returnTypeName = TypeName.get(method.getReturnType());
-                    boolean returnValue = !returnTypeName.equals(TypeName.VOID);
-
-
-                    MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getSimpleName().toString())
-                            .addModifiers(Modifier.PUBLIC)
-                            .addParameters(parameterSpecs)
-                            .returns(returnTypeName);
-                    methodBuilder.addStatement("$L$L.$L($L)", returnValue ? "return " : "", mTargetVar, method.getSimpleName(), parameters);
-                    modelBuilder.addMethod(methodBuilder.build());
-                }
-
             }
             saveClass(processingEnvironment, className.packageName(), modelBuilder);
         }
+    }
+
+    private void wrapInterfaceMethod(TypeSpec.Builder modelBuilder, ExecutableElement method) {
+        MethodData methodData = new MethodData(method);
+        TypeName returnTypeName = TypeName.get(method.getReturnType());
+        boolean returnValue = !returnTypeName.equals(TypeName.VOID);
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getSimpleName().toString())
+                .addModifiers(Modifier.PUBLIC)
+                .addExceptions(methodData.exceptions)
+                .addParameters(methodData.parameterSpecs)
+                .addTypeVariables(methodData.typeVariableNames)
+                .returns(returnTypeName);
+        methodBuilder.addStatement("$L$L.$L($L)", returnValue ? "return " : "", TARGET_VAR, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+        modelBuilder.addMethod(methodBuilder.build());
     }
 
     private boolean checkRxEnabled(ProcessingEnvironment processingEnvironment) {
@@ -229,9 +263,23 @@ class RxWrapperProcessor extends BaseProcessor {
         TypeName returnType;
         ParameterSpec delegateParameter;
         List<ParameterSpec> parameterSpecs = new ArrayList<>();
+        List<TypeVariableName> typeVariableNames = new ArrayList<>();
         List<ParameterSpec> parameterSpecsWithoutDelegate = new ArrayList<>();
+        List<TypeName> exceptions = new ArrayList<>();
 
         MethodData(ExecutableElement method) {
+
+            for (TypeParameterElement element : method.getTypeParameters()) {
+                typeVariableNames.add(TypeVariableName.get(element));
+            }
+
+            for (TypeMirror element : method.getThrownTypes()) {
+                exceptions.add(TypeName.get(element));
+            }
+
+
+
+
             for (int i = 0; i < method.getParameters().size(); i++) {
                 VariableElement variableElement = method.getParameters().get(i);
                 ParameterSpec.Builder parameterSpecBuilder = ParameterSpec.builder(TypeName.get(variableElement.asType()), variableElement.getSimpleName().toString());

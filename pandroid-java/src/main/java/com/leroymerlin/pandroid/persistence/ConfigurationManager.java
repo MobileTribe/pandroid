@@ -1,5 +1,7 @@
 package com.leroymerlin.pandroid.persistence;
 
+import com.leroymerlin.pandroid.annotations.RxWrapper;
+
 /**
  * Created by adrienleroy on 05/01/15.
  */
@@ -15,9 +17,10 @@ public interface ConfigurationManager {
 
     }
 
-    public <T> T getConfig(Config field);
+    @RxWrapper(wrapResult = true)
+    <T> T getConfig(Config field);
 
-    public void setConfig(Config field, Object object);
+    void setConfig(Config field, Object object);
 
-    public void remove(Config config);
+    void remove(Config config);
 }

@@ -28,7 +28,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
- * Created by paillardf on 07/11/2016.
+ * Created by Mehdi on 07/11/2016.
  */
 
 public class LifecycleDelegateProcessor extends BaseProcessor {

@@ -15,16 +15,17 @@ import retrofit2.Response;
 /**
  * Created by florian on 16/06/15.
  */
-@Singleton
 public class ReviewManagerImpl implements ReviewManager {
 
 
     private static final String TAG = "ReviewManagerImpl";
     @Inject
     ReviewService reviewService;
-
     @Inject
     LogWrapper logWrapper;
+
+    public Review lastResult;
+
 
     @Inject
     ReviewManagerImpl() {
@@ -32,7 +33,7 @@ public class ReviewManagerImpl implements ReviewManager {
 
     //tag::Retrofit[]
     @Override
-    public void getReview(String productId, final NetActionDelegate<Review> delegate) {
+    public void getReview(String productId, final ActionDelegate<Review> delegate) {
 
         //Standard Retrofit way
         /*
@@ -67,8 +68,10 @@ public class ReviewManagerImpl implements ReviewManager {
         // if you need the Retrofit Response object
         PandroidCall<Response<Review>> reviewReponsePandroidWay = reviewService.getReviewReponsePandroidWay(productId);
         reviewReponsePandroidWay.enqueue(new ActionDelegate<Response<Review>>() {
+
             @Override
             public void onSuccess(Response<Review> result) {
+                lastResult = result.body();
                 //be careful the response could be an error code
                 //you have to check it yourself
                 if (result.isSuccessful()){
@@ -88,5 +91,14 @@ public class ReviewManagerImpl implements ReviewManager {
         reviewPandroidWay.enqueue(delegate);
     }
     //end::Retrofit[]
+
+    @Override
+    public Review getLastReview() {
+        return lastResult;
+    }
+
+
+
+
 
 }

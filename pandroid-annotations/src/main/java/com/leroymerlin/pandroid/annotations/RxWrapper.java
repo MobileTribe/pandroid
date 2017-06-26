@@ -6,5 +6,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RxWrapper {
     boolean stream() default false;
+
+    boolean wrapResult() default false;
 }
 
