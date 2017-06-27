@@ -28,11 +28,12 @@ import io.reactivex.functions.Function;
  * Created by florian on 20/06/2017.
  */
 
+//tag::RxWrapper[]
 public class RxFragment extends PandroidFragment<FragmentOpener> {
-
-
     @Inject
     RxReviewManager reviewManager;
+    //end::RxWrapper[]
+
 
     @Inject
     ToastManager toastManager;
@@ -43,10 +44,11 @@ public class RxFragment extends PandroidFragment<FragmentOpener> {
         return inflater.inflate(R.layout.fragment_rx, container, false);
     }
 
-
+    //tag::RxWrapper[]
     @Override
     public void onResume() {
         super.onResume();
+
         reviewManager.rxGetLastReview().flatMap(new Function<RxActionDelegate.Result<Review>, SingleSource<Review>>() {
             @Override
             public SingleSource<Review> apply(@NonNull RxActionDelegate.Result<Review> reviewResult) throws Exception {
@@ -60,5 +62,8 @@ public class RxFragment extends PandroidFragment<FragmentOpener> {
                 }
             }
         });
+
+        //end::RxWrapper[]
+
     }
 }

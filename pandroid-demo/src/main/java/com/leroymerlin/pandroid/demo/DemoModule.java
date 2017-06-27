@@ -59,11 +59,13 @@ public class DemoModule {
         return reviewManager;
     }
 
+    //tag::RxWrapper[]
     @Provides
     @Singleton
     RxReviewManager provideRxReviewManager(ReviewManager reviewManager) {
         return new RxReviewManager(reviewManager);
     }
+    //end::RxWrapper[]
 
     //tag::provideAnalyticsManager[]
     @Provides

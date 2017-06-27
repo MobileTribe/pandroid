@@ -7,13 +7,13 @@ import com.leroymerlin.pandroid.annotations.RxWrapper;
  */
 public interface ConfigurationManager {
 
-    public interface Config {
+    interface Config {
 
-        public String getName();
+        String getName();
 
-        public Object getDefaultValue();
+        Object getDefaultValue();
 
-        public Class getType();
+        Class getType();
 
     }
 

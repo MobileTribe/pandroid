@@ -317,6 +317,80 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 include::{libJava}PandroidApplication.java[tags=Logger]
 ----
 
+==== Crashlytics
+
+Crashlytics is an optional library in pandroid.
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+include::{libDir}pandroid.gradle[tags=Crashlytics]
+
+pandroid
+{
+    dependencies{
+        library ("crashlytics"){
+            apiKey "YOUR_CRASHLYTICS_API_KEY"
+        }
+    }
+}
+
+----
+
+- add the CrashlyticsLogger to the logWrapper
+
+[source,java]
+----
+// this logger is configured to be activated when the BuildConfig.DEBUG is false
+// you can override this behaviour
+logWrapper.addLogger(new CrashlyticsLogger(this));
+----
+
+=== RxAndroid
+
+RxAndroid is an optional library in pandroid.
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+pandroid
+{
+    dependencies{
+        library "rxandroid"
+    }
+}
+----
+
+
+.RxWrapper
+
+Once enable you will be able to use Rx version of some manager (RxCryptoManager, RxConfigurationManager, ...)
+@RxWrapper annotation can be used to generate a rx wrapper of you class.
+[source,java]
+----
+include::{annotationsJava}RxWrapper.java[tags=RxWrapper]
+----
+
+For exemple :
+[source,java]
+----
+//ReviewManager.java
+include::{demoJava}globals/review/ReviewManager.java[tags=RxWrapper]
+
+//DemoModule.java
+include::{demoJava}DemoModule.java[tags=RxWrapper]
+
+//RxFragment.java
+include::{demoJava}main/rx/RxFragment.java[tags=RxWrapper]
+----
+
+
 === Android DataBinding
 
 Pandroid provide an annotation to help the use of Android Data Binding in your project.
@@ -380,38 +454,6 @@ To use MVVM, pandroid provide a class ViewModelDelegate which is bound to the ap
 ==== MVP
 
 To use MVVM, pandroid provide a class Presenter which is bound to the application's lifecycle
-
-=== Crashlytics
-
-Crashlytics is an optional library in pandroid.
-
-.Installation
-
-- build.gradle
-
-[source,java]
-----
-include::{libDir}pandroid.gradle[tags=Crashlytics]
-
-pandroid
-{
-    dependencies{
-        library ("crashlytics"){
-            apiKey "YOUR_CRASHLYTICS_API_KEY"
-        }
-    }
-}
-
-----
-
-- add the CrashlyticsLogger to the logWrapper
-
-[source,java]
-----
-// this logger is configured to be activated when the BuildConfig.DEBUG is false
-// you can override this behaviour
-logWrapper.addLogger(new CrashlyticsLogger(this));
-----
 
 
 == Security
