@@ -1,0 +1,34 @@
+
+apply plugin: 'groovy'
+//
+//Properties properties = new Properties()
+//properties.load(new FileInputStream(file('../pandroid-library/pandroid.properties')))
+//properties.each { prop ->
+//    ext.set(prop.key, prop.value)
+//}
+
+
+configurations {
+    provided
+    //compile.extendsFrom provided
+}
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+}
+
+//rootProject.dependencies {
+//    runtime project(path)
+//}
+
+sourceSets {
+    main {
+        resources{
+            srcDirs '../pandroid-templates/src/main/resources'
+        }
+        groovy {
+            srcDirs '../pandroid-templates/src/main/groovy'
+        }
+    }
+}

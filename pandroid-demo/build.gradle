@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'com.leroymerlin.delivery'
 
-
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
     buildToolsVersion androidBuildToolsVersion
@@ -28,6 +27,14 @@ android {
         enabled = true
     }
 
+
+    sourceSets{
+        main{
+            java.srcDirs += 'src/templates/java'
+            resources.srcDirs += 'src/templates/res'
+        }
+
+    }
 }
 
 dependencies {

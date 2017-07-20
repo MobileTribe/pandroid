@@ -1,0 +1,97 @@
+apply from: file('../delivery.gradle')
+
+Properties props = new Properties()
+props.load(new FileInputStream(file('../pandroid-version.properties')))
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
+
+def templatesFolder = file('../pandroid-demo/src/templates')
+def templatesJava = new File(templatesFolder, 'java/com/leroymerlin/pandroid/templates')
+def fragmentClassName = "BasePandroid"
+
+task("createFragmentTemplate", type: TemplateCreatorTask) {
+    templateName = "PandroidFragmentTest"
+    description = "Creates a new basic PandroidFragment with a presenter."
+    javaFiles = fileTree(templatesJava).include('fragment/*.java')
+    resourceFiles = files(new File(templatesFolder.path ,"res/layout/fragment_base.xml"))
+    parameters {
+        fragmentClass {
+            replace = "${fragmentClassName}Fragment"
+            label = "Fragment Name"
+            constraints = "class|unique|nonempty"
+            suggest = 'fragment_${classToResource(fragmentClass)}'
+            help = "The name of the fragment class to create"
+        }
+
+        layoutName {
+            replace = 'fragment_base'
+            label = "Layout Name"
+            constraints = "layout|unique|nonempty"
+            suggest = 'fragment_${classToResource(fragmentClass)}'
+            help = "The name of the layout to create for the fragment"
+        }
+
+        packageName {
+            replace = 'com.leroymerlin.pandroid.templates'
+            label = "Package Name"
+            constraints = "package"
+            help = "The name of the layout to create for the fragment"
+        }
+
+        openerClass {
+            value = '${fragmentClass}Opener';
+            replace = "${fragmentClassName}FragmentOpener";
+        }
+        presenterClass {
+            value = '${fragmentClass}Presenter';
+            replace = "${fragmentClassName}FragmentPresenter";
+        }
+    }
+}
+
+
+
+task zipTemplateFiles(type: Zip, dependsOn: project.tasks.withType(TemplateCreatorTask)) {
+    from 'build/templates/'
+    include '*/*' //to include contents of a folder present inside Reports directory
+    archiveName "pandroid-template-${version}.zip"
+    destinationDir(project.file('build/outputs'))
+}
+
+
+
+
+
+
+/*
+
+def templateDir = file('/Applications/Android Studio.app/Contents/plugins/android/lib/templates/pandroid');
+
+
+task clearTemplates(type: Delete) {
+    delete templateDir
+}
+
+task installTemplates(type: Copy, dependsOn: 'clearTemplates') {
+    from file('templates')
+    into templateDir
+}
+
+
+File androidStudioHome = null;
+if (System.getenv("ANDROID_STUDIO_HOME") != null) {
+    androidStudioHome = new File(System.getenv("ANDROID_STUDIO_HOME"))
+} else if (System.getProperty('jb.vmOptionsFile') != null) {
+    androidStudioHome = new File(System.getProperty('jb.vmOptionsFile')).getParentFile().getParentFile();
+}
+
+if(androidStudioHome?.exists()){
+    println "yesssss !!!!! "
+}else{
+    println "noooooo !!!!! "
+
+}
+
+*/

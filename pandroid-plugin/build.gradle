@@ -33,11 +33,13 @@ def filesToCopy = ['../pandroid-version.properties',
                    '../pandroid-library/pandroid.properties',
                    '../pandroid-library/pandroid-proguard-rules.pro']
 
-task(copyPandroidGradle, type: Copy) {
+task(copyPandroidFilesToTest, type: Copy) {
     from(filesToCopy)
     into('src/test/resources/android-app/build/pandroid')
 }
-classes.finalizedBy copyPandroidGradle
+
+
+classes.finalizedBy copyPandroidFilesToTest
 classes.finalizedBy copyLocalProperties
 
 
