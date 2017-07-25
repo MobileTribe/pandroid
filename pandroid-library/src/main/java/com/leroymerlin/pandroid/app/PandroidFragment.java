@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
@@ -29,7 +31,8 @@ import javax.inject.Inject;
  * PandroidFragment is a Fragment that simplify the fragment cycle of life by introducing onResume(ResumeState) method.
  * If static field TAG is set PandroidFragment inject Broadcast receiver himself
  */
-public class PandroidFragment<T extends FragmentOpener> extends Fragment implements CancellableActionDelegate.CancellableRegister, ReceiversProvider {
+@RxWrapper
+public class PandroidFragment<T extends FragmentOpener> extends Fragment implements CancellableActionDelegate.CancellableRegister, ReceiversProvider, PandroidDelegateProvider {
 
     /**
      * Default logger
@@ -58,14 +61,15 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
 
     }
 
+    @Override
     public PandroidDelegate getPandroidDelegate() {
         return pandroidDelegate;
     }
 
     protected PandroidDelegate createDelegate() {
-        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
+        PandroidDelegateProvider pandroidApplication = (PandroidDelegateProvider) getActivity().getApplicationContext();
         //initialize Base PandroidDelegate
-        return pandroidApplication.createBasePandroidDelegate();
+        return pandroidApplication.getPandroidDelegate();
     }
 
 

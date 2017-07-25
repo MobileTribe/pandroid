@@ -36,7 +36,6 @@ public class PandroidModule {
 
     public PandroidModule(Application application) {
         mApplication = application;
-
     }
 
 

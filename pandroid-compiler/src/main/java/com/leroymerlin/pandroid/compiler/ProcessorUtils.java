@@ -1,9 +1,15 @@
 package com.leroymerlin.pandroid.compiler;
 
 import java.util.List;
+import java.util.Map;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
 /**
@@ -41,4 +47,25 @@ public class ProcessorUtils {
         }
         return true;
     }
+
+
+    public static AnnotationMirror getAnnotationMirror(Element element, Class<?> clazz) {
+        String clazzName = clazz.getName();
+        for(AnnotationMirror m : element.getAnnotationMirrors()) {
+            if(m.getAnnotationType().toString().equals(clazzName)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    public static Object getAnnotationValue(AnnotationMirror annotationMirror, String key) {
+        for(Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {
+            if(entry.getKey().getSimpleName().toString().equals(key)) {
+                return entry.getValue().getValue();
+            }
+        }
+        return null;
+    }
+
 }

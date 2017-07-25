@@ -1,17 +1,18 @@
-package com.leroymerlin.pandroid.app.delegate;
+package com.leroymerlin.pandroid.app.delegate.impl;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 
 import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.app.delegate.SimpleLifecycleDelegate;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 
 /**
  * Created by florian on 11/07/2016.
  */
 
-public class DaggerDelegate extends SimpleLifecycleDelegate<Object> {
+public class DaggerLifecycleDelegate extends SimpleLifecycleDelegate<Object> {
 
 
     private static final String TAG = "DaggerDelegate";

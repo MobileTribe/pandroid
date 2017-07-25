@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid;
 
+import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.leroymerlin.pandroid.future.RxActionDelegate;
 
 import junit.framework.Assert;
@@ -124,7 +125,7 @@ public class RxUnitTest {
         final CountDownLatch lock = new CountDownLatch(4);
 
 
-        RxActionDelegate.observable(new RxActionDelegate.OnSubscribeAction<String>() {
+        RxActionDelegate.observableWrapped(new RxActionDelegate.OnSubscribeAction<String>() {
             @Override
             public void subscribe(ActionDelegate<String> delegate) {
                 syncStreamTest(delegate);

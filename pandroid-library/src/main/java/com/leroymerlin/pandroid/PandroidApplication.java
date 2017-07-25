@@ -6,12 +6,14 @@ import android.support.annotation.VisibleForTesting;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
-import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.ButterKnifeLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.impl.DaggerLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.EventBusLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.DaggerPandroidComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
@@ -26,7 +28,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application {
+public class PandroidApplication extends Application implements PandroidDelegateProvider {
 
 
     private static final String TAG = "PandroidApplication";
@@ -103,9 +105,9 @@ public class PandroidApplication extends Application {
      *
      * @return PandroidDelegate that will be used in pandroid activity / pandroid fragment
      */
-    public PandroidDelegate createBasePandroidDelegate() {
+    protected PandroidDelegate createBasePandroidDelegate() {
         PandroidDelegate pandroidDelegate = new PandroidDelegate();
-        pandroidDelegate.addLifecycleDelegate(new DaggerDelegate());
+        pandroidDelegate.addLifecycleDelegate(new DaggerLifecycleDelegate());
         pandroidDelegate.addLifecycleDelegate(new EventBusLifecycleDelegate(eventBusManager));
         pandroidDelegate.addLifecycleDelegate(new AutoBinderLifecycleDelegate());
         if (PandroidConfig.isLibraryEnable("butterknife")) {
@@ -118,7 +120,17 @@ public class PandroidApplication extends Application {
         } else {
             logWrapper.v(TAG, "Icepick is disabled, add the library in Pandroid extension to use it");
         }
+        if (PandroidConfig.isLibraryEnable("rxandroid")) {
+            pandroidDelegate.addLifecycleDelegate(new RxLifecycleDelegate());
+        } else {
+            logWrapper.v(TAG, "RxAndroid is disabled, add the library in Pandroid extension to use it");
+        }
         return pandroidDelegate;
+    }
+
+    @Override
+    public PandroidDelegate getPandroidDelegate() {
+        return createBasePandroidDelegate();
     }
     //tag::PandroidBaseLifecycleDelegate[]
 

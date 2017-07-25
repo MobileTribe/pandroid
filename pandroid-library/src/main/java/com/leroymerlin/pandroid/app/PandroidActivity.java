@@ -6,7 +6,9 @@ import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
 
 import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.FragmentOpener;
 import com.leroymerlin.pandroid.event.OnBackListener;
@@ -28,7 +30,8 @@ import javax.inject.Inject;
  * Back event and fragment back stack changed are treated to.
  * If static field TAG is set PandroidActivity inject Broadcast receiver himself
  */
-public class PandroidActivity extends AppCompatActivity implements Cancellable.CancellableRegister, ReceiversProvider {
+@RxWrapper
+public class PandroidActivity extends AppCompatActivity implements Cancellable.CancellableRegister, ReceiversProvider, PandroidDelegateProvider {
 
     //tag::PandroidActivityInjection[]
     @Inject
@@ -50,16 +53,17 @@ public class PandroidActivity extends AppCompatActivity implements Cancellable.C
         pandroidDelegate.onInit(this);
 
     }
-    //end::PandroidActivityInjection[]
 
+    //end::PandroidActivityInjection[]
+    @Override
     public PandroidDelegate getPandroidDelegate() {
         return pandroidDelegate;
     }
 
     protected PandroidDelegate createDelegate() {
-        PandroidApplication pandroidApplication = PandroidApplication.get(this);
+        PandroidDelegateProvider pandroidApplication = (PandroidDelegateProvider) getApplicationContext();
         //initialize Base PandroidDelegate
-        return pandroidApplication.createBasePandroidDelegate();
+        return pandroidApplication.getPandroidDelegate();
     }
 
     @CallSuper

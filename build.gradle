@@ -9,9 +9,7 @@ buildscript {
     }
 }
 
-
 allprojects {
-
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
@@ -20,12 +18,11 @@ allprojects {
 
 }
 
-ext.deps = [
-        javapoet: 'com.squareup:javapoet:1.7.0',
-]
 
 
 
+
+//SONAR
 buildscript {
     repositories {
         maven {

@@ -15,7 +15,7 @@ import java.util.List;
  * Created by florian on 26/11/15.
  */
 public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
-        CancellableActionDelegate.CancellableRegister {
+        CancellableActionDelegate.CancellableRegister, PandroidDelegateProvider {
 
     public static final String TAG = "PandroidLifecycleDelegate";
     private List<Cancellable> cancellables = new ArrayList<>();
@@ -118,4 +118,8 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
         return this.cancellables.remove(delegate);
     }
 
+    @Override
+    public PandroidDelegate getPandroidDelegate() {
+        return this;
+    }
 }

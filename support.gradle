@@ -29,3 +29,6 @@ ext.optionalLibs = [
         "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
 ]
 
+ext.deps = [
+        javapoet: 'com.squareup:javapoet:1.7.0',
+]
