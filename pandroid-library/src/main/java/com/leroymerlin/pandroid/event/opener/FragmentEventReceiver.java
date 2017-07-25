@@ -1,4 +1,4 @@
-package com.leroymerlin.pandroid.event;
+package com.leroymerlin.pandroid.event.opener;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -10,6 +10,8 @@ import android.util.Log;
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.app.PandroidFragment;
+import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
 import java.lang.ref.WeakReference;
@@ -21,46 +23,9 @@ import javax.inject.Inject;
 /**
  * Created by florian on 12/11/14.
  */
-public class FragmentEventReceiver<T extends ReceiversProvider> implements EventBusManager.EventBusReceiver {
+public class FragmentEventReceiver<T extends OpenerReceiverProvider> extends OpenerEventReceiver<T, FragmentOpener>{
 
     private final static String TAG = "FragmentEventReceiver";
-
-    List<String> filter = new ArrayList<String>();
-
-    @Override
-    public List<String> getTags() {
-        return null;
-    }
-
-    @Override
-    public boolean handle(Object data) {
-        if (data instanceof FragmentOpener && filter.contains(((FragmentOpener) data).getFilterTag())) {
-            onFragmentOpenerReceived((FragmentOpener) data);
-            return true;
-        }
-        return false;
-    }
-
-    @Inject
-    protected EventBusManager eventBusManager;
-    @Inject
-    protected LogWrapper logWrapper;
-
-    protected WeakReference<T> refAttachedObject;
-    protected FragmentManager fragmentManager;
-
-
-    public void attach(Context context, T attachedObject, FragmentManager fragmentManager) {
-        PandroidApplication.get(context).inject(this);
-        this.refAttachedObject = new WeakReference<T>(attachedObject);
-        this.fragmentManager = fragmentManager;
-    }
-
-    public void detach() {
-        refAttachedObject = null;
-        fragmentManager = null;
-    }
-
 
     // ###### FRAGMENT OPENING PART #######
 
@@ -83,7 +48,8 @@ public class FragmentEventReceiver<T extends ReceiversProvider> implements Event
     private boolean clearBackStack;
 
 
-    protected void onFragmentOpenerReceived(FragmentOpener fragmentOpener) {
+    @Override
+    protected void onOpenerReceived(FragmentOpener fragmentOpener) {
 
         if (clearBackStack) {
             clearBackStack();
@@ -95,8 +61,14 @@ public class FragmentEventReceiver<T extends ReceiversProvider> implements Event
             return;
         }
 
+        T attachedObject = refAttachedObject.get();
 
-        FragmentTransaction trans = fragmentManager.beginTransaction();
+        if (attachedObject == null) {
+            return;
+        }
+
+
+        FragmentTransaction trans = ((T) attachedObject).provideFragmentManager().beginTransaction();
         if (anim != null && anim.length > 3)
             trans.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
 
@@ -104,8 +76,8 @@ public class FragmentEventReceiver<T extends ReceiversProvider> implements Event
             trans.addToBackStack(backStackTag);
         }
 
-        if (fragmentOpener.getBreadcrumbTitle() != null) {
-            trans.setBreadCrumbTitle(fragmentOpener.getBreadcrumbTitle());
+        if (fragmentOpener.getTitle() != null) {
+            trans.setBreadCrumbTitle(fragmentOpener.getTitle());
         } else if (defaultBreadcrumbTitle != null) {
             trans.setBreadCrumbTitle(defaultBreadcrumbTitle);
         }
@@ -143,8 +115,9 @@ public class FragmentEventReceiver<T extends ReceiversProvider> implements Event
      * remove immediately all fragments in backStack
      */
     protected void clearBackStack() {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        T attachedObject = refAttachedObject.get();
+        if (attachedObject != null && attachedObject.provideFragmentManager().getBackStackEntryCount() > 0) {
+            attachedObject.provideFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 
@@ -201,6 +174,7 @@ public class FragmentEventReceiver<T extends ReceiversProvider> implements Event
         this.defaultBreadcrumbTitle = breadcrumbTitle;
         return this;
     }
+
 
 
 }

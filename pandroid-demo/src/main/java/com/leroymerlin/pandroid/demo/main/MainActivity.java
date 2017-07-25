@@ -21,7 +21,7 @@ import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentEventReceiver;
+import com.leroymerlin.pandroid.event.opener.FragmentEventReceiver;
 
 import java.util.List;
 

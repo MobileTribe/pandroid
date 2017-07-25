@@ -10,7 +10,7 @@ import com.leroymerlin.pandroid.app.RxPandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.demo.globals.review.RxReviewManager;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.future.RxActionDelegate;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
@@ -35,7 +35,6 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
     //end::RxWrapper[]
 
 
-
     @Inject
     ToastManager toastManager;
 
@@ -51,19 +50,20 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
     public void onResume() {
         super.onResume();
 
-        reviewManager.rxGetLastReview().flatMap(new Function<RxActionDelegate.Result<Review>, SingleSource<Review>>() {
-            @Override
-            public SingleSource<Review> apply(@NonNull RxActionDelegate.Result<Review> reviewResult) throws Exception {
-                return reviewResult.result != null ? Single.just(reviewResult.result) : reviewManager.rxGetReview("1");
-            }
-        })
+        reviewManager.rxGetLastReview()
+                .flatMap(new Function<RxActionDelegate.Result<Review>, SingleSource<Review>>() {
+                    @Override
+                    public SingleSource<Review> apply(@NonNull RxActionDelegate.Result<Review> reviewResult) throws Exception {
+                        return reviewResult.result != null ? Single.just(reviewResult.result) : reviewManager.rxGetReview("1");
+                    }
+                })
                 .compose(this.<Review>bindLifecycle())
                 .subscribe(new Consumer<Review>() {
                     @Override
                     public void accept(@NonNull Review review) throws Exception {
-                        if (getActivity() != null) {
-                            toastManager.makeToast(getActivity(), review.getTitle(), null);
-                        }
+                        //we are sure fragment is still not detached thanks to the compose
+                        //no need to check getActivity()!=null
+                        toastManager.makeToast(getActivity(), review.getTitle(), null);
                     }
                 });
 

@@ -1,6 +1,6 @@
 package com.leroymerlin.pandroid.demo.main.anim;
 
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.ui.animation.ViewInfosContainer;
 
 /**

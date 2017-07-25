@@ -18,9 +18,14 @@ import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.DaggerPandroidComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.ActivityEventReceiver;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.log.PandroidLogger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,7 +33,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application implements PandroidDelegateProvider {
+public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider {
 
 
     private static final String TAG = "PandroidApplication";
@@ -132,6 +137,17 @@ public class PandroidApplication extends Application implements PandroidDelegate
     public PandroidDelegate getPandroidDelegate() {
         return createBasePandroidDelegate();
     }
+
+
     //tag::PandroidBaseLifecycleDelegate[]
+
+    protected List<? extends ActivityEventReceiver> createBaseActivityReceivers() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<EventBusManager.EventBusReceiver> getReceivers() {
+        return new ArrayList<EventBusManager.EventBusReceiver>(createBaseActivityReceivers());
+    }
 
 }

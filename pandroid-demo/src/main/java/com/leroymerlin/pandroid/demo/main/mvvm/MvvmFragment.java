@@ -12,7 +12,7 @@ import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.models.ProductDataBinding;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 /**
  * Created by adrien on 14/09/16.
