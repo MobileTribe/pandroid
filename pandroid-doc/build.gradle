@@ -17,6 +17,7 @@ asciidoctor {
     separateOutputDirs false
     sources {
         include 'Tutorial.adoc'
+        include 'Changelog.adoc'
     }
     outputDir './html/'
     attributes 'source-highlighter': 'coderay',
