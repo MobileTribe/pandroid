@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.event.opener;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -134,43 +135,41 @@ public class FragmentEventReceiver<T extends OpenerReceiverProvider> extends Ope
     }
 
 
-    public FragmentEventReceiver setContainerId(int fragmentContainerId) {
+    public FragmentEventReceiver<T> addFragment(FragmentOpener opener) {
+        return this.add(opener);
+    }
+
+    public FragmentEventReceiver<T> addFragment(Class<? extends Fragment> fragmentClass) {
+        return this.add(fragmentClass);
+    }
+
+    public FragmentEventReceiver<T> setContainerId(int fragmentContainerId) {
         this.fragmentContainerId = fragmentContainerId;
         return this;
     }
 
-    public FragmentEventReceiver addFragment(Class<? extends PandroidFragment> fragmentClass) {
-        addFragment(new FragmentOpener(fragmentClass));
-        return this;
-    }
-
-    public FragmentEventReceiver addFragment(FragmentOpener opener) {
-        filter.add(opener.getFilterTag());
-        return this;
-    }
-
-    public FragmentEventReceiver setFragmentTag(String fragmentTag) {
+    public FragmentEventReceiver<T> setFragmentTag(String fragmentTag) {
         this.fragmentTag = fragmentTag;
         return this;
     }
 
-    public FragmentEventReceiver clearBackStackOnOpening(boolean clearBackStack) {
+    public FragmentEventReceiver<T> clearBackStackOnOpening(boolean clearBackStack) {
         this.clearBackStack = clearBackStack;
         return this;
     }
 
-    public FragmentEventReceiver setAnim(int[] anim) {
+    public FragmentEventReceiver<T> setAnim(int[] anim) {
         this.anim = anim;
         return this;
     }
 
-    public FragmentEventReceiver setBackStackTag(String backStackTag) {
+    public FragmentEventReceiver<T> setBackStackTag(String backStackTag) {
         this.backStackTag = backStackTag;
         return this;
 
     }
 
-    public FragmentEventReceiver setDefaultBreadcrumbTitle(String breadcrumbTitle) {
+    public FragmentEventReceiver<T> setDefaultBreadcrumbTitle(String breadcrumbTitle) {
         this.defaultBreadcrumbTitle = breadcrumbTitle;
         return this;
     }

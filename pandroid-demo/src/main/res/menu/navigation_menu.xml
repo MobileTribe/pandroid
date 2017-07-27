@@ -9,6 +9,10 @@
             android:icon="@drawable/pandroid_ic_launcher"
             android:title="@string/navigation_events" />
         <item
+            android:id="@+id/navigation_opener"
+            android:checked="false"
+            android:title="@string/navigation_opener" />
+        <item
             android:id="@+id/navigation_scanner"
             android:checked="false"
             android:title="@string/navigation_scanner" />

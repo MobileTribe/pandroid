@@ -206,6 +206,10 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
         return this;
     }
 
+    public void startActivity(Class<? extends Activity> activityClass) {
+        sendEventSync(new ActivityOpener(activityClass));
+    }
+
     public void startFragment(Class<? extends Fragment> fragmentClass) {
         sendEventSync(new FragmentOpener(fragmentClass));
     }

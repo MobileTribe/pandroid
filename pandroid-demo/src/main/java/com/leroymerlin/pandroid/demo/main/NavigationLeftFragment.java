@@ -17,6 +17,8 @@ import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
+import com.leroymerlin.pandroid.demo.main.opener.CustomActivityOpener;
+import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
@@ -46,6 +48,10 @@ public class NavigationLeftFragment extends PandroidFragment {
             public boolean onNavigationItemSelected(MenuItem item) {
                 boolean handle = false;
                 switch (item.getItemId()) {
+                    case R.id.navigation_opener:
+                        sendEventSync(new CustomActivityOpener("from Navigation"));
+                        handle = true;
+                        break;
                     case R.id.navigation_scanner:
                         startFragment(ScannerFragment.class);
                         handle = true;

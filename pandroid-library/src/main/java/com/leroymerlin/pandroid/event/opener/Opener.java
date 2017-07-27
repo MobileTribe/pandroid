@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.event.opener;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
@@ -46,7 +47,7 @@ public abstract class Opener<T> implements Serializable {
     }
 
     public String getFilterTag() {
-        return OPEN_TAG + ":" + classType.getName();
+        return createFilter(classType);
     }
 
     @Override
@@ -54,6 +55,9 @@ public abstract class Opener<T> implements Serializable {
         return getFilterTag();
     }
 
+    static String createFilter(Class classType) {
+        return OPEN_TAG + ":" + classType.getName();
+    }
 
     static <T extends Opener> T getOpener(Bundle bundle) {
         if (bundle != null && bundle.containsKey(ARG_OPENER)) {

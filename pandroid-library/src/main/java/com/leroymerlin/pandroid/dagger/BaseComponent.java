@@ -9,6 +9,7 @@ import com.leroymerlin.pandroid.event.opener.ActivityOpener;
 import com.leroymerlin.pandroid.event.opener.FragmentEventReceiver;
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.Opener;
 import com.leroymerlin.pandroid.event.opener.OpenerEventReceiver;
 import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
 import com.leroymerlin.pandroid.log.LogWrapper;
@@ -26,7 +27,7 @@ public interface BaseComponent {
 
     OkHttpClient.Builder okHttpClientBuilder();
 
-    void inject(FragmentEventReceiver<OpenerReceiverProvider> receiver);
+    void inject(OpenerEventReceiver<OpenerReceiverProvider, Opener> receiver);
 
     void inject(PandroidApplication pandroidApplication);
 

@@ -6,8 +6,8 @@ import android.view.View;
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.LifecycleDelegate;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.opener.FragmentEventReceiver;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.OpenerEventReceiver;
 import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
 
 import java.util.ArrayList;
@@ -44,8 +44,8 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
             if (target instanceof OpenerReceiverProvider) {
                 OpenerReceiverProvider provider = (OpenerReceiverProvider) target;
                 for (EventBusManager.EventBusReceiver receiver : receivers) {
-                    if (receiver instanceof FragmentEventReceiver) {
-                        ((FragmentEventReceiver) receiver).attach(provider);
+                    if (receiver instanceof OpenerEventReceiver) {
+                        ((OpenerEventReceiver) receiver).attach(provider);
                     }
                 }
 
@@ -64,8 +64,8 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     public void onPause(Object object) {
         eventBusManager.unregisterReceivers(receivers);
         for (EventBusManager.EventBusReceiver receiver : receivers) {
-            if (receiver instanceof FragmentEventReceiver) {
-                ((FragmentEventReceiver) receiver).detach();
+            if (receiver instanceof OpenerEventReceiver) {
+                ((OpenerEventReceiver) receiver).detach();
             }
         }
         receivers.clear();

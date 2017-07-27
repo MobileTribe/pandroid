@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.app;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
 import com.leroymerlin.pandroid.future.Cancellable;
@@ -108,6 +110,10 @@ public class PandroidFragment<T extends FragmentOpener> extends Fragment impleme
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         pandroidDelegate.onSaveView(this, outState);
+    }
+
+    public void startActivity(Class<? extends Activity> activityClass) {
+        sendEventSync(new ActivityOpener(activityClass));
     }
 
     public void startFragment(Class<? extends Fragment> fragmentClass) {

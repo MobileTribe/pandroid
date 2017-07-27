@@ -16,6 +16,7 @@ import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
@@ -122,6 +123,10 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
     public void onDestroyView() {
         super.onDestroyView();
         pandroidDelegate.onDestroyView(this);
+    }
+
+    public void startActivity(Class<? extends Activity> activityClass) {
+        sendEventSync(new ActivityOpener(activityClass));
     }
 
     public void startFragment(Class<? extends Fragment> fragmentClass) {

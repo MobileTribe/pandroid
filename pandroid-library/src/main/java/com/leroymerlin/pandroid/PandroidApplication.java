@@ -16,6 +16,7 @@ import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.DaggerPandroidComponent;
+import com.leroymerlin.pandroid.dagger.PandroidDaggerProvider;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider {
+public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidDaggerProvider {
 
 
     private static final String TAG = "PandroidApplication";
@@ -61,6 +62,7 @@ public class PandroidApplication extends Application implements PandroidDelegate
     }
     //end::Logger[]
 
+    @Override
     public void inject(Object obj) {
         if (obj != null) {
             BaseComponent baseComponent = getBaseComponent();
@@ -68,11 +70,7 @@ public class PandroidApplication extends Application implements PandroidDelegate
         }
     }
 
-    @VisibleForTesting
-    public void overrideBaseComponent(BaseComponent mBaseComponent) {
-        this.mBaseComponent = mBaseComponent;
-    }
-
+    @Override
     public BaseComponent getBaseComponent() {
         if (mBaseComponent == null) {
             mBaseComponent = createBaseComponent();
@@ -80,6 +78,10 @@ public class PandroidApplication extends Application implements PandroidDelegate
         return mBaseComponent;
     }
 
+    @VisibleForTesting
+    public void overrideBaseComponent(BaseComponent mBaseComponent) {
+        this.mBaseComponent = mBaseComponent;
+    }
 
     public static PandroidApplication get(Context context) {
         return (PandroidApplication) context.getApplicationContext();
@@ -139,9 +141,9 @@ public class PandroidApplication extends Application implements PandroidDelegate
     }
 
 
-    //tag::PandroidBaseLifecycleDelegate[]
+    //end::PandroidBaseLifecycleDelegate[]
 
-    protected List<? extends ActivityEventReceiver> createBaseActivityReceivers() {
+    protected List<ActivityEventReceiver> createBaseActivityReceivers() {
         return new ArrayList<>();
     }
 

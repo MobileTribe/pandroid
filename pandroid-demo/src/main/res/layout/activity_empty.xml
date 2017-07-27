@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/opener_new_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/opener_new_fragment" />
+
+    <Button
+        android:id="@+id/opener_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/opener_home" />
+
+    <FrameLayout
+        android:id="@+id/opener_fragment_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -23,21 +23,6 @@ public class ActivityEventReceiver<T extends OpenerReceiverProvider> extends Ope
     private int[] animations;
 
 
-    public ActivityEventReceiver overrideAnimation(int[] animations) {
-        this.animations = animations;
-        return this;
-    }
-
-    public ActivityEventReceiver addFlags(int flags) {
-        this.flags = flags | this.flags;
-        return this;
-    }
-
-    public ActivityEventReceiver setFinishActivity(boolean finish) {
-        this.finishActivity = finish;
-        return this;
-    }
-
     @Override
     protected void onOpenerReceived(ActivityOpener opener) {
         T attachedObject = this.refAttachedObject.get();
@@ -51,15 +36,18 @@ public class ActivityEventReceiver<T extends OpenerReceiverProvider> extends Ope
         Activity parentActivity = attachedObject.provideActivity();
         boolean handled = onExecuteActivityOpen(opener, intent);
         if (!handled) {
-            if (animations != null && animations.length == 2) {
-                parentActivity.overridePendingTransition(animations[0], animations[1]);
-            }
+
             int resultCode = opener.getResultCode();
             if (resultCode > 0) {
                 parentActivity.startActivityForResult(intent, resultCode);
             } else {
                 parentActivity.startActivity(intent);
             }
+
+            if (animations != null && animations.length == 2) {
+                parentActivity.overridePendingTransition(animations[0], animations[1]);
+            }
+
             if (finishActivity) {
                 parentActivity.finish();
             }
@@ -85,5 +73,28 @@ public class ActivityEventReceiver<T extends OpenerReceiverProvider> extends Ope
         intent.setFlags(flags);
     }
 
+
+    public ActivityEventReceiver<T> overrideAnimation(int[] animations) {
+        this.animations = animations;
+        return this;
+    }
+
+    public ActivityEventReceiver<T> addFlags(int flags) {
+        this.flags = flags | this.flags;
+        return this;
+    }
+
+    public ActivityEventReceiver<T> setFinishActivity(boolean finish) {
+        this.finishActivity = finish;
+        return this;
+    }
+
+    public ActivityEventReceiver<T> addActivity(ActivityOpener opener) {
+        return this.add(opener);
+    }
+
+    public ActivityEventReceiver<T> addActivity(Class<? extends Activity> activityClass) {
+        return this.add(activityClass);
+    }
 
 }

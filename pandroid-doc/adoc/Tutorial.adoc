@@ -65,7 +65,7 @@ Let's see how it works:
 include::{demoJava}main/event/EventFragment.java[tags=sendSimpleEvent]
 ----
 
-*Send a simple Object*
+*Send an Object with a tag*
 
 [source,java]
 ----
@@ -84,7 +84,7 @@ include::{javaJava}event/EventBusManager.java[tags=deliveryPolicy]
 ----
 
 
-TIP: link::{demoJava}main/event/EventFragment.java[This example] is available in the link::{demoDir}[demo project]
+TIP: link:{github}{demoJava}main/event/EventFragment.java[This example] is available in the link:{github}{demoDir}[demo project]
 
 
 
@@ -105,17 +105,17 @@ To add the needed dependencies you have to declare it in the pandroid extension 
 [source,java]
 ----
 pandroid{
-    library('libName') { //Regex matching declared configurator will bring the dependency
+    library('libName') { //Regex matching declared configurator that will bring the dependency
         libParam1 'param1'
         libParam2 'param2'
     }
 }
 ----
 
-The plugin is using configurators in order to extract the librairies' configurations from Pandroid, the plugin is using configurators.
+The plugin is using configurators in order to extract the librairies configurations from Pandroid.
 It allows you to modify the gradle's configuration and the manifest of your app when the plugin is applied.
 
-To see default configurators, take a look at this link::../../{libDir}pandroid.gradle[pandroid.gradle].
+To see default configurators, take a look at this link:{github}{libDir}pandroid.gradle[pandroid.gradle].
 
 Here is an example:
 [source,java]
@@ -765,7 +765,7 @@ the manager can serialize your object to string with GSON.
 
 === Loader
 
-To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation link::http://developer.android.com/guide/components/loaders.html[here]
+To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation link:http://developer.android.com/guide/components/loaders.html[here]
 To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.
 
 [source,java]
