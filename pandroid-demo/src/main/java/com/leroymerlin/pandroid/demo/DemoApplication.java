@@ -50,11 +50,12 @@ public class DemoApplication extends PandroidApplication {
     //end::createBaseComponent[]
 
 
+    //tag::ActivityOpener[]
     /**
      * create list of receiver inject in Activity
      * You can override this method to inject activity receiver easily
      *
-     * @return list of activity receiver inject in activity
+     * @return list of activity receivers inject in activity
      */
     @Override
     protected List<ActivityEventReceiver> createBaseActivityReceivers() {
@@ -67,4 +68,5 @@ public class DemoApplication extends PandroidApplication {
                 .addActivity(MainActivity.class));
         return receivers;
     }
+    //end::ActivityOpener[]
 }

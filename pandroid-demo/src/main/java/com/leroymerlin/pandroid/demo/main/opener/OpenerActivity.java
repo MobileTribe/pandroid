@@ -18,6 +18,8 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 
 /**
+ * Example for opener usage
+ * <p>
  * Created by florian on 27/07/2017.
  */
 
@@ -26,26 +28,31 @@ public class OpenerActivity extends PandroidActivity<CustomActivityOpener> {
     @Inject
     ToastManager toastManager;
 
+    //tag::ActivityOpener[]
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empty);
-        toastManager.makeToast(this, "param was : " + mOpener.param, null);
+        //I can access my opener if the activity was open by an ActivityEventReceiver
+        if (mOpener != null) {
+            String myOpenerParam = mOpener.param;
+            toastManager.makeToast(this, "param was : " + myOpenerParam, null);
+        }
     }
+    //end::ActivityOpener[]
 
     @OnClick(R.id.opener_home)
-    public void onHomePressed(){
+    public void onHomePressed() {
         startActivity(MainActivity.class);
     }
 
 
     @OnClick(R.id.opener_new_fragment)
-    public void onNewFragmentPressed(){
+    public void onNewFragmentPressed() {
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         sendEventSync(new ColorOpener(color));
     }
-
 
 
     @Override

@@ -143,6 +143,12 @@ public class PandroidApplication extends Application implements PandroidDelegate
 
     //end::PandroidBaseLifecycleDelegate[]
 
+    /**
+     * create list of receiver inject in Activity
+     * You can override this method to inject activity receiver easily
+     *
+     * @return list of activity receivers inject in activity
+     */
     protected List<ActivityEventReceiver> createBaseActivityReceivers() {
         return new ArrayList<>();
     }

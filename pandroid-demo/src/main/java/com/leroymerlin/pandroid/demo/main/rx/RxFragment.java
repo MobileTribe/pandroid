@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import com.leroymerlin.pandroid.app.RxPandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.globals.model.Review;
+import com.leroymerlin.pandroid.demo.globals.review.ReviewService;
 import com.leroymerlin.pandroid.demo.globals.review.RxReviewManager;
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.future.RxActionDelegate;
+import com.leroymerlin.pandroid.net.RxPandroidCall;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
 import javax.inject.Inject;
@@ -37,6 +39,8 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
 
     @Inject
     ToastManager toastManager;
+    @Inject
+    ReviewService reviewService;
 
     @Nullable
     @Override
@@ -69,6 +73,20 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
 
         //end::RxWrapper[]
 
+        //tag::RxAndroid[]
+        //We can cast to RxPandroidCall if rxandroid is enable in the plugin configuration
+        ((RxPandroidCall) reviewService.getReview("1"))
+                .rxEnqueue()
+                //bind observer on lifecycle thanks to RxPandroidFragment
+                .compose(this.<Review>bindLifecycle())
+                .subscribe(new Consumer<Review>() {
+                    @Override
+                    public void accept(@NonNull Review o) throws Exception {
+                        //we can access getActivity() with no check because call will be cancel if our app is paused
+                        toastManager.makeToast(getActivity(), o.getTitle(), null);
+                    }
+                });
+        //end::RxAndroid[]
     }
 
 }

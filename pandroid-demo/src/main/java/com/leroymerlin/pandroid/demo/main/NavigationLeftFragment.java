@@ -49,7 +49,9 @@ public class NavigationLeftFragment extends PandroidFragment {
                 boolean handle = false;
                 switch (item.getItemId()) {
                     case R.id.navigation_opener:
+                        //tag::ActivityOpener[]
                         sendEventSync(new CustomActivityOpener("from Navigation"));
+                        //end::ActivityOpener[]
                         handle = true;
                         break;
                     case R.id.navigation_scanner:

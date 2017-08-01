@@ -10,7 +10,7 @@ import retrofit2.Call;
  */
 public interface PandroidCall<T> extends Call<T>{
 
-    @RxWrapper(wrapResult = true)
+    @RxWrapper
     void enqueue(ActionDelegate<T> callback);
 
     boolean isExecuted();
