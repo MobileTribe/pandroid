@@ -46,9 +46,21 @@ class PandroidPlugin implements Plugin<Project> {
         project.task("copyEmbededFiles", group: PANDROID_GROUP) << this.&copyEmbededFiles
         project.preBuild.dependsOn project.copyEmbededFiles
 
-
-
         applyEmbededFiles()
+
+        //Support for kotlin projects
+        project.plugins.withId('kotlin-android') {
+            def kotlinKaptPluginId = 'kotlin-kapt'
+            if (!project.plugins.hasPlugin(kotlinKaptPluginId)) {
+                project.apply plugin: kotlinKaptPluginId
+            }
+            project.configurations.annotationProcessor.getAllDependencies().all { config ->
+                dependencies {
+                    kapt config
+                }
+            }
+        }
+
 
         def isAndroidApp = project.plugins.hasPlugin("com.android.application")
         if (isAndroidApp) {

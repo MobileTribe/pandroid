@@ -28,6 +28,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 ### *2.4.0* - (2017-07-)
 *Features*
 - RX integration
+- Kotlin support
 *Refactor*
 - Opener concept expanded to Activity
 - Remove Data Binding
