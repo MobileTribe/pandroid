@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.plugin
 
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
+import com.leroymerlin.pandroid.plugin.GeneratePandroidTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.slf4j.Logger

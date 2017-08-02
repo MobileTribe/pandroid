@@ -55,7 +55,6 @@ class RxWrapperProcessor extends BaseProcessor {
 
     RxWrapperProcessor(Elements elements, Types types) {
         super(elements, types);
-        ACTIONDELEGATE_TYPE = mElementsUtils.getTypeElement(ActionDelegate.class.getCanonicalName()).asType();
 
     }
 
@@ -69,6 +68,7 @@ class RxWrapperProcessor extends BaseProcessor {
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
         if (!checkRxEnabled(processingEnvironment)) return;
 
+        ACTIONDELEGATE_TYPE = mElementsUtils.getTypeElement(ActionDelegate.class.getCanonicalName()).asType();
 
         Set<? extends Element> models = roundEnvironment.getElementsAnnotatedWith
                 (RxModel.class);
