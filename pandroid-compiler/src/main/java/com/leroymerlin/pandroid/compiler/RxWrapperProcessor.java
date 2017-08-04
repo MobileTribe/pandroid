@@ -233,7 +233,7 @@ class RxWrapperProcessor extends BaseProcessor {
                     TypeName baseReturnType = methodData.returnType;
                     TypeName returnType = rxWrapperAnnotation.wrapResult() ? ParameterizedTypeName.get(RXACTIONDELEGATE_RESULT_TYPE, baseReturnType) : baseReturnType;
 
-                    boolean single = !rxWrapperAnnotation.stream();
+                    boolean single = rxWrapperAnnotation.single();
                     boolean returnVoid = returnType.equals(TypeName.VOID);
                     if (returnVoid && methodData.delegateParameter == null) {
                         throw new IllegalStateException("Method should have an ActionDelegate type in the parameters to be RxWrapped. " + className.toString() + ":" + method.getSimpleName().toString());
@@ -269,8 +269,8 @@ class RxWrapperProcessor extends BaseProcessor {
 
                         modelBuilder.addMethod(methodBuilder.build());
                     } else { //method replacement
-                        if (rxWrapperAnnotation.stream()) {
-                            throw new IllegalStateException("Can't wrappe a method as Observable. Please remove stream or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
+                        if (!rxWrapperAnnotation.single()) {
+                            throw new IllegalStateException("Can't wrappe a method as Observable. Please remove single or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
                         }
 
 

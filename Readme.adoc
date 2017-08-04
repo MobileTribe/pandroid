@@ -25,13 +25,15 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 ## Roadmap
 
 
-### *2.4.0* - (2017-07-)
+### *2.4.0* - (2017-08-04)
 *Features*
 - RX integration
 - Kotlin support
 *Refactor*
 - Opener concept expanded to Activity
 - Remove Data Binding
+
+WARNING: Opener package changed to 'com.leroymerlin.pandroid.event.opener'
 
 ### *Older release*
 *link:{htmlPath}pandroid-doc/html/Changelog.html[See Full ChangeLog]*
@@ -57,8 +59,6 @@ buildscript {
 apply plugin: 'com.leroymerlin.pandroid'
 
 ----
-
-WARNING: If you update pandroid plugin it is strongly recommanded to clean your project. Files in build/pandroid have to be deleted to be updated
 
 
 ## Here we go!

@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.event.opener;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -58,6 +59,20 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
     protected abstract void onOpenerReceived(T opener);
 
 
+    protected FragmentManager getFragmentManager() {
+        if (refAttachedObject != null && refAttachedObject.get() != null) {
+            return refAttachedObject.get().provideFragmentManager();
+        }
+        return null;
+    }
+
+    protected Activity getActivity() {
+        if (refAttachedObject != null && refAttachedObject.get() != null) {
+            return refAttachedObject.get().provideActivity();
+        }
+        return null;
+    }
+
     private void add(String tag) {
         this.filter.add(tag);
     }
@@ -67,7 +82,7 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
         return (T) this;
     }
 
-    public  <T extends OpenerEventReceiver> T add(Opener opener) {
+    public <T extends OpenerEventReceiver> T add(Opener opener) {
         add(opener.getFilterTag());
         return (T) this;
     }

@@ -1,11 +1,18 @@
 # Changelog
 
-### *2.4.0* - (2017-07-)
+:hardbreaks:
+
+
+### *2.4.0* - (2017-08-04)
 *Features*
 - RX integration
+- Kotlin support
 *Refactor*
 - Opener concept expanded to Activity
 - Remove Data Binding
+
+WARNING: Opener package changed to 'com.leroymerlin.pandroid.event.opener'
+
 
 ### *2.3.1* - (2017-05-24)
 *Refactor*
