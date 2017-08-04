@@ -24,6 +24,9 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.4.1* - (2017-08-04)
+*Fix*
+- kapt - kotlin support error
 
 ### *2.4.0* - (2017-08-04)
 *Features*

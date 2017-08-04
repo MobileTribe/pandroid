@@ -56,9 +56,10 @@ class PandroidPlugin implements Plugin<Project> {
                 project.apply plugin: kotlinKaptPluginId
             }
             project.configurations.annotationProcessor.getAllDependencies().all {
-                project.dependencies {
-                    kapt it
-                }
+                dependency ->
+                    project.dependencies {
+                        kapt dependency
+                    }
             }
         }
 
