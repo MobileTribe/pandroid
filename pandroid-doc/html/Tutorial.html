@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.3.1, Wed May 24 17:08:56 CEST 2017">
+<meta name="author" content="Pandroid v2.4.0, Fri Aug 04 11:42:34 CEST 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.3.1, Wed May 24 17:08:56 CEST 2017</span><br>
+<span id="author" class="author">Pandroid v2.4.0, Fri Aug 04 11:42:34 CEST 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -530,14 +530,15 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#plugin-configuration">2.1. Plugin configuration</a></li>
 <li><a href="#pandroidapplication">2.2. PandroidApplication</a></li>
 <li><a href="#pandroidmodule-component">2.3. PandroidModule/Component</a></li>
-<li><a href="#pandroidactivity">2.4. PandroidActivity</a></li>
-<li><a href="#pandroidfragment">2.5. PandroidFragment</a></li>
-<li><a href="#lifecycle-delegate">2.6. Lifecycle Delegate</a></li>
-<li><a href="#auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</a></li>
-<li><a href="#logger">2.8. Logger</a></li>
-<li><a href="#android-databinding">2.9. Android DataBinding</a></li>
-<li><a href="#mvvm-mvp">2.10. MVVM &amp; MVP</a></li>
-<li><a href="#crashlytics">2.11. Crashlytics</a></li>
+<li><a href="#opener">2.4. Opener</a></li>
+<li><a href="#pandroidactivity">2.5. PandroidActivity</a></li>
+<li><a href="#pandroidfragment">2.6. PandroidFragment</a></li>
+<li><a href="#lifecycle-delegate">2.7. Lifecycle Delegate</a></li>
+<li><a href="#auto-bind-lifecycle-delegate">2.8. Auto bind Lifecycle Delegate</a></li>
+<li><a href="#logger">2.9. Logger</a></li>
+<li><a href="#rxandroid">2.10. RxAndroid</a></li>
+<li><a href="#android-databinding">2.11. Android DataBinding</a></li>
+<li><a href="#mvp">2.12. MVP</a></li>
 </ul>
 </li>
 <li><a href="#security">3. Security</a>
@@ -675,7 +676,7 @@ a gradle plugin which generates code and simplifies your life.</p>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Send a simple Object</strong></p>
+<p><strong>Send an Object with a tag</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -715,7 +716,7 @@ a gradle plugin which generates code and simplifies your life.</p>
 <div class="title">Tip</div>
 </td>
 <td class="content">
-<a href=":./../../pandroid-demo/src/main/java/com/leroymerlin/pandroid/demo/main/event/EventFragment.java">This example</a> is available in the <a href=":./../../pandroid-demo/">demo project</a>
+<a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandroid-demo/src/main/java/com/leroymerlin/pandroid/demo/main/event/EventFragment.java">This example</a> is available in the <a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandroid-demo/">demo project</a>
 </td>
 </tr>
 </table>
@@ -750,7 +751,7 @@ to configure before any usage. If you forget to specify the optional library, yo
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">pandroid{
-    library(<span class="string"><span class="delimiter">'</span><span class="content">libName</span><span class="delimiter">'</span></span>) { <span class="comment">//Regex matching declared configurator will bring the dependency</span>
+    library(<span class="string"><span class="delimiter">'</span><span class="content">libName</span><span class="delimiter">'</span></span>) { <span class="comment">//Regex matching declared configurator that will bring the dependency</span>
         libParam1 <span class="string"><span class="delimiter">'</span><span class="content">param1</span><span class="delimiter">'</span></span>
         libParam2 <span class="string"><span class="delimiter">'</span><span class="content">param2</span><span class="delimiter">'</span></span>
     }
@@ -758,11 +759,11 @@ to configure before any usage. If you forget to specify the optional library, yo
 </div>
 </div>
 <div class="paragraph">
-<p>The plugin is using configurators in order to extract the librairies' configurations from Pandroid, the plugin is using configurators.
+<p>The plugin is using configurators in order to extract the librairies configurations from Pandroid.
 It allows you to modify the gradle&#8217;s configuration and the manifest of your app when the plugin is applied.</p>
 </div>
 <div class="paragraph">
-<p>To see default configurators, take a look at this <a href=":../.././../../pandroid-library/pandroid.gradle">pandroid.gradle</a>.</p>
+<p>To see default configurators, take a look at this <a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandroid-library/pandroid.gradle">pandroid.gradle</a>.</p>
 </div>
 <div class="paragraph">
 <p>Here is an example:</p>
@@ -872,7 +873,29 @@ Application Component can extend the BaseComponent in order to be injected autom
 </div>
 </div>
 <div class="sect2">
-<h3 id="pandroidactivity">2.4. PandroidActivity</h3>
+<h3 id="opener">2.4. Opener</h3>
+<div class="paragraph">
+<p>In Pandroid, an Opener represent the argument of an Activity or a Fragment. In order to work an opener needs an OpenerEventReceiver.
+When you need to open an Activity or a Fragment you just send an opener in the event bus. The OpenerEventReceiver in charge
+will catch the event and open the Activity/Fragment with the opener as argument.
+Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field mOpener.
+The main idea behind Opener is to normalize navigation in the application and remove code responsive of it from your views.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+See <a href="#_PandroidActivity">PandroidActivity</a>/<a href="#_pandroidfragment">PandroidFragment</a> part for more details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pandroidactivity">2.5. PandroidActivity</h3>
 <div class="paragraph">
 <p>PandroidActivity is the base activity you should extend in a Pandroid application.
 This activity handles the following points :</p>
@@ -898,6 +921,8 @@ This activity handles the following points :</p>
         <span class="comment">//initialize PandroidDelegate with the default from PandroidApplication</span>
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(<span class="local-variable">this</span>);
+
+        mOpener = ActivityOpener.getOpener(<span class="local-variable">this</span>);
 
     }</code></pre>
 </div>
@@ -971,19 +996,100 @@ This activity handles the following points :</p>
      */</span>
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="predefined-type">List</span>&lt;EventBusManager.EventBusReceiver&gt; getReceivers() {
+        <span class="keyword">if</span> (getApplication() <span class="keyword">instanceof</span> ReceiversProvider)
+            <span class="keyword">return</span> ((ReceiversProvider) getApplication()).getReceivers();
         <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;();
     }</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="activity-opener">2.5.1. Activity Opener</h4>
+<div class="paragraph">
+<p>To open activity you are encouraged to use the ActivityOpener and ActivityEventReceiver. To make it work you have to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>register an ActivityEventReceiver in you PandroidApplication or your current PandroidActivity.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="comment">/**
+     * create list of receiver inject in Activity
+     * You can override this method to inject activity receiver easily
+     *
+     * @return list of activity receivers inject in activity
+     */</span>
+    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="predefined-type">List</span>&lt;ActivityEventReceiver&gt; createBaseActivityReceivers() {
+        <span class="predefined-type">List</span>&lt;ActivityEventReceiver&gt; receivers = <span class="local-variable">super</span>.createBaseActivityReceivers();
+        receivers.add(<span class="keyword">new</span> ActivityEventReceiver()
+                .overrideAnimation(<span class="keyword">new</span> <span class="type">int</span><span class="type">[]</span>{R.anim.fade_in, R.anim.fade_out})
+                .addActivity(OpenerActivity.class));
+        receivers.add(<span class="keyword">new</span> ActivityEventReceiver()
+                .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .addActivity(MainActivity.class));
+        <span class="keyword">return</span> receivers;
+    }</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Then you will be able to send the opener through the event bus.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">                        sendEventSync(<span class="keyword">new</span> CustomActivityOpener(<span class="string"><span class="delimiter">&quot;</span><span class="content">from Navigation</span><span class="delimiter">&quot;</span></span>));</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>And access your param in the opened Activity</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Override</span>
+    <span class="directive">protected</span> <span class="type">void</span> onCreate(Bundle savedInstanceState) {
+        <span class="local-variable">super</span>.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_empty);
+        <span class="comment">//I can access my opener if the activity was open by an ActivityEventReceiver</span>
+        <span class="keyword">if</span> (mOpener != <span class="predefined-constant">null</span>) {
+            <span class="predefined-type">String</span> myOpenerParam = mOpener.param;
+            toastManager.makeToast(<span class="local-variable">this</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">param was : </span><span class="delimiter">&quot;</span></span> + myOpenerParam, <span class="predefined-constant">null</span>);
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+you are please to look at the <a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandroid-demo/src/main/java/com/leroymerlin/pandroid/demo/main/opener">opener part</a> in the demo to see it in action
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="pandroidfragment">2.5. PandroidFragment</h3>
+<h3 id="pandroidfragment">2.6. PandroidFragment</h3>
 <div class="paragraph">
 <p>PandroidFragment is the base fragment you should extend in a Pandroid application.
 This Fragment handles the same points than a PandroidActivity.</p>
 </div>
 <div class="sect3">
-<h4 id="open-fragment">2.5.1. Open Fragment</h4>
+<h4 id="fragment-opener">2.6.1. Fragment Opener</h4>
 <div class="paragraph">
 <p>To open a fragment, you are encouraged to use the event bus. All you have to do is to send a FragmentOpener event
 and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventReceiver will handle the new fragment for you.</p>
@@ -1005,9 +1111,6 @@ and&#8230;&#8203; that&#8217;s it ! A custom event receiver named FragmentEventR
         <span class="comment">// return receivers;</span></code></pre>
 </div>
 </div>
-</div>
-<div class="sect3">
-<h4 id="fragment-arguments">2.5.2. Fragment arguments</h4>
 <div class="paragraph">
 <p>If you use FragmentEventReceiver to open your fragment, you are already giving arguments to your fragment. In fact, when
 you use <em>startFragment(&#8230;&#8203;)</em>, the method will create a FragmentOpener which has two jobs :</p>
@@ -1111,7 +1214,7 @@ the event and find the right receiver</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="lifecycle-delegate">2.6. Lifecycle Delegate</h3>
+<h3 id="lifecycle-delegate">2.7. Lifecycle Delegate</h3>
 <div class="paragraph">
 <p>Lifecycle delegates are listeners that are following the lifecycle of an activity or a fragment.
 They are handled by the PandroidDelegate you find in a PandroidActivity/Fragment.
@@ -1149,9 +1252,9 @@ They are used to extract and share behaviors without any heritage.</p>
      *
      * @return PandroidDelegate that will be used in pandroid activity / pandroid fragment
      */</span>
-    <span class="directive">public</span> PandroidDelegate createBasePandroidDelegate() {
+    <span class="directive">protected</span> PandroidDelegate createBasePandroidDelegate() {
         PandroidDelegate pandroidDelegate = <span class="keyword">new</span> PandroidDelegate();
-        pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> DaggerDelegate());
+        pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> DaggerLifecycleDelegate());
         pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> EventBusLifecycleDelegate(eventBusManager));
         pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> AutoBinderLifecycleDelegate());
         <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">butterknife</span><span class="delimiter">&quot;</span></span>)) {
@@ -1164,10 +1267,18 @@ They are used to extract and share behaviors without any heritage.</p>
         } <span class="keyword">else</span> {
             logWrapper.v(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">Icepick is disabled, add the library in Pandroid extension to use it</span><span class="delimiter">&quot;</span></span>);
         }
+        <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">rxandroid</span><span class="delimiter">&quot;</span></span>)) {
+            pandroidDelegate.addLifecycleDelegate(<span class="keyword">new</span> RxLifecycleDelegate());
+        } <span class="keyword">else</span> {
+            logWrapper.v(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">RxAndroid is disabled, add the library in Pandroid extension to use it</span><span class="delimiter">&quot;</span></span>);
+        }
         <span class="keyword">return</span> pandroidDelegate;
     }
 
-}</code></pre>
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> PandroidDelegate getPandroidDelegate() {
+        <span class="keyword">return</span> createBasePandroidDelegate();
+    }</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1184,7 +1295,7 @@ you could override this method to bring new behavior to all activity and fragmen
 </div>
 </div>
 <div class="sect2">
-<h3 id="auto-bind-lifecycle-delegate">2.7. Auto bind Lifecycle Delegate</h3>
+<h3 id="auto-bind-lifecycle-delegate">2.8. Auto bind Lifecycle Delegate</h3>
 <div class="paragraph">
 <p>If you need to associate your custom Lifecycle Delegate automatically you can use the annotation @BindLifeCycleDelegate in PandroidActivity/Fragment</p>
 </div>
@@ -1231,7 +1342,7 @@ The class initialization must be done in the createDelegate() or before its call
 </div>
 </div>
 <div class="sect2">
-<h3 id="logger">2.8. Logger</h3>
+<h3 id="logger">2.9. Logger</h3>
 <div class="paragraph">
 <p>A powerful logger is a very important part of your development. A logger can become your best friend to identify bugs remotely.
 But keep in mind that your logger has to be properly configured to avoid any security vulnerability or debugging mess.</p>
@@ -1250,87 +1361,8 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
     }</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="android-databinding">2.9. Android DataBinding</h3>
-<div class="paragraph">
-<p>Pandroid provide an annotation to help the use of Android Data Binding in your project.
-On your model add the annotation @DataBinding, it will generate an intermediate class with fields that are
-abservable</p>
-</div>
-<div class="paragraph">
-<p>For exemple :</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@DataBinding</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">Product</span> {
-
-    <span class="directive">private</span> <span class="predefined-type">String</span> name;
-    <span class="directive">private</span> <span class="type">int</span> id;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It will generate :</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ProductDataBinding</span> {
-  <span class="directive">private</span> Product product;
-
-  <span class="directive">public</span> ObservableString name = <span class="keyword">new</span> ObservableString();
-
-  <span class="directive">public</span> ObservableInt id = <span class="keyword">new</span> ObservableInt();
-
-  <span class="directive">public</span> Product getProduct() {
-    <span class="keyword">return</span> <span class="local-variable">this</span>.product;
-  }
-
-  <span class="directive">public</span> <span class="type">void</span> setProduct(Product product) {
-    <span class="local-variable">this</span>.product = product;
-    name.set(product.getName());
-    name.addOnPropertyChangedCallback(<span class="keyword">new</span> <span class="predefined-type">Observable</span>.OnPropertyChangedCallback() {
-            <span class="annotation">@Override</span>
-               <span class="directive">public</span> <span class="type">void</span> onPropertyChanged(<span class="predefined-type">Observable</span> observable, <span class="type">int</span> i) {
-                   ProductDataBinding.this.product.setName(name.get());
-               }
-           });
-    id.set(product.getId());
-    id.addOnPropertyChangedCallback(<span class="keyword">new</span> <span class="predefined-type">Observable</span>.OnPropertyChangedCallback() {
-            <span class="annotation">@Override</span>
-               <span class="directive">public</span> <span class="type">void</span> onPropertyChanged(<span class="predefined-type">Observable</span> observable, <span class="type">int</span> i) {
-                   ProductDataBinding.this.product.setId(id.get());
-               }
-           });
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>WARNING : The downside of this annotation is that the annotation processer is causing conflict with the one use by Android Data Binding. You have to create separate module containing your models. Have a look at the demo</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="mvvm-mvp">2.10. MVVM &amp; MVP</h3>
-<div class="paragraph">
-<p>A good application, is an appliction well stuctured. To help the developpers Pandroid provide helpers
-to use two famous pattern MVVM and MVP</p>
-</div>
 <div class="sect3">
-<h4 id="mvvm">2.10.1. MVVM</h4>
-<div class="paragraph">
-<p>To use MVVM, pandroid provide a class ViewModelDelegate which is bound to the application&#8217;s lifecycle</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="mvp">2.10.2. MVP</h4>
-<div class="paragraph">
-<p>To use MVVM, pandroid provide a class Presenter which is bound to the application&#8217;s lifecycle</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="crashlytics">2.11. Crashlytics</h3>
+<h4 id="crashlytics">2.9.1. Crashlytics</h4>
 <div class="paragraph">
 <p>Crashlytics is an optional library in pandroid.</p>
 </div>
@@ -1376,6 +1408,151 @@ pandroid
 <span class="comment">// you can override this behaviour</span>
 logWrapper.addLogger(<span class="keyword">new</span> CrashlyticsLogger(<span class="local-variable">this</span>));</code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="rxandroid">2.10. RxAndroid</h3>
+<div class="paragraph">
+<p>RxAndroid is an optional library in pandroid.</p>
+</div>
+<div class="ulist">
+<div class="title">Installation</div>
+<ul>
+<li>
+<p>build.gradle</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">pandroid
+{
+    dependencies{
+        library <span class="string"><span class="delimiter">&quot;</span><span class="content">rxandroid</span><span class="delimiter">&quot;</span></span>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once enable you will be able to use Rx version of some manager (RxCryptoManager, RxConfigurationManager, &#8230;&#8203;).
+RxPandroidCall will be available automatically with retrofit and you will be able to use RxPandroidActivity/RxPandroidFragment
+in order to access useful methods to register you Observable on the app lifecycle.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">        <span class="comment">//We can cast to RxPandroidCall if rxandroid is enable in the plugin configuration</span>
+        ((RxPandroidCall) reviewService.getReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>))
+                .rxEnqueue()
+                <span class="comment">//bind observer on lifecycle thanks to RxPandroidFragment</span>
+                .compose(<span class="local-variable">this</span>.&lt;Review&gt;bindLifecycle())
+                .subscribe(<span class="keyword">new</span> Consumer&lt;Review&gt;() {
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> accept(<span class="annotation">@NonNull</span> Review o) <span class="directive">throws</span> <span class="exception">Exception</span> {
+                        <span class="comment">//we can access getActivity() with no check because call will be cancel if our app is paused</span>
+                        toastManager.makeToast(getActivity(), o.getTitle(), <span class="predefined-constant">null</span>);
+                    }
+                });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">RxWrapper</div>
+<p>@RxWrapper annotation can be used to generate a rx version of you class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Target</span>({<span class="predefined-type">ElementType</span>.METHOD, <span class="predefined-type">ElementType</span>.TYPE})
+<span class="directive">public</span> <span class="annotation">@interface</span> RxWrapper {
+    <span class="comment">/**
+     * if true the method will return an Single, otherwise it will be a Observable
+     *
+     * @return true by default
+     */</span>
+    <span class="type">boolean</span> single() <span class="keyword">default</span> <span class="predefined-constant">true</span>;
+
+    <span class="comment">/**
+     * if true the result will be wrap in a model (use to get multiple error or null response)
+     * if the result is wrap no error will be throw to the single
+     *
+     * @return false by default
+     */</span>
+    <span class="type">boolean</span> wrapResult() <span class="keyword">default</span> <span class="predefined-constant">false</span>;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For exemple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">//ReviewManager.java</span>
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">ReviewManager</span> {
+    <span class="annotation">@RxWrapper</span>
+    <span class="type">void</span> getReview(<span class="predefined-type">String</span> productId, ActionDelegate&lt;Review&gt; delegate);
+
+    <span class="annotation">@RxWrapper</span>(wrapResult = <span class="predefined-constant">true</span>)
+    Review getLastReview();
+}
+
+<span class="comment">//DemoModule.java</span>
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    RxReviewManager provideRxReviewManager(ReviewManager reviewManager) {
+        <span class="keyword">return</span> <span class="keyword">new</span> RxReviewManager(reviewManager);
+    }
+
+<span class="comment">//RxFragment.java</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">RxFragment</span> <span class="directive">extends</span> RxPandroidFragment&lt;FragmentOpener&gt; {
+    <span class="annotation">@Inject</span>
+    RxReviewManager reviewManager;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onResume() {
+        <span class="local-variable">super</span>.onResume();
+
+        reviewManager.rxGetLastReview()
+                .flatMap(<span class="keyword">new</span> Function&lt;RxActionDelegate.Result&lt;Review&gt;, SingleSource&lt;Review&gt;&gt;() {
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> SingleSource&lt;Review&gt; apply(<span class="annotation">@NonNull</span> RxActionDelegate.Result&lt;Review&gt; reviewResult) <span class="directive">throws</span> <span class="exception">Exception</span> {
+                        <span class="keyword">return</span> reviewResult.result != <span class="predefined-constant">null</span> ? Single.just(reviewResult.result) : reviewManager.rxGetReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>);
+                    }
+                })
+                .compose(<span class="local-variable">this</span>.&lt;Review&gt;bindLifecycle())
+                .subscribe(<span class="keyword">new</span> Consumer&lt;Review&gt;() {
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> accept(<span class="annotation">@NonNull</span> Review review) <span class="directive">throws</span> <span class="exception">Exception</span> {
+                        <span class="comment">//we are sure fragment is still not detached thanks to the compose</span>
+                        <span class="comment">//no need to check getActivity()!=null</span>
+                        toastManager.makeToast(getActivity(), review.getTitle(), <span class="predefined-constant">null</span>);
+                    }
+                });</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="android-databinding">2.11. Android DataBinding</h3>
+<div class="paragraph">
+<p>Pandroid provided an annotation to help the use of Android Data Binding in your project.
+This feature has been disabled for now but should returned soon. If you want to check its old implementation see branch feature/databinding</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mvp">2.12. MVP</h3>
+<div class="paragraph">
+<p>A good application, is an appliction well structured. To help the developers Pandroid provide a Presenter class
+to use the famous pattern MVP. The Presenter is bound to the application&#8217;s lifecycle.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+see <a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandroid-demo/src/main/java/com/leroymerlin/pandroid/demo/main/mvp">the demo</a> to see it in action
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1525,18 +1702,7 @@ None of these encryption methods are unbreakable. Keep in mind that the best way
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.leroymerlin.pandroid.future</span>;
-
-<span class="comment">/**
- * Created by paillard.f on 21/02/2014.
- */</span>
-<span class="directive">public</span> <span class="type">interface</span> <span class="class">ActionDelegate</span>&lt;T&gt; {
-
-    <span class="type">void</span> onSuccess(T result);
-
-    <span class="type">void</span> onError(<span class="exception">Exception</span> e);
-
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in Tutorial.adoc - include::./../../pandroid-library/src/main/java/com/leroymerlin/pandroid/future/ActionDelegate.java<span class="type">[]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1602,7 +1768,7 @@ See <a href="http://square.github.io/retrofit/">official documentation</a> to us
 <div class="title">PandroidCall allows you to use Pandroid ActionDelegate.</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> getReview(<span class="predefined-type">String</span> productId, <span class="directive">final</span> NetActionDelegate&lt;Review&gt; delegate) {
+    <span class="directive">public</span> <span class="type">void</span> getReview(<span class="predefined-type">String</span> productId, <span class="directive">final</span> ActionDelegate&lt;Review&gt; delegate) {
 
         <span class="comment">//Standard Retrofit way</span>
         <span class="comment">/*
@@ -1637,8 +1803,10 @@ See <a href="http://square.github.io/retrofit/">official documentation</a> to us
         <span class="comment">// if you need the Retrofit Response object</span>
         PandroidCall&lt;Response&lt;Review&gt;&gt; reviewReponsePandroidWay = reviewService.getReviewReponsePandroidWay(productId);
         reviewReponsePandroidWay.enqueue(<span class="keyword">new</span> ActionDelegate&lt;Response&lt;Review&gt;&gt;() {
+
             <span class="annotation">@Override</span>
             <span class="directive">public</span> <span class="type">void</span> onSuccess(Response&lt;Review&gt; result) {
+                lastResult = result.body();
                 <span class="comment">//be careful the response could be an error code</span>
                 <span class="comment">//you have to check it yourself</span>
                 <span class="keyword">if</span> (result.isSuccessful()){
@@ -1760,6 +1928,8 @@ Options are available such as adding a placeholder image or a delegate method (l
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onViewCreated(<span class="predefined-type">View</span> view, Bundle savedInstanceState) {
         <span class="local-variable">super</span>.onViewCreated(view, savedInstanceState);
+
+
 
         pictureManager.loader()
                 .source(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://community.coreldraw.com/cfs-filesystemfile/__key/communityserver-components-secureimagefileviewer/telligent-evolution-components-attachments-13-393-00-00-00-14-32-80/Pandroid.JPG_2D00_1004x819.jpg</span><span class="delimiter">&quot;</span></span>)
@@ -2233,7 +2403,7 @@ the manager can serialize your object to string with GSON.</p>
 <div class="sect2">
 <h3 id="loader">6.2. Loader</h3>
 <div class="paragraph">
-<p>To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation <a href=":http://developer.android.com/guide/components/loaders.html">here</a>
+<p>To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation <a href="http://developer.android.com/guide/components/loaders.html">here</a>
 To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.</p>
 </div>
 <div class="listingblock">
@@ -2401,7 +2571,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-18 18:13:24 +02:00
+Last updated 2017-08-04 11:42:26 +02:00
 </div>
 </div>
 </body>
