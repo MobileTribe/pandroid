@@ -7,7 +7,6 @@
     <string name="navigation_animation">Animation</string>
     <string name="navigation_list">QuickHeader - ListView</string>
     <string name="navigation_recycler">RecyclerView</string>
-    <string name="navigation_mvvm">Mvvm</string>
 
     <string name="submit">Subimt</string>
 
@@ -45,6 +44,10 @@
     <string name="product_id">Id</string>
     <string name="product_name">Name</string>
     <string name="animation_load">Start loading</string>
+    <string name="rx">Rx Android</string>
+    <string name="opener_new_fragment">Open new fragment</string>
+    <string name="opener_home">back_home</string>
+    <string name="navigation_opener">Opener navigation</string>
 
 
 </resources>

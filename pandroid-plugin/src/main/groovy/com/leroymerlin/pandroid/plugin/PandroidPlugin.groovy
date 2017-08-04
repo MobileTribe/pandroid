@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.plugin
 
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
+import com.leroymerlin.pandroid.plugin.GeneratePandroidTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.slf4j.Logger
@@ -46,9 +47,21 @@ class PandroidPlugin implements Plugin<Project> {
         project.task("copyEmbededFiles", group: PANDROID_GROUP) << this.&copyEmbededFiles
         project.preBuild.dependsOn project.copyEmbededFiles
 
-
-
         applyEmbededFiles()
+
+        //Support for kotlin projects
+        project.plugins.withId('kotlin-android') {
+            def kotlinKaptPluginId = 'kotlin-kapt'
+            if (!project.plugins.hasPlugin(kotlinKaptPluginId)) {
+                project.apply plugin: kotlinKaptPluginId
+            }
+            project.configurations.annotationProcessor.getAllDependencies().all {
+                project.dependencies {
+                    kapt it
+                }
+            }
+        }
+
 
         def isAndroidApp = project.plugins.hasPlugin("com.android.application")
         if (isAndroidApp) {

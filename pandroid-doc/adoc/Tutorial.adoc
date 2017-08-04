@@ -65,7 +65,7 @@ Let's see how it works:
 include::{demoJava}main/event/EventFragment.java[tags=sendSimpleEvent]
 ----
 
-*Send a simple Object*
+*Send an Object with a tag*
 
 [source,java]
 ----
@@ -84,7 +84,7 @@ include::{javaJava}event/EventBusManager.java[tags=deliveryPolicy]
 ----
 
 
-TIP: link::{demoJava}main/event/EventFragment.java[This example] is available in the link::{demoDir}[demo project]
+TIP: link:{github}{demoJava}main/event/EventFragment.java[This example] is available in the link:{github}{demoDir}[demo project]
 
 
 
@@ -105,17 +105,17 @@ To add the needed dependencies you have to declare it in the pandroid extension 
 [source,java]
 ----
 pandroid{
-    library('libName') { //Regex matching declared configurator will bring the dependency
+    library('libName') { //Regex matching declared configurator that will bring the dependency
         libParam1 'param1'
         libParam2 'param2'
     }
 }
 ----
 
-The plugin is using configurators in order to extract the librairies' configurations from Pandroid, the plugin is using configurators.
+The plugin is using configurators in order to extract the librairies configurations from Pandroid.
 It allows you to modify the gradle's configuration and the manifest of your app when the plugin is applied.
 
-To see default configurators, take a look at this link::../../{libDir}pandroid.gradle[pandroid.gradle].
+To see default configurators, take a look at this link:{github}{libDir}pandroid.gradle[pandroid.gradle].
 
 Here is an example:
 [source,java]
@@ -171,6 +171,16 @@ include::{demoJava}DemoApplication.java[tags=createBaseComponent]
 To work properly, PandroidActivity/PandroidFragment needs managers created by the BaseComponent. That is why PandroidApplication provides this BaseComponent. To simplify your life, your
 Application Component can extend the BaseComponent in order to be injected automatically in every PandroidActivity/PandroidFragment. The PandroidModule needed by this base component provides the context, a logger, the EventBus and an initialized OkHttpClient.Builder.
 
+=== Opener
+
+In Pandroid, an Opener represent the argument of an Activity or a Fragment. In order to work an opener needs an OpenerEventReceiver.
+When you need to open an Activity or a Fragment you just send an opener in the event bus. The OpenerEventReceiver in charge
+will catch the event and open the Activity/Fragment with the opener as argument.
+Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field mOpener.
+The main idea behind Opener is to normalize navigation in the application and remove code responsive of it from your views.
+
+NOTE: See link:#_PandroidActivity[PandroidActivity]/link:#_pandroidfragment[PandroidFragment] part for more details.
+
 
 === PandroidActivity
 
@@ -205,12 +215,40 @@ include::{libJava}app/PandroidActivity.java[tags=PandroidActivityBack]
 include::{libJava}app/PandroidActivity.java[tags=PandroidActivityReceivers]
 ----
 
+==== Activity Opener
+
+To open activity you are encouraged to use the ActivityOpener and ActivityEventReceiver. To make it work you have to:
+
+- register an ActivityEventReceiver in you PandroidApplication or your current PandroidActivity.
+
+[source,java]
+----
+include::{demoJava}DemoApplication.java[tags=ActivityOpener]
+----
+
+- Then you will be able to send the opener through the event bus.
+
+[source,java]
+----
+include::{demoJava}main/NavigationLeftFragment.java[tags=ActivityOpener]
+----
+
+- And access your param in the opened Activity
+
+[source,java]
+----
+include::{demoJava}main/opener/OpenerActivity.java[tags=ActivityOpener]
+----
+
+
+NOTE: you are please to look at the link:{github}{demoJava}main/opener[opener part] in the demo to see it in action
+
 === PandroidFragment
 
 PandroidFragment is the base fragment you should extend in a Pandroid application.
 This Fragment handles the same points than a PandroidActivity.
 
-==== Open Fragment
+==== Fragment Opener
 
 To open a fragment, you are encouraged to use the event bus. All you have to do is to send a FragmentOpener event
 and... that's it ! A custom event receiver named FragmentEventReceiver will handle the new fragment for you.
@@ -219,8 +257,6 @@ and... that's it ! A custom event receiver named FragmentEventReceiver will hand
 ----
 include::{demoJava}main/MainActivity.java[tags=FragmentReceivers]
 ----
-
-==== Fragment arguments
 
 If you use FragmentEventReceiver to open your fragment, you are already giving arguments to your fragment. In fact, when
 you use _startFragment(...)_, the method will create a FragmentOpener which has two jobs :
@@ -317,71 +353,7 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 include::{libJava}PandroidApplication.java[tags=Logger]
 ----
 
-=== Android DataBinding
-
-Pandroid provide an annotation to help the use of Android Data Binding in your project.
-On your model add the annotation @DataBinding, it will generate an intermediate class with fields that are
-abservable
-
-For exemple :
-
-[source,java]
-----
-include::{demoModelJava}models/Product.java[tags=PandroidDataBinding]
-----
-
-
-It will generate :
-
-[source,java]
-----
-public class ProductDataBinding {
-  private Product product;
-
-  public ObservableString name = new ObservableString();
-
-  public ObservableInt id = new ObservableInt();
-
-  public Product getProduct() {
-    return this.product;
-  }
-
-  public void setProduct(Product product) {
-    this.product = product;
-    name.set(product.getName());
-    name.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-               public void onPropertyChanged(Observable observable, int i) {
-                   ProductDataBinding.this.product.setName(name.get());
-               }
-           });
-    id.set(product.getId());
-    id.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-               public void onPropertyChanged(Observable observable, int i) {
-                   ProductDataBinding.this.product.setId(id.get());
-               }
-           });
-  }
-}
-----
-
-WARNING : The downside of this annotation is that the annotation processer is causing conflict with the one use by Android Data Binding. You have to create separate module containing your models. Have a look at the demo
-
-=== MVVM & MVP
-
-A good application, is an appliction well stuctured. To help the developpers Pandroid provide helpers
-to use two famous pattern MVVM and MVP
-
-==== MVVM
-
-To use MVVM, pandroid provide a class ViewModelDelegate which is bound to the application's lifecycle
-
-==== MVP
-
-To use MVVM, pandroid provide a class Presenter which is bound to the application's lifecycle
-
-=== Crashlytics
+==== Crashlytics
 
 Crashlytics is an optional library in pandroid.
 
@@ -413,6 +385,68 @@ pandroid
 logWrapper.addLogger(new CrashlyticsLogger(this));
 ----
 
+=== RxAndroid
+
+RxAndroid is an optional library in pandroid.
+
+.Installation
+
+- build.gradle
+
+[source,java]
+----
+pandroid
+{
+    dependencies{
+        library "rxandroid"
+    }
+}
+----
+
+Once enable you will be able to use Rx version of some manager (RxCryptoManager, RxConfigurationManager, ...).
+RxPandroidCall will be available automatically with retrofit and you will be able to use RxPandroidActivity/RxPandroidFragment
+in order to access useful methods to register you Observable on the app lifecycle.
+
+[source,java]
+----
+include::{demoJava}main/rx/RxFragment.java[tags=RxAndroid]
+----
+
+
+.RxWrapper
+
+@RxWrapper annotation can be used to generate a rx version of you class.
+[source,java]
+----
+include::{annotationsJava}RxWrapper.java[tags=RxWrapper]
+----
+
+For exemple :
+[source,java]
+----
+//ReviewManager.java
+include::{demoJava}globals/review/ReviewManager.java[tags=RxWrapper]
+
+//DemoModule.java
+include::{demoJava}DemoModule.java[tags=RxWrapper]
+
+//RxFragment.java
+include::{demoJava}main/rx/RxFragment.java[tags=RxWrapper]
+----
+
+
+=== Android DataBinding
+
+Pandroid provided an annotation to help the use of Android Data Binding in your project.
+This feature has been disabled for now but should returned soon. If you want to check its old implementation see branch feature/databinding
+
+
+=== MVP
+
+A good application, is an appliction well structured. To help the developers Pandroid provide a Presenter class
+to use the famous pattern MVP. The Presenter is bound to the application's lifecycle.
+
+NOTE: see link:{github}{demoJava}main/mvp[the demo] to see it in action
 
 == Security
 
@@ -776,7 +810,7 @@ the manager can serialize your object to string with GSON.
 
 === Loader
 
-To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation link::http://developer.android.com/guide/components/loaders.html[here]
+To process heavy async tasks, you should use Android Loader instead of AsyncTask. You can find the documentation link:http://developer.android.com/guide/components/loaders.html[here]
 To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.
 
 [source,java]

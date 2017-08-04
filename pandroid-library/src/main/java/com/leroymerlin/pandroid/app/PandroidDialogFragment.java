@@ -1,7 +1,9 @@
 package com.leroymerlin.pandroid.app;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -10,10 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
@@ -29,7 +36,8 @@ import javax.inject.Inject;
  * PandroidFragment is a Fragment that simplify the fragment cycle of life by introducing onResume(ResumeState) method.
  * If static field TAG is set PandroidFragment inject Broadcast receiver himself
  */
-public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFragment implements CancellableActionDelegate.ActionDelegateRegister, ReceiversProvider {
+@RxWrapper
+public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFragment implements CancellableActionDelegate.CancellableRegister, OpenerReceiverProvider, PandroidDelegateProvider {
 
     /**
      * Default logger
@@ -59,14 +67,16 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
 
     }
 
+    @Override
     public PandroidDelegate getPandroidDelegate() {
         return pandroidDelegate;
     }
 
     protected PandroidDelegate createDelegate() {
-        PandroidApplication pandroidApplication = PandroidApplication.get(getActivity());
-        //initialize Base PandroidDelegate
-        return pandroidApplication.createBasePandroidDelegate();
+        if (getActivity() != null && getActivity().getApplication() instanceof PandroidDelegateProvider) {
+            return ((PandroidDelegateProvider) getActivity().getApplication()).getPandroidDelegate();
+        }
+        return new PandroidDelegate();
     }
 
     @Nullable
@@ -115,6 +125,10 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
         pandroidDelegate.onDestroyView(this);
     }
 
+    public void startActivity(Class<? extends Activity> activityClass) {
+        sendEventSync(new ActivityOpener(activityClass));
+    }
+
     public void startFragment(Class<? extends Fragment> fragmentClass) {
         sendEventSync(new FragmentOpener(fragmentClass));
     }
@@ -128,17 +142,27 @@ public class PandroidDialogFragment<T extends FragmentOpener> extends DialogFrag
     }
 
     @Override
-    public void registerDelegate(CancellableActionDelegate delegate) {
+    public void registerDelegate(Cancellable delegate) {
         pandroidDelegate.registerDelegate(delegate);
     }
 
     @Override
-    public boolean unregisterDelegate(CancellableActionDelegate delegate) {
+    public boolean unregisterDelegate(Cancellable delegate) {
         return pandroidDelegate.unregisterDelegate(delegate);
     }
 
     @Override
     public List<EventBusManager.EventBusReceiver> getReceivers() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public FragmentManager provideFragmentManager() {
+        return getChildFragmentManager();
+    }
+
+    @Override
+    public Activity provideActivity() {
+        return getActivity();
     }
 }

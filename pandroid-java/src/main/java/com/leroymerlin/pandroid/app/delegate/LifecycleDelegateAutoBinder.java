@@ -8,11 +8,4 @@ public interface LifecycleDelegateAutoBinder {
 
     void bind();
 
-    LifecycleDelegateAutoBinder EMPTY = new LifecycleDelegateAutoBinder() {
-        @Override
-        public void bind() {
-            // do nothing
-        }
-    };
-
 }

@@ -1,6 +1,6 @@
 package com.leroymerlin.pandroid.demo.main.list;
 
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 /**
  * Created by florian on 23/12/14.

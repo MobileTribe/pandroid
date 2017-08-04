@@ -3,8 +3,11 @@ package com.leroymerlin.pandroid.net;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
+import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.future.ActionDelegate;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.net.http.Mock;
@@ -31,18 +34,25 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
     private static final String TAG = "PandroidCallAdapterFactory";
     private final Context context;
     private final LogWrapper logWrapper;
+    private final boolean rxAndroidEnable;
     Handler handler;
     private boolean mockEnable;
     private PandroidErrorFormatter errorFormatter;
 
     public static PandroidCallAdapterFactory create(Context context, LogWrapper logWrapper) {
-        return new PandroidCallAdapterFactory(context, logWrapper);
+        return PandroidCallAdapterFactory.create(context, logWrapper, Looper.getMainLooper());
     }
 
-    private PandroidCallAdapterFactory(Context context, LogWrapper logWrapper) {
-        handler = new Handler(Looper.getMainLooper());
+    public static PandroidCallAdapterFactory create(Context context, LogWrapper logWrapper, @Nullable Looper looper) {
+        return new PandroidCallAdapterFactory(context, logWrapper, looper);
+    }
+
+    private PandroidCallAdapterFactory(Context context, LogWrapper logWrapper, Looper looper) {
+        if (looper != null)
+            handler = new Handler(looper);
         this.context = context;
         this.logWrapper = logWrapper;
+        rxAndroidEnable = PandroidConfig.isLibraryEnable("rxandroid");
     }
 
     public void setMockEnable(boolean mockEnable) {
@@ -114,12 +124,17 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
                     @Override
                     public void enqueue(final Callback<R> callback) {
-                        handler.postDelayed(new Runnable() {
+                        Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
                                 callback.onResponse(call, (Response<R>) serviceMock.getMockResponse(call.request(), context));
                             }
-                        }, serviceMock.getResponseDelay());
+                        };
+                        if (handler != null) {
+                            handler.postDelayed(runnable, serviceMock.getResponseDelay());
+                        } else {
+                            runnable.run();
+                        }
                     }
 
                     @Override
@@ -148,7 +163,16 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                     }
                 };
             }
-            return new PandroidCallImpl<R>(callWrapper, needResponse);
+            PandroidCallImpl<R> pandroidCall = new PandroidCallImpl<>(callWrapper, needResponse);
+            return rxAndroidEnable? new RxPandroidCall(pandroidCall): pandroidCall;
+        }
+    }
+
+    private void post(Runnable runnable) {
+        if (handler != null) {
+            handler.post(runnable);
+        } else {
+            runnable.run();
         }
     }
 
@@ -163,7 +187,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public void enqueue(final ActionDelegate delegate) {
-            if (delegate instanceof CancellableActionDelegate)
+            if (delegate instanceof Cancellable)
                 ((CancellableActionDelegate) delegate).addCancelListener(new CancellableActionDelegate.CancelListener() {
                     @Override
                     public void onCancel() {
@@ -174,10 +198,12 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
             call.enqueue(
                     new Callback<R>() {
+
+
                         @Override
                         public void onResponse(Call<R> call, final Response<R> response) {
                             if (needResponse) {
-                                handler.post(
+                                post(
                                         new Runnable() {
                                             @Override
                                             public void run() {
@@ -187,7 +213,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                                 );
                             } else {
                                 if (response.isSuccessful()) {
-                                    handler.post(
+                                    post(
                                             new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -214,7 +240,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                         }
 
                         private void onError(final Exception e) {
-                            handler.post(new Runnable() {
+                            post(new Runnable() {
                                 @Override
                                 public void run() {
                                     delegate.onError(errorFormatter != null ? errorFormatter.format(e) : e);
@@ -254,7 +280,9 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public PandroidCall<R> clone() {
-            return new PandroidCallImpl<R>(call.clone(), needResponse);
+            PandroidCallImpl<R> pandroidCall = new PandroidCallImpl<>(call.clone(), needResponse);
+            return rxAndroidEnable ? new RxPandroidCall(pandroidCall) : pandroidCall;
+
         }
 
         @Override

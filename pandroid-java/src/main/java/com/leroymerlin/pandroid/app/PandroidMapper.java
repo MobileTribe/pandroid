@@ -34,6 +34,8 @@ public abstract class PandroidMapper {
 
 
 
+
+
     public abstract <T> List<T> getGeneratedInstances(Class<T> type, Object target);
     public abstract void injectToTarget(Object component, Object target);
 

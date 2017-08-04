@@ -9,8 +9,9 @@ import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
-import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
+import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
+import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
@@ -33,15 +34,7 @@ import dagger.Component;
 @Singleton
 public interface DemoComponent extends PandroidComponent {
 
-    AnalyticsManager analytycsManager();
-
     ToastManager toastManager();
-
-    ReviewManager reviewManager();
-
-    PictureManager pictureManager();
-
-    void inject(MvvmFragment mvvmFragment);
 
     void inject(ScannerFragment scannerFragment);
 
@@ -51,6 +44,8 @@ public interface DemoComponent extends PandroidComponent {
 
     void inject(ListViewFragment listViewFragment);
 
+    void inject(OpenerActivity openerActivity);
+
     void inject(RecyclerViewFragment recyclerViewFragment);
 
     void inject(RestFragment restFragment);
@@ -58,5 +53,7 @@ public interface DemoComponent extends PandroidComponent {
     void inject(ToastFragment toastFragment);
 
     void inject(PresenterFragment presenterFragment);
+
+    void inject(RxFragment rxFragment);
 
 }

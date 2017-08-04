@@ -17,8 +17,10 @@ import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
-import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
+import com.leroymerlin.pandroid.demo.main.opener.CustomActivityOpener;
+import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
+import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 
@@ -46,6 +48,12 @@ public class NavigationLeftFragment extends PandroidFragment {
             public boolean onNavigationItemSelected(MenuItem item) {
                 boolean handle = false;
                 switch (item.getItemId()) {
+                    case R.id.navigation_opener:
+                        //tag::ActivityOpener[]
+                        sendEventSync(new CustomActivityOpener("from Navigation"));
+                        //end::ActivityOpener[]
+                        handle = true;
+                        break;
                     case R.id.navigation_scanner:
                         startFragment(ScannerFragment.class);
                         handle = true;
@@ -66,10 +74,6 @@ public class NavigationLeftFragment extends PandroidFragment {
                         sendEvent(new ListOpener(ListViewFragment.class, 40));
                         handle = true;
                         break;
-                    case R.id.navigation_mvvm:
-                        startFragment(MvvmFragment.class);
-                        handle = true;
-                        break;
                     case R.id.navigation_simplelist:
                         sendEvent(new ListOpener(SimpleRecyclerViewFragment.class, 40));
                         handle = true;
@@ -84,6 +88,10 @@ public class NavigationLeftFragment extends PandroidFragment {
                         break;
                     case R.id.navigation_mvp:
                         startFragment(PresenterFragment.class);
+                        handle = true;
+                        break;
+                    case R.id.navigation_rx:
+                        startFragment(RxFragment.class);
                         handle = true;
                         break;
                 }

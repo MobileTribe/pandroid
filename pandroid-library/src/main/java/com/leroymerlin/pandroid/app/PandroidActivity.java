@@ -1,23 +1,29 @@
 package com.leroymerlin.pandroid.app;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
 
-import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentOpener;
-import com.leroymerlin.pandroid.event.OnBackListener;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
-import com.leroymerlin.pandroid.future.CancellableActionDelegate;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
+import com.leroymerlin.pandroid.event.OnBackListener;
+import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
+import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.log.LogWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
 
 /**
  * Created by florian on 05/11/14.
@@ -27,7 +33,8 @@ import javax.inject.Inject;
  * Back event and fragment back stack changed are treated to.
  * If static field TAG is set PandroidActivity inject Broadcast receiver himself
  */
-public class PandroidActivity extends AppCompatActivity implements CancellableActionDelegate.ActionDelegateRegister, ReceiversProvider {
+@RxWrapper
+public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivity implements Cancellable.CancellableRegister, OpenerReceiverProvider, PandroidDelegateProvider {
 
     //tag::PandroidActivityInjection[]
     @Inject
@@ -36,6 +43,8 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     protected EventBusManager eventBusManager;
 
     //end::PandroidActivityInjection[]
+
+    protected T mOpener;
 
     protected PandroidDelegate pandroidDelegate;
 
@@ -48,17 +57,21 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
 
-    }
-    //end::PandroidActivityInjection[]
+        mOpener = ActivityOpener.getOpener(this);
 
+    }
+
+    //end::PandroidActivityInjection[]
+    @Override
     public PandroidDelegate getPandroidDelegate() {
         return pandroidDelegate;
     }
 
     protected PandroidDelegate createDelegate() {
-        PandroidApplication pandroidApplication = PandroidApplication.get(this);
-        //initialize Base PandroidDelegate
-        return pandroidApplication.createBasePandroidDelegate();
+        if (getApplication() instanceof PandroidDelegateProvider) {
+            return ((PandroidDelegateProvider) getApplication()).getPandroidDelegate();
+        }
+        return new PandroidDelegate();
     }
 
     @CallSuper
@@ -66,6 +79,9 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         pandroidDelegate.onCreateView(this, findViewById(android.R.id.content), savedInstanceState);
+        if (mOpener != null && mOpener.getTitle() != null && !mOpener.getTitle().isEmpty() && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mOpener.getTitle());
+        }
     }
 
     @CallSuper
@@ -116,12 +132,12 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
     }
 
     @Override
-    public void registerDelegate(CancellableActionDelegate delegate) {
+    public void registerDelegate(Cancellable delegate) {
         pandroidDelegate.registerDelegate(delegate);
     }
 
     @Override
-    public boolean unregisterDelegate(CancellableActionDelegate delegate) {
+    public boolean unregisterDelegate(Cancellable delegate) {
         return pandroidDelegate.unregisterDelegate(delegate);
     }
 
@@ -174,9 +190,25 @@ public class PandroidActivity extends AppCompatActivity implements CancellableAc
      */
     @Override
     public List<EventBusManager.EventBusReceiver> getReceivers() {
+        if (getApplication() instanceof ReceiversProvider)
+            return ((ReceiversProvider) getApplication()).getReceivers();
         return new ArrayList<>();
     }
     //end::PandroidActivityReceivers[]
+
+    @Override
+    public FragmentManager provideFragmentManager() {
+        return getFragmentManager();
+    }
+
+    @Override
+    public Activity provideActivity() {
+        return this;
+    }
+
+    public void startActivity(Class<? extends Activity> activityClass) {
+        sendEventSync(new ActivityOpener(activityClass));
+    }
 
     public void startFragment(Class<? extends Fragment> fragmentClass) {
         sendEventSync(new FragmentOpener(fragmentClass));

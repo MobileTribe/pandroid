@@ -10,8 +10,12 @@ import com.leroymerlin.pandroid.PandroidGeneratedClassWrapper;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class will be generated in your project. You don't have to create it. We had to include it
+ * in the demo because the project doesn't apply Pandroid plugin
+ */
 public class PandroidMapperImpl extends PandroidMapper {
-    public static final List<String> LIBRARIES = Arrays.asList("butterknife", "icepick");
+    public static final List<String> LIBRARIES = Arrays.asList("butterknife", "icepick", "rxandroid");
 
     public static final String PACKAGE = "com.leroymerlin.pandroid.demo";
 

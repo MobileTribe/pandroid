@@ -1,7 +1,7 @@
 :sourcesDir: ./../../
 :javaDir: {sourcesDir}pandroid-java/
 :annotationsDir: {sourcesDir}pandroid-annotations/
-:annotationsJava: {annotationsDir}src/main/java/com/pandroid/annotations/
+:annotationsJava: {annotationsDir}src/main/java/com/leroymerlin/pandroid/annotations/
 :javaJava: {javaDir}src/main/java/com/leroymerlin/pandroid/
 :libDir: {sourcesDir}pandroid-library/
 :libJava: {libDir}src/main/java/com/leroymerlin/pandroid/
@@ -15,3 +15,5 @@
 :assetsDir: ./../assets/
 :numbered:
 :toc: left
+
+:github: https://github.com/MobileTribe/pandroid/tree/master///

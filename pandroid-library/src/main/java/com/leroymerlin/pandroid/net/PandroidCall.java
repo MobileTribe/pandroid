@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.net;
 
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.future.ActionDelegate;
 
 import retrofit2.Call;
@@ -9,6 +10,7 @@ import retrofit2.Call;
  */
 public interface PandroidCall<T> extends Call<T>{
 
+    @RxWrapper
     void enqueue(ActionDelegate<T> callback);
 
     boolean isExecuted();

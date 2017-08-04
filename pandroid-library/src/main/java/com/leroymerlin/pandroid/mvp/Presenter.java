@@ -8,6 +8,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 
 import java.lang.ref.WeakReference;
@@ -16,6 +17,7 @@ import java.lang.ref.WeakReference;
  * Created by Mehdi on 07/11/2016.
  */
 
+@RxWrapper
 public class Presenter<T> extends PandroidDelegate<T> {
 
     private static final String TAG = "Presenter";
