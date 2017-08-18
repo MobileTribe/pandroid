@@ -12,6 +12,7 @@ android {
         targetSdkVersion Integer.parseInt(androidSdkVersion)
         versionCode Integer.parseInt(pandroidVersionId)
         versionName pandroidVersion
+        javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true // FIXME
     }
     buildTypes {
         release {

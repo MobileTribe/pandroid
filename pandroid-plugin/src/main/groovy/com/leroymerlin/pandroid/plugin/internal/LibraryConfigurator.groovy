@@ -39,11 +39,11 @@ class LibraryConfigurator {
 
             project.android.applicationVariants.all {
                 variant ->
-                    variant.outputs.get(0).processManifest.doLast {
+                    variant.outputs.first().processManifest.doLast {
                         File[] manifestFiles = [
-                                variant.outputs.get(0).processManifest.manifestOutputFile,
-                                variant.outputs.get(0).processManifest.instantRunManifestOutputFile,
-                                variant.outputs.get(0).processManifest.aaptFriendlyManifestOutputFile
+                                variant.outputs.first().processManifest.manifestOutputFile,
+                                variant.outputs.first().processManifest.instantRunManifestOutputFile,
+                                variant.outputs.first().processManifest.aaptFriendlyManifestOutputFile
                         ]
                         manifestFiles.each {
                             f ->
