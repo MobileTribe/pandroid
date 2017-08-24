@@ -30,4 +30,9 @@ public class ButterKnifeLifecycleDelegate extends SimpleLifecycleDelegate<Object
             unbinder.unbind();
         }
     }
+
+    @Override
+    public int getPriority() {
+        return HIGH_PRIORITY;
+    }
 }

@@ -37,4 +37,8 @@ public class DaggerLifecycleDelegate extends SimpleLifecycleDelegate<Object> {
             LogcatLogger.getInstance().w(TAG, "Can't inject in object of type : " + className);
         }
     }
+    @Override
+    public int getPriority() {
+        return HIGH_PRIORITY;
+    }
 }

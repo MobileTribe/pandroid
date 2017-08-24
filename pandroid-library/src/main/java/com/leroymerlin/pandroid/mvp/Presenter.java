@@ -10,6 +10,8 @@ import android.view.View;
 
 import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 
 import java.lang.ref.WeakReference;
 
@@ -22,18 +24,20 @@ public class Presenter<T> extends PandroidDelegate<T> {
 
     private static final String TAG = "Presenter";
 
-    private WeakReference<T> mView;
+    public Presenter() {
+        addLifecycleDelegate(new RxLifecycleDelegate());
+        addLifecycleDelegate(new AutoBinderLifecycleDelegate());
+    }
 
     @CallSuper
     @Override
     public void onInit(T target) {
         super.onInit((T) this);
-        mView = new WeakReference<>(target);
     }
 
     @Nullable
     protected Context getContext() {
-        T view = mView.get();
+        T view = getView();
         if (view instanceof Context) {
             return (Context) view;
         } else if (view instanceof Fragment) {
@@ -71,7 +75,7 @@ public class Presenter<T> extends PandroidDelegate<T> {
     @Nullable
     @CheckResult
     public T getView() {
-        return mView.get();
+        return targetRef != null ? targetRef.get() : null;
     }
 
 }
