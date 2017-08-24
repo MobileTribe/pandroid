@@ -24,6 +24,13 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.4.2* - (--)
+*Refactor*
+- LifecyclerDelegate order with a priority
+*Fix*
+- RxWrapper - issue with ActionDelegate without parameter
+- AnimUtils - crash with DrawerLayout's size calculation
+
 ### *2.4.1* - (2017-08-04)
 *Fix*
 - kapt - kotlin support error
