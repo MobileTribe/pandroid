@@ -34,8 +34,8 @@ public class OpenerActivity extends PandroidActivity<CustomActivityOpener> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empty);
         //I can access my opener if the activity was open by an ActivityEventReceiver
-        if (mOpener != null) {
-            String myOpenerParam = mOpener.param;
+        if (opener != null) {
+            String myOpenerParam = opener.param;
             toastManager.makeToast(this, "param was : " + myOpenerParam, null);
         }
     }

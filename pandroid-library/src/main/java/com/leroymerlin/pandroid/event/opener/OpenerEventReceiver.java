@@ -2,21 +2,11 @@ package com.leroymerlin.pandroid.event.opener;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.util.Log;
 
-import com.leroymerlin.pandroid.PandroidApplication;
-import com.leroymerlin.pandroid.R;
-import com.leroymerlin.pandroid.app.PandroidFragment;
-import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
-import com.leroymerlin.pandroid.dagger.PandroidDaggerProvider;
+import com.leroymerlin.pandroid.dagger.PandroidInjector;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.log.LogWrapper;
-import com.leroymerlin.pandroid.log.LogcatLogger;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -89,10 +79,10 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
 
     public void attach(V attachedObject) {
         Application application = attachedObject.provideActivity().getApplication();
-        if (application instanceof PandroidDaggerProvider) {
-            ((PandroidDaggerProvider) application).inject(this);
+        if (application instanceof PandroidInjector) {
+            ((PandroidInjector) application).inject(this);
         } else {
-            throw new IllegalStateException("Your application needs to implement PandroidDaggerProvider to use " + TAG);
+            throw new IllegalStateException("Your application needs to implement PandroidInjector to use " + TAG);
         }
         this.refAttachedObject = new WeakReference<V>(attachedObject);
     }

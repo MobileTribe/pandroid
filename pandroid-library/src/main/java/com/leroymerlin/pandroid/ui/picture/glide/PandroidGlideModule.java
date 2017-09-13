@@ -37,7 +37,7 @@ public class PandroidGlideModule implements GlideModule {
     @Override
     public void registerComponents(Context context, Glide glide) {
         if (client == null) {
-            client = PandroidApplication.get(context).getBaseComponent().okHttpClientBuilder().build();
+            client = PandroidApplication.getInjector(context).getBaseComponent().okHttpClientBuilder().build();
         }
         glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(client));
     }

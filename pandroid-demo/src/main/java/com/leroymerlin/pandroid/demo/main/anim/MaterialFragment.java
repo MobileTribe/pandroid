@@ -47,11 +47,11 @@ public class MaterialFragment extends PandroidFragment<MaterialOpener> implement
         super.onResume(state);
         switch (state) {
             case FIRST_START:
-                //the field mOpener is the Fragment Opener that was send to the event bus to open the fragment
+                //the field opener is the Fragment Opener that was send to the event bus to open the fragment
                 //here this opener is a MaterialOpener
                 getView().findViewById(R.id.material_tv).setTag("coucou");
-                materialTransitionLayout.addAnimationWithViewId(mOpener.ivInfos, R.id.material_iv);
-                materialTransitionLayout.addAnimationWithViewTag(mOpener.tvInfos, "coucou");
+                materialTransitionLayout.addAnimationWithViewId(opener.ivInfos, R.id.material_iv);
+                materialTransitionLayout.addAnimationWithViewTag(opener.tvInfos, "coucou");
                 //end::FragmentWithOpener[]
 
                 materialTransitionLayout.setRevealCenter(R.id.material_iv);

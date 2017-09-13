@@ -1,9 +1,7 @@
 package com.leroymerlin.pandroid.demo;
 
-import com.leroymerlin.pandroid.analytics.AnalyticsManager;
 import com.leroymerlin.pandroid.dagger.PandroidComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
-import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
@@ -14,7 +12,6 @@ import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
-import com.leroymerlin.pandroid.ui.picture.PictureManager;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
 import javax.inject.Singleton;

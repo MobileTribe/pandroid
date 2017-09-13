@@ -31,11 +31,4 @@ public interface BaseComponent {
 
     void inject(PandroidApplication pandroidApplication);
 
-    void inject(PandroidActivity<ActivityOpener> pandroidActivity);
-
-    void inject(PandroidFragment<FragmentOpener> pandroidFragment);
-
-    void inject(PandroidDialogFragment<FragmentOpener> pandroidFragment);
-
-
 }

@@ -19,7 +19,7 @@ public class ColorFragment extends PandroidFragment<ColorOpener> {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.fragment_color, container, false);
-        inflate.setBackgroundColor(mOpener.color);
+        inflate.setBackgroundColor(opener.color);
         return inflate;
     }
 }
