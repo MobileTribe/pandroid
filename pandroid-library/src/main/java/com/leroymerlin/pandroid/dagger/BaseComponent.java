@@ -27,8 +27,4 @@ public interface BaseComponent {
 
     OkHttpClient.Builder okHttpClientBuilder();
 
-    void inject(OpenerEventReceiver<OpenerReceiverProvider, Opener> receiver);
-
-    void inject(PandroidApplication pandroidApplication);
-
 }

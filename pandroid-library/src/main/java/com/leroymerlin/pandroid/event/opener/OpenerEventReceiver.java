@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.FragmentManager;
 
+import com.leroymerlin.pandroid.PandroidApplication;
+import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.PandroidInjector;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.log.LogWrapper;
@@ -27,9 +29,7 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
 
     protected WeakReference<V> refAttachedObject;
 
-    @Inject
     protected EventBusManager eventBusManager;
-    @Inject
     protected LogWrapper logWrapper;
 
     @Override
@@ -78,12 +78,11 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
     }
 
     public void attach(V attachedObject) {
-        Application application = attachedObject.provideActivity().getApplication();
-        if (application instanceof PandroidInjector) {
-            ((PandroidInjector) application).inject(this);
-        } else {
-            throw new IllegalStateException("Your application needs to implement PandroidInjector to use " + TAG);
-        }
+        PandroidInjector injector = PandroidApplication.getInjector(attachedObject.provideActivity());
+        BaseComponent baseComponent = injector.getBaseComponent();
+        this.eventBusManager = baseComponent.eventBusManager();
+        this.logWrapper = baseComponent.logWrapper();
+        injector.inject(this);
         this.refAttachedObject = new WeakReference<V>(attachedObject);
     }
 

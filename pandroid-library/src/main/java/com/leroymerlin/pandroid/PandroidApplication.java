@@ -43,15 +43,14 @@ public class PandroidApplication extends Application implements PandroidDelegate
 
     protected BaseComponent mBaseComponent;
 
-    @Inject
     EventBusManager eventBusManager;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
         initializeBuildConfig();
         initializeLogger();
+        this.eventBusManager = getBaseComponent().eventBusManager();
         inject(this);
     }
 
