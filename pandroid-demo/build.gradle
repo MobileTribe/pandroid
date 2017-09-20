@@ -28,20 +28,13 @@ android {
     }
 
 
-    sourceSets{
-        main{
-            java.srcDirs += 'src/templates/java'
-            resources.srcDirs += 'src/templates/res'
-        }
 
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile('com.sothree.slidinguppanel:library:3.3.0')
 
-    compile project(':pandroid-demo-models')
     //Support to simulate plugin work
     annotationProcessor project(':pandroid-compiler')
     compile project(':pandroid-library')
@@ -53,14 +46,11 @@ dependencies {
 
 
     testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test:runner:0.5') {
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1') {
         exclude module: 'support-annotations'
-    }
-    androidTestCompile('com.android.support.test:rules:0.5') {
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
-        exclude module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
 
 }
@@ -80,3 +70,6 @@ delivery {
     }
 
 }
+
+
+apply from: 'templates.gradle'

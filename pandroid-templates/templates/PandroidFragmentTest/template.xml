@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><template format="5" revision="unspecified" name="PandroidFragmentTest" description="Creates a new basic PandroidFragment with a presenter." minApi="17" minBuildApi="17">
-  <category value="Pandroid"/>
-  <formfactor value="Mobile"/>
-  <parameter id="fragmentClass" name="Fragment Name" type="string" constraints="class|unique|nonempty" default="fragment_${classToResource(fragmentClass)}" help="The name of the fragment class to create"/>
-  <parameter id="layoutName" name="Layout Name" type="string" constraints="layout|unique|nonempty" default="fragment_${classToResource(fragmentClass)}" help="The name of the layout to create for the fragment"/>
-  <parameter id="packageName" name="Package Name" type="string" constraints="package" default="" help="The name of the layout to create for the fragment"/>
-  <globals file="globals.xml.ftl"/>
-  <execute file="recipe.xml.ftl"/>
-</template>

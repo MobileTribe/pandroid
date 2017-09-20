@@ -9,6 +9,10 @@
             android:icon="@drawable/pandroid_ic_launcher"
             android:title="@string/navigation_events" />
         <item
+            android:id="@+id/navigation_opener"
+            android:checked="false"
+            android:title="@string/navigation_opener" />
+        <item
             android:id="@+id/navigation_scanner"
             android:checked="false"
             android:title="@string/navigation_scanner" />
@@ -41,11 +45,6 @@
             android:id="@+id/navigation_toast"
             android:checked="false"
             android:title="@string/navigation_toast" />
-
-        <item
-            android:id="@+id/navigation_mvvm"
-            android:checked="false"
-            android:title="@string/navigation_mvvm" />
 
         <item
             android:id="@+id/navigation_mvp"

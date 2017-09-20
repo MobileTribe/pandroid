@@ -6,19 +6,27 @@ import android.support.annotation.VisibleForTesting;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
-import com.leroymerlin.pandroid.app.delegate.DaggerDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.ButterKnifeLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.impl.DaggerLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.EventBusLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.DaggerPandroidComponent;
+import com.leroymerlin.pandroid.dagger.PandroidInjector;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.ActivityEventReceiver;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.log.PandroidLogger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,7 +34,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application {
+public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidInjector {
 
 
     private static final String TAG = "PandroidApplication";
@@ -35,15 +43,14 @@ public class PandroidApplication extends Application {
 
     protected BaseComponent mBaseComponent;
 
-    @Inject
     EventBusManager eventBusManager;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
         initializeBuildConfig();
         initializeLogger();
+        this.eventBusManager = getBaseComponent().eventBusManager();
         inject(this);
     }
 
@@ -54,6 +61,7 @@ public class PandroidApplication extends Application {
     }
     //end::Logger[]
 
+    @Override
     public void inject(Object obj) {
         if (obj != null) {
             BaseComponent baseComponent = getBaseComponent();
@@ -61,21 +69,21 @@ public class PandroidApplication extends Application {
         }
     }
 
+    @Override
+    public <T extends BaseComponent> T getBaseComponent() {
+        if (mBaseComponent == null) {
+            mBaseComponent = createBaseComponent();
+        }
+        return (T) mBaseComponent;
+    }
+
     @VisibleForTesting
     public void overrideBaseComponent(BaseComponent mBaseComponent) {
         this.mBaseComponent = mBaseComponent;
     }
 
-    public BaseComponent getBaseComponent() {
-        if (mBaseComponent == null) {
-            mBaseComponent = createBaseComponent();
-        }
-        return mBaseComponent;
-    }
-
-
-    public static PandroidApplication get(Context context) {
-        return (PandroidApplication) context.getApplicationContext();
+    public static <T extends PandroidInjector> T getInjector(Context context) {
+        return (T) context.getApplicationContext();
     }
 
     public void initializeBuildConfig() {
@@ -103,9 +111,9 @@ public class PandroidApplication extends Application {
      *
      * @return PandroidDelegate that will be used in pandroid activity / pandroid fragment
      */
-    public PandroidDelegate createBasePandroidDelegate() {
+    protected PandroidDelegate createBasePandroidDelegate() {
         PandroidDelegate pandroidDelegate = new PandroidDelegate();
-        pandroidDelegate.addLifecycleDelegate(new DaggerDelegate());
+        pandroidDelegate.addLifecycleDelegate(new DaggerLifecycleDelegate());
         pandroidDelegate.addLifecycleDelegate(new EventBusLifecycleDelegate(eventBusManager));
         pandroidDelegate.addLifecycleDelegate(new AutoBinderLifecycleDelegate());
         if (PandroidConfig.isLibraryEnable("butterknife")) {
@@ -118,8 +126,35 @@ public class PandroidApplication extends Application {
         } else {
             logWrapper.v(TAG, "Icepick is disabled, add the library in Pandroid extension to use it");
         }
+        if (PandroidConfig.isLibraryEnable("rxandroid")) {
+            pandroidDelegate.addLifecycleDelegate(new RxLifecycleDelegate());
+        } else {
+            logWrapper.v(TAG, "RxAndroid is disabled, add the library in Pandroid extension to use it");
+        }
         return pandroidDelegate;
     }
-    //tag::PandroidBaseLifecycleDelegate[]
+
+    @Override
+    public PandroidDelegate getPandroidDelegate() {
+        return createBasePandroidDelegate();
+    }
+
+
+    //end::PandroidBaseLifecycleDelegate[]
+
+    /**
+     * create list of receiver inject in Activity
+     * You can override this method to inject activity receiver easily
+     *
+     * @return list of activity receivers inject in activity
+     */
+    protected List<ActivityEventReceiver> createBaseActivityReceivers() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<EventBusManager.EventBusReceiver> getReceivers() {
+        return new ArrayList<EventBusManager.EventBusReceiver>(createBaseActivityReceivers());
+    }
 
 }

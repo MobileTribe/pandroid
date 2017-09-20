@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.compiler;
 
 import com.google.common.collect.Lists;
+import com.leroymerlin.pandroid.annotations.RxModel;
 import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.squareup.javapoet.ClassName;
@@ -17,6 +18,8 @@ import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -52,7 +55,6 @@ class RxWrapperProcessor extends BaseProcessor {
 
     RxWrapperProcessor(Elements elements, Types types) {
         super(elements, types);
-        ACTIONDELEGATE_TYPE = mElementsUtils.getTypeElement(ActionDelegate.class.getCanonicalName()).asType();
 
     }
 
@@ -61,18 +63,38 @@ class RxWrapperProcessor extends BaseProcessor {
         return Lists.newArrayList(RxWrapper.class.getCanonicalName());
     }
 
+
     @Override
     public void process(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnvironment) {
         if (!checkRxEnabled(processingEnvironment)) return;
+
+        ACTIONDELEGATE_TYPE = mElementsUtils.getTypeElement(ActionDelegate.class.getCanonicalName()).asType();
+
+        Set<? extends Element> models = roundEnvironment.getElementsAnnotatedWith
+                (RxModel.class);
+        List<ExecutableElement> modelsElements = new ArrayList<>();
+
+        for (Element element : models) {
+            ExecutableElement executableElement = (ExecutableElement) element;
+            if (!executableElement.getModifiers().contains(Modifier.STATIC)) {
+                throw new IllegalStateException("RxModel only support static method");
+            }
+            modelsElements.add(executableElement);
+        }
 
         Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith
                 (RxWrapper.class);
         List<TypeElement> classesToProcess = new ArrayList<>();
 
         for (Element element : elementsAnnotatedWith) {
-            TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-            if (!classesToProcess.contains(enclosingElement)) {
-                classesToProcess.add(enclosingElement);
+            TypeElement typeElement = null;
+            if (element instanceof ExecutableElement) {
+                typeElement = (TypeElement) element.getEnclosingElement();
+            } else {
+                typeElement = (TypeElement) element;
+            }
+            if (!classesToProcess.contains(typeElement)) {
+                classesToProcess.add(typeElement);
             }
         }
 
@@ -92,6 +114,61 @@ class RxWrapperProcessor extends BaseProcessor {
             TypeSpec.Builder modelBuilder = TypeSpec.classBuilder("Rx" + ProcessorUtils.capitalize(className.simpleName()))
                     .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
                     .addTypeVariables(typeVariableNames);
+
+            for (ExecutableElement element : modelsElements) {
+                AnnotationMirror annotation = ProcessorUtils.getAnnotationMirror(element, RxModel.class);
+                List<AnnotationValue> targetsType = ((List<AnnotationValue>) ProcessorUtils.getAnnotationValue(annotation, "targets"));
+
+                boolean match = false;
+                for (AnnotationValue c : targetsType) {
+                    TypeMirror matchType = (TypeMirror) c.getValue();
+                    if (mTypesUtils.isAssignable(mTypesUtils.erasure(classType.asType()), matchType)) {
+                        match = true;
+                        break;
+                    }
+
+                }
+                if (match) {
+
+                    TypeMirror returnTypeMirror = element.getReturnType();
+                    TypeName returnType = TypeName.get(returnTypeMirror);
+
+
+                    MethodSpec.Builder builder = MethodSpec.methodBuilder(element.getSimpleName().toString())
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(returnType);
+
+                    for (TypeParameterElement parameterElement : element.getTypeParameters()) {
+                        builder.addTypeVariable(TypeVariableName.get(parameterElement.getSimpleName().toString()));
+                    }
+                    String parameters = "";
+
+                    for (int i = 0; i < element.getParameters().size(); i++) {
+                        VariableElement variableElement = element.getParameters().get(i);
+
+                        String renamedParam = null;
+                        for (AnnotationValue c : targetsType) {
+                            TypeMirror matchType = (TypeMirror) c.getValue();
+
+                            if (mTypesUtils.isAssignable(mTypesUtils.erasure(variableElement.asType()), matchType)) {
+                                renamedParam = "this";
+                            }
+                        }
+                        if (renamedParam == null) {
+                            renamedParam = variableElement.getSimpleName().toString();
+                            builder.addParameter(ParameterSpec.builder(TypeName.get(variableElement.asType()), variableElement.getSimpleName().toString()).build());
+                        }
+
+                        boolean wasEmpty = parameters.isEmpty();
+                        parameters = parameters + (wasEmpty ? "" : ", ") + renamedParam;
+
+                    }
+                    boolean returnValue = !element.equals(TypeName.VOID);
+
+                    builder.addStatement("$L$T.$L($L)", returnValue ? "return " : "", element.getEnclosingElement(), element.getSimpleName().toString(), parameters);
+                    modelBuilder.addMethod(builder.build());
+                }
+            }
 
             if (inInterface) {
                 modelBuilder.addSuperinterface(TypeName.get(classType.asType()))
@@ -137,7 +214,7 @@ class RxWrapperProcessor extends BaseProcessor {
                         MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
                                 .addModifiers(method.getModifiers())
                                 .addParameters(methodData.parameterSpecs)
-                                .addStatement("super($L)", methodData.toParameterStr(methodData.parameterSpecs));
+                                .addStatement("super($L)", toParameterStr(methodData.parameterSpecs));
                         modelBuilder.addMethod(constructorBuilder.build());
 
                     }
@@ -156,7 +233,7 @@ class RxWrapperProcessor extends BaseProcessor {
                     TypeName baseReturnType = methodData.returnType;
                     TypeName returnType = rxWrapperAnnotation.wrapResult() ? ParameterizedTypeName.get(RXACTIONDELEGATE_RESULT_TYPE, baseReturnType) : baseReturnType;
 
-                    boolean single = !rxWrapperAnnotation.stream();
+                    boolean single = rxWrapperAnnotation.single();
                     boolean returnVoid = returnType.equals(TypeName.VOID);
                     if (returnVoid && methodData.delegateParameter == null) {
                         throw new IllegalStateException("Method should have an ActionDelegate type in the parameters to be RxWrapped. " + className.toString() + ":" + method.getSimpleName().toString());
@@ -178,7 +255,7 @@ class RxWrapperProcessor extends BaseProcessor {
                                                 .addModifiers(Modifier.PUBLIC)
                                                 .returns(TypeName.VOID)
                                                 .addParameter(methodData.delegateParameter)
-                                                .addStatement("$L($L)", method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs))
+                                                .addStatement("$L($L)", method.getSimpleName(), toParameterStr(methodData.parameterSpecs))
                                                 .build()
                                 ).build();
 
@@ -192,8 +269,8 @@ class RxWrapperProcessor extends BaseProcessor {
 
                         modelBuilder.addMethod(methodBuilder.build());
                     } else { //method replacement
-                        if (rxWrapperAnnotation.stream()) {
-                            throw new IllegalStateException("Can't wrappe a method as Observable. Please remove stream or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
+                        if (!rxWrapperAnnotation.single()) {
+                            throw new IllegalStateException("Can't wrap a method as Observable. Please remove single or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
                         }
 
 
@@ -203,9 +280,9 @@ class RxWrapperProcessor extends BaseProcessor {
                                 .addModifiers(Modifier.PUBLIC)
                                 .returns(TypeName.OBJECT);
                         if (rxWrapperAnnotation.wrapResult()) {
-                            callMethodBuilder.addStatement("return ($T) $T.wrap($L($L))", returnType, RXACTIONDELEGATE_TYPE, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+                            callMethodBuilder.addStatement("return ($T) $T.wrap($L($L))", returnType, RXACTIONDELEGATE_TYPE, method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
                         } else {
-                            callMethodBuilder.addStatement("return ($T) $L($L)", returnType, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+                            callMethodBuilder.addStatement("return ($T) $L($L)", returnType, method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
 
                         }
                         TypeSpec callableClass = TypeSpec.anonymousClassBuilder("")
@@ -239,7 +316,7 @@ class RxWrapperProcessor extends BaseProcessor {
                 .addParameters(methodData.parameterSpecs)
                 .addTypeVariables(methodData.typeVariableNames)
                 .returns(returnTypeName);
-        methodBuilder.addStatement("$L$L.$L($L)", returnValue ? "return " : "", TARGET_VAR, method.getSimpleName(), methodData.toParameterStr(methodData.parameterSpecs));
+        methodBuilder.addStatement("$L$L.$L($L)", returnValue ? "return " : "", TARGET_VAR, method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
         modelBuilder.addMethod(methodBuilder.build());
     }
 
@@ -278,8 +355,6 @@ class RxWrapperProcessor extends BaseProcessor {
             }
 
 
-
-
             for (int i = 0; i < method.getParameters().size(); i++) {
                 VariableElement variableElement = method.getParameters().get(i);
                 ParameterSpec.Builder parameterSpecBuilder = ParameterSpec.builder(TypeName.get(variableElement.asType()), variableElement.getSimpleName().toString());
@@ -287,7 +362,16 @@ class RxWrapperProcessor extends BaseProcessor {
 
                 parameterSpecs.add(parameterSpecBuilder.build());
                 if (returnType == null && mTypesUtils.isAssignable(mTypesUtils.erasure(variableElement.asType()), ACTIONDELEGATE_TYPE)) {
-                    returnType = ((ParameterizedTypeName) ParameterizedTypeName.get(variableElement.asType())).typeArguments.get(0);
+                    if (!mTypesUtils.erasure(variableElement.asType()).equals(mTypesUtils.erasure(ACTIONDELEGATE_TYPE))) {
+                        throw new IllegalStateException("Can't wrap a method with a class with parameter type " +mTypesUtils.erasure(variableElement.asType()) + ". Please use ActionDelegate instead in " + method.toString());
+                    }
+
+                    TypeName typeName = ParameterizedTypeName.get(variableElement.asType());
+                    if (typeName instanceof ParameterizedTypeName) {
+                        returnType = ((ParameterizedTypeName) typeName).typeArguments.get(0);
+                    } else { // action delegate with no ParameterizedTypeName
+                        returnType = TypeName.OBJECT;
+                    }
                     delegateParameter = ParameterSpec.builder(ClassName.get(variableElement.asType()), variableElement.getSimpleName().toString()).build();
                 } else {
                     parameterSpecsWithoutDelegate.add(parameterSpecBuilder.build());
@@ -300,17 +384,17 @@ class RxWrapperProcessor extends BaseProcessor {
         }
 
 
-        String toParameterStr(List<ParameterSpec> params) {
-            String result = "";
-            for (int i = 0; i < params.size(); i++) {
-                ParameterSpec s = params.get(i);
-                result += s.name;
-                if (i < params.size() - 1) {
-                    result += ", ";
-                }
-            }
-            return result;
-        }
+    }
 
+    static String toParameterStr(List<ParameterSpec> params) {
+        String result = "";
+        for (int i = 0; i < params.size(); i++) {
+            ParameterSpec s = params.get(i);
+            result += s.name;
+            if (i < params.size() - 1) {
+                result += ", ";
+            }
+        }
+        return result;
     }
 }

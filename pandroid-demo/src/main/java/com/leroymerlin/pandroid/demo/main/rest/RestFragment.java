@@ -19,7 +19,7 @@ import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
 import com.leroymerlin.pandroid.demo.main.MainActivity;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.future.NetActionDelegate;
 import com.leroymerlin.pandroid.future.SimpleAsyncTaskLoader;
 import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;

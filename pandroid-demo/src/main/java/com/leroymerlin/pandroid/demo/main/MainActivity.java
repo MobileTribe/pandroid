@@ -7,6 +7,8 @@ import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.app.PandroidDrawerActivity;
 import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
+import com.leroymerlin.pandroid.demo.globals.review.ReviewService;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.anim.MaterialFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
@@ -15,21 +17,23 @@ import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
-import com.leroymerlin.pandroid.demo.main.mvvm.MvvmFragment;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentEventReceiver;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentEventReceiver;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by florian on 02/12/15.
  */
-public class MainActivity extends PandroidDrawerActivity {
-
+public class MainActivity extends PandroidDrawerActivity<ActivityOpener> {
 
     public static final String DRAWER_EVENT = "DRAWER_EVENT";
 
@@ -101,7 +105,6 @@ public class MainActivity extends PandroidDrawerActivity {
                 .addFragment(RecyclerViewFragment.class)
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
-                .addFragment(MvvmFragment.class)
                 .addFragment(ToastFragment.class)
                 .addFragment(PresenterFragment.class)
                 .addFragment(RxFragment.class)

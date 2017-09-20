@@ -1,17 +1,14 @@
 package com.leroymerlin.pandroid.app.delegate.impl;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.LifecycleDelegate;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentEventReceiver;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
+import com.leroymerlin.pandroid.event.opener.OpenerEventReceiver;
+import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,25 +40,15 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     public void onResume(Object target) {
         if (target instanceof ReceiversProvider) {
             List<EventBusManager.EventBusReceiver> receivers = ((ReceiversProvider) target).getReceivers();
-            boolean isActivity = target instanceof Activity;
-            boolean isFragment = target instanceof Fragment;
-            if (isActivity || isFragment) {
 
-                Context context = null;
-                FragmentManager manager = null;
-                if (isActivity) {
-                    context = ((Activity) target).getApplication();
-                    manager = ((Activity) target).getFragmentManager();
-                } else { //if(isFragment){
-                    context = ((Fragment) target).getActivity().getApplication();
-                    manager = ((Fragment) target).getChildFragmentManager();
-                }
-
+            if (target instanceof OpenerReceiverProvider) {
+                OpenerReceiverProvider provider = (OpenerReceiverProvider) target;
                 for (EventBusManager.EventBusReceiver receiver : receivers) {
-                    if (receiver instanceof FragmentEventReceiver) {
-                        ((FragmentEventReceiver) receiver).attach(context, (ReceiversProvider) target, manager);
+                    if (receiver instanceof OpenerEventReceiver) {
+                        ((OpenerEventReceiver) receiver).attach(provider);
                     }
                 }
+
 
             }
             this.receivers.addAll(receivers);
@@ -77,8 +64,8 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     public void onPause(Object object) {
         eventBusManager.unregisterReceivers(receivers);
         for (EventBusManager.EventBusReceiver receiver : receivers) {
-            if (receiver instanceof FragmentEventReceiver) {
-                ((FragmentEventReceiver) receiver).detach();
+            if (receiver instanceof OpenerEventReceiver) {
+                ((OpenerEventReceiver) receiver).detach();
             }
         }
         receivers.clear();
@@ -92,5 +79,15 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     @Override
     public void onDestroyView(Object target) {
 
+    }
+
+    @Override
+    public void onRemove(Object target) {
+
+    }
+
+    @Override
+    public int getPriority() {
+        return LOW_PRIORITY;
     }
 }

@@ -11,12 +11,13 @@ import android.view.MenuItem;
 
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.event.opener.ActivityOpener;
 
 
 /**
  * Created by florian on 05/11/14.
  */
-public abstract class PandroidDrawerActivity extends PandroidActivity {
+public abstract class PandroidDrawerActivity<T extends ActivityOpener> extends PandroidActivity<T> {
 
     protected DrawerLayout drawer;
     protected ActionBarDrawerToggle mDrawerToggle;

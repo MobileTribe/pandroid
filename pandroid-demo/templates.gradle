@@ -1,0 +1,64 @@
+
+apply plugin: "com.leroymerlin.android-templates"
+
+
+def templatesFolder = file('src/templates/')
+def templatesJava = new File(templatesFolder, 'java')
+def templatesRes = new File(templatesFolder, 'res')
+
+android {
+    sourceSets{
+        main{
+            java.srcDirs += templatesJava
+            res.srcDirs += templatesRes
+        }
+
+    }
+}
+
+
+def javaFolder = new File(templatesJava, 'com.leroymerlin.pandroid.templates')
+
+templates {
+
+    template('PandroidFragment'){
+        def fragmentClassName = "BasePandroid"
+
+        description = "Creates a new basic PandroidFragment with a presenter and an opener"
+        javaFiles = fileTree(javaFolder).include('fragment/*.java')
+        resourceFiles = files(new File(templatesRes.path ,"layout/fragment_base.xml"))
+        parameters {
+            fragmentClass {
+                replace = "${fragmentClassName}Fragment"
+                label = "Fragment Name"
+                constraints = "class|unique|nonempty"
+                suggest = 'fragment_${classToResource(fragmentClass)}'
+                help = "The name of the fragment class to create"
+            }
+
+            layoutName {
+                replace = 'fragment_base'
+                label = "Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'fragment_${classToResource(fragmentClass)}'
+                help = "The name of the layout to create for the fragment"
+            }
+
+            packageName {
+                replace = android.defaultConfig.applicationId
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the layout to create for the fragment"
+            }
+
+            openerClass {
+                value = '${fragmentClass}Opener';
+                replace = "${fragmentClassName}FragmentOpener";
+            }
+            presenterClass {
+                value = '${fragmentClass}Presenter';
+                replace = "${fragmentClassName}FragmentPresenter";
+            }
+        }
+    }
+}

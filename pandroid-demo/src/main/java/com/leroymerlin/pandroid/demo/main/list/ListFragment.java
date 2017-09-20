@@ -12,7 +12,7 @@ public class ListFragment extends PandroidFragment<ListOpener> {
 
     public ArrayList<String> getData() {
         ArrayList<String> data = new ArrayList<>();
-        for (int i = 0; i < mOpener.lineParam; i++) {
+        for (int i = 0; i < opener.lineParam; i++) {
             data.add("Button - " + i);
         }
         return data;

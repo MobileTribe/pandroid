@@ -1,0 +1,126 @@
+# Changelog
+
+:hardbreaks:
+
+
+### *2.4.0* - (2017-08-04)
+*Features*
+- RX integration
+- Kotlin support
+*Refactor*
+- Opener concept expanded to Activity
+- Remove Data Binding
+
+WARNING: Opener package changed to 'com.leroymerlin.pandroid.event.opener'
+
+
+### *2.3.1* - (2017-05-24)
+*Refactor*
+- MaterialTransitionLayout
+
+### *2.3.0* - (2017-05-17)
+*Update*
+- Update libraries to last version
+
+### *2.2.7* - (2017-03-20)
+*Fix*
+- Cancel ActionDelegate is done in onPause instead of onDestroyView
+
+### *2.2.6* - (2017-03-14)
+*Fix*
+- Issue with CircularFrameLayout with multiple animation at start
+- Fix error with generated Pandroid classes
+
+### *2.2.5* - (2017-03-10)
+*Fix*
+- Fix error with generated inject mapper method
+
+### *2.2.4* - (2017-03-09)
+*Update*
+- Refactor CircularFrameLayout animations
+- Refactor Presenter/LifecycleDelegate
+
+### *2.2.3* - (2017-02-02)
+*Update*
+- Change optional library param dsl (link:{htmlPath}pandroid-doc/html/Tutorial.html#crashlytics[see crashlytics])
+- Refactor PictureManager (link:{htmlPath}pandroid-doc/html/Tutorial.html#picture[see new implementation])
+- Improve generated class performance
+
+### *2.2.2* - (2017-01-20)
+*Update*
+- SDK Build Tools to 25.0.2
+- GMS to 10.0.1
+- NetworkException : Add getters for headers and response time
+*Fix*
+- Error with instant run and external library with manifest content
+
+### *2.2.1* - (2017-01-10)
+
+*Update*
+- Remove old KeepClass annotation (use support Keep instead)
+*Fix*
+- Compile error with project without annotation
+
+### *2.2.0* - (2017-01-06)
+
+*Features*
+- Performance - generate PandroidMapper to bind classes
+- Security proguard - rewrite rules to get full obfuscation
+*Update*
+- Remove reflexion to bind generated classes
+- Remove reflexion to inject with dagger
+- Remove old Event/EventReceiver concept
+- Rename Pandroid annotation package name to com.leroymerlin.pandroid
+
+### *2.1.2* - (2016-12-15)
+
+*Update*
+- Refactor CircularFrameLayout
+*Fix*
+- Gradle crash with library module
+- ViewInfosContainer not serializable
+
+### *2.1.1* - (2016-12-8)
+
+*Fix*
+- Proguard configuration with lifecycleAutoBinder
+
+### *2.1.0* - (2016-12-05)
+
+*Features*
+- Android DataBinding : two ways DataBinding
+- MVP support
+
+### *2.0.3* - (2016-11-28)
+
+*Update*
+- improv PandroidCall to access Retrofit Response
+*Fix*
+- Proguard rules with PandroidConfigMapper
+
+### *2.0.2* - (2016-11-8)
+
+*Features*
+- Generate mapper to initialize PandroidConfig
+- Add annotation to add lifecycleDelegate
+*Update*
+- add method to remove delegate from PandroidDelegate (#4)
+- refactor startFragment method (#3)
+*Fix*
+- Crashlytics Logger not initialized
+- ButterknifeLifecycle delegate nullPointerException
+- Not fully optional library (Butterknife / Icepick)
+
+### *2.0.1* - (2016-10-20)
+
+*Update*
+- Support Libraries 25
+- Remove useless APT plugin
+*Fix*
+- Fix RsaAesCryptoManager (#2)
+
+
+### *2.0.0* - (2016-09-28)
+
+*Features*
+- First release

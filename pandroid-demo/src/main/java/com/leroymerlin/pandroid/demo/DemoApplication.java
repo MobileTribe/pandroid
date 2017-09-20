@@ -1,8 +1,16 @@
 package com.leroymerlin.pandroid.demo;
 
+import android.content.Intent;
+
+import com.google.android.gms.analytics.AnalyticsReceiver;
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
+import com.leroymerlin.pandroid.demo.main.MainActivity;
+import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
+import com.leroymerlin.pandroid.event.EventBusManager;
+import com.leroymerlin.pandroid.event.opener.ActivityEventReceiver;
+import com.leroymerlin.pandroid.event.opener.OpenerEventReceiver;
 import com.leroymerlin.pandroid.security.PandroidX509TrustManager;
 
 import java.util.List;
@@ -41,4 +49,24 @@ public class DemoApplication extends PandroidApplication {
     }
     //end::createBaseComponent[]
 
+
+    //tag::ActivityOpener[]
+    /**
+     * create list of receiver inject in Activity
+     * You can override this method to inject activity receiver easily
+     *
+     * @return list of activity receivers inject in activity
+     */
+    @Override
+    protected List<ActivityEventReceiver> createBaseActivityReceivers() {
+        List<ActivityEventReceiver> receivers = super.createBaseActivityReceivers();
+        receivers.add(new ActivityEventReceiver()
+                .overrideAnimation(new int[]{R.anim.fade_in, R.anim.fade_out})
+                .addActivity(OpenerActivity.class));
+        receivers.add(new ActivityEventReceiver()
+                .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .addActivity(MainActivity.class));
+        return receivers;
+    }
+    //end::ActivityOpener[]
 }

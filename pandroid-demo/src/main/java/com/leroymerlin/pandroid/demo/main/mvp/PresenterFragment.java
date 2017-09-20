@@ -12,7 +12,7 @@ import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 import javax.inject.Inject;
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.ui.animation.AnimUtils;
 import com.leroymerlin.pandroid.ui.animation.ResizeAnimation;
 import com.leroymerlin.pandroid.ui.animation.Rotate3dAnimation;

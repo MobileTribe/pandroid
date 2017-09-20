@@ -12,7 +12,7 @@ import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.event.EventBusManager;
-import com.leroymerlin.pandroid.event.FragmentOpener;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
 import javax.inject.Inject;
