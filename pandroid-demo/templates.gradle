@@ -17,22 +17,23 @@ android {
 }
 
 
-def javaFolder = new File(templatesJava, 'com.leroymerlin.pandroid.templates')
+
+def javaFolder = new File(templatesJava, 'com/leroymerlin/pandroid/templates')
+
 
 templates {
 
     template('PandroidFragment'){
-        def fragmentClassName = "BasePandroid"
-
+        def fragmentClassName = "Template"
         description = "Creates a new basic PandroidFragment with a presenter and an opener"
         javaFiles = fileTree(javaFolder).include('fragment/*.java')
-        resourceFiles = files(new File(templatesRes.path ,"layout/fragment_base.xml"))
+        resFiles = files(new File(templatesRes.path ,"layout/fragment_base.xml"))
         parameters {
             fragmentClass {
                 replace = "${fragmentClassName}Fragment"
                 label = "Fragment Name"
                 constraints = "class|unique|nonempty"
-                suggest = 'fragment_${classToResource(fragmentClass)}'
+                defaultValue = "HomeFragment"
                 help = "The name of the fragment class to create"
             }
 
@@ -45,10 +46,10 @@ templates {
             }
 
             packageName {
-                replace = android.defaultConfig.applicationId
+                replace = "com.leroymerlin.pandroid.templates.fragment"
                 label = "Package Name"
                 constraints = "package"
-                help = "The name of the layout to create for the fragment"
+                help = "The name of the classes package"
             }
 
             openerClass {
@@ -61,4 +62,38 @@ templates {
             }
         }
     }
+
+
+    template('PandroidApplication'){
+        def baseName = "Template"
+        description = "Creates a new basic PandroidApplication with a dagger component and module"
+        javaFiles = fileTree(javaFolder).include('application/*.java')
+        resFiles = fileTree(javaFolder).include('application/AndroidManifest.xml')
+        parameters {
+            applicationClass {
+                replace = "${baseName}Application"
+                label = "Application Name"
+                constraints = "class|unique|nonempty"
+                defaultValue = "Application"
+                help = "The name of the Application class"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.application"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+            componentName {
+                value = 'AppModule';
+                replace = "${baseName}AppModule";
+            }
+            presenterClass {
+                value = 'AppComponent';
+                replace = "${baseName}AppComponent";
+            }
+        }
+    }
+
 }

@@ -10,10 +10,10 @@ import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 
-public class BasePandroidFragment extends PandroidFragment<BasePandroidFragmentOpener> implements BasePandroidFragmentPresenter.PresenterView {
+public class TemplateFragment extends PandroidFragment<TemplateFragmentOpener> implements TemplateFragmentPresenter.PresenterView {
 
     @BindLifeCycleDelegate
-    BasePandroidFragmentPresenter presenter;
+    TemplateFragmentPresenter presenter;
 
     @Nullable
     @Override
