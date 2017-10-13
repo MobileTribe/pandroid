@@ -16,12 +16,53 @@ android {
     }
 }
 
-
-
 def javaFolder = new File(templatesJava, 'com/leroymerlin/pandroid/templates')
 
 
 templates {
+
+    template('PandroidActivity'){
+        def activityClassName = "Template"
+        description = "Creates a new basic PandroidActivity with a presenter and an opener"
+        javaFiles = fileTree(javaFolder).include('activity/*.java')
+        resFiles = files(
+                new File(templatesRes.path, "layout/activity_base.xml"),
+                new File(javaFolder, 'activity/AndroidManifest.xml')
+        )
+        parameters {
+            activityClass {
+                replace = "${activityClassName}Activity"
+                label = "Activity Name"
+                constraints = "class|unique|nonempty"
+                defaultValue = "MainActivity"
+                help = "The name of the fragment class to create"
+            }
+
+            layoutName {
+                replace = 'activity_base'
+                label = "Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'activity_${classToResource(activityClass)}'
+                help = "The name of the layout to create for the activity"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.activity"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+            openerClass {
+                value = '${activityClass}Opener';
+                replace = "${activityClassName}ActivityOpener";
+            }
+            presenterClass {
+                value = '${activityClass}Presenter';
+                replace = "${activityClassName}ActivityPresenter";
+            }
+        }
+    }
 
     template('PandroidFragment'){
         def fragmentClassName = "Template"

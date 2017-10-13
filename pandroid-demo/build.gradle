@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'com.leroymerlin.delivery'
 
+
+
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
     buildToolsVersion androidBuildToolsVersion
@@ -13,6 +15,10 @@ android {
         versionCode Integer.parseInt(pandroidVersionId)
         versionName pandroidVersion
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
+        jackOptions {
+            enabled true
+        }
     }
     buildTypes {
         all {
@@ -26,7 +32,10 @@ android {
     dataBinding {
         enabled = true
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
 
 }

@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
+import com.leroymerlin.pandroid.event.OnBackListener;
 
-public class TemplateFragment extends PandroidFragment<TemplateFragmentOpener> implements TemplateFragmentPresenter.PresenterView {
+public class TemplateFragment extends PandroidFragment<TemplateFragmentOpener> implements TemplateFragmentPresenter.PresenterView, OnBackListener {
 
     @BindLifeCycleDelegate
     TemplateFragmentPresenter presenter;
@@ -21,4 +22,8 @@ public class TemplateFragment extends PandroidFragment<TemplateFragmentOpener> i
         return inflater.inflate(R.layout.fragment_base, container, false);
     }
 
+    @Override
+    public boolean onBackPressed() {
+        return false;
+    }
 }
