@@ -164,10 +164,7 @@ templates {
                 help = "The name of the classes package"
             }
 
-            fragmentName {
-                replace = "${baseName}Fragment"
-                value = '${featureName}Fragment'
-            }
+
             layoutName {
                 replace = 'fragment_feature'
                 label = "Layout Name"
@@ -177,10 +174,14 @@ templates {
             }
             cellLayoutName {
                 replace = 'cell_feature'
-                label = "Layout Name"
+                label = "Cell Layout Name"
                 constraints = "layout|unique|nonempty"
                 suggest = 'cell_${classToResource(featureName)}'
-                help = "The name of the layout used in the fragment recyclerview"
+                help = "The name of the layout used as cell in the recyclerview"
+            }
+            fragmentName {
+                replace = "${baseName}Fragment"
+                value = '${featureName}Fragment'
             }
 
             fragmentOpenerName {
@@ -216,3 +217,4 @@ templates {
     }
 
 }
+

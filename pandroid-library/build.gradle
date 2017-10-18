@@ -63,3 +63,10 @@ dependencies {
 }
 
 
+//configure template with delivery
+
+def zipTemplatesTask = project(":pandroid-demo").getTasksByName("zipTemplates", false)
+task buildTemplate(type: DeliveryBuild, dependsOn: zipTemplatesTask) {
+    variantName = project.name
+    outputFiles = ["templates": zipTemplatesTask.outputs.files.singleFile.first()]
+}

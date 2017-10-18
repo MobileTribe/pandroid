@@ -448,6 +448,13 @@ to use the famous pattern MVP. The Presenter is bound to the application's lifec
 
 NOTE: see link:{github}{demoJava}main/mvp[the demo] to see it in action
 
+=== Templates
+
+To help you, Pandroid provides templates for Android Studio.
+In order to install them, you just have to apply link:https://github.com/MobileTribe/android-templates-gradle-plugin['com.leroymerlin.android-templates'] plugin on your project. Pandroid will add and update the templates automatically.
+
+To access the templates, restart once the IDE and a Pandroid entry will be available in the *"new"* menu (right click on your package > new, or cmd + n)
+
 == Security
 
 === Proguard

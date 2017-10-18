@@ -4,6 +4,11 @@ dependencies {
     provided "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
 }
 
+plugins.withId('com.leroymerlin.android-templates') {
+    template "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion:templates"
+}
+
+
 //tag::Proguard[]
 android {
 
