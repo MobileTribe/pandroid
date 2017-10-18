@@ -1,4 +1,4 @@
-package com.leroymerlin.pandroid.templates.feature.models;
+package com.leroymerlin.pandroid.templates.feature;
 
 /**
  * Created by florian on 11/10/2017.

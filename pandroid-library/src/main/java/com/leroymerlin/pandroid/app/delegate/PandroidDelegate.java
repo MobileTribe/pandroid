@@ -2,7 +2,6 @@ package com.leroymerlin.pandroid.app.delegate;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.util.SortedList;
 import android.view.View;
 
 import com.leroymerlin.pandroid.app.ResumeState;
@@ -11,10 +10,8 @@ import com.leroymerlin.pandroid.future.CancellableActionDelegate;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * Created by florian on 26/11/15.
@@ -26,7 +23,7 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
 
     protected WeakReference<T> targetRef;
 
-    private List<Cancellable> cancellables = new ArrayList<>();
+    private List<Cancellable> cancellableList = new ArrayList<>();
     private ArrayList<LifecycleDelegate> lifecycleDelegates = new ArrayList<>();
 
     public ResumeState getResumeState() {
@@ -112,7 +109,7 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
             LifecycleDelegate lifecycleDelegate = lifecycleDelegates.get(i);
             lifecycleDelegate.onPause(target);
         }
-        for (Cancellable delegate : cancellables) {
+        for (Cancellable delegate : cancellableList) {
             delegate.cancel();
         }
     }
@@ -149,7 +146,7 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
 
     @Override
     public void registerDelegate(Cancellable delegate) {
-        this.cancellables.add(delegate);
+        this.cancellableList.add(delegate);
         if (!viewExist) {
             delegate.cancel();
         }
@@ -157,7 +154,7 @@ public class PandroidDelegate<T> extends SimpleLifecycleDelegate<T> implements
 
     @Override
     public boolean unregisterDelegate(Cancellable delegate) {
-        return this.cancellables.remove(delegate);
+        return this.cancellableList.remove(delegate);
     }
 
     @Override

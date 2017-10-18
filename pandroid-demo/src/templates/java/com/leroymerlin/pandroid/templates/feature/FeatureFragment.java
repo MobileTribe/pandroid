@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.RxPandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.templates.feature.models.FeatureModel;
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerFactory;
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder;
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerViewAdapter;
@@ -56,8 +55,8 @@ public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> i
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        getActivity().setTitle(R.string.featureName);
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle(R.string.featureNameTitle);
 
         adapter = new RecyclerViewAdapter<>(new RecyclerFactory<RecyclerHolder<FeatureModel>>() {
             @Override

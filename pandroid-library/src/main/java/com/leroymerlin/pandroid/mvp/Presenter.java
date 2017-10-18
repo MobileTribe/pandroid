@@ -22,9 +22,12 @@ import java.lang.ref.WeakReference;
 @RxWrapper
 public class Presenter<T> extends PandroidDelegate<T> {
 
-    private static final String TAG = "Presenter";
+    protected WeakReference<T> targetView;
 
     public Presenter() {
+    }
+
+    protected void initNestedLifecycleDelegate() {
         addLifecycleDelegate(new RxLifecycleDelegate());
         addLifecycleDelegate(new AutoBinderLifecycleDelegate());
     }
@@ -33,6 +36,8 @@ public class Presenter<T> extends PandroidDelegate<T> {
     @Override
     public void onInit(T target) {
         super.onInit((T) this);
+        initNestedLifecycleDelegate();
+        targetView = new WeakReference<T>(target);
     }
 
     @Nullable
@@ -72,10 +77,17 @@ public class Presenter<T> extends PandroidDelegate<T> {
         super.onDestroyView((T) this);
     }
 
-    @Nullable
-    @CheckResult
+    @Override
+    public void onRemove(T target) {
+        super.onRemove((T) this);
+        targetView = null;
+    }
+
     public T getView() {
-        return targetRef != null ? targetRef.get() : null;
+        if(targetView != null){
+            return targetView.get();
+        }
+        throw new IllegalStateException("getView can't ");
     }
 
 }

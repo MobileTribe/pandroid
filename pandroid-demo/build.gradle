@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'com.leroymerlin.delivery'
-
+apply plugin: 'me.tatarka.retrolambda'
 
 
 android {
@@ -16,9 +16,6 @@ android {
         versionName pandroidVersion
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
 
-        jackOptions {
-            enabled true
-        }
     }
     buildTypes {
         all {
@@ -55,9 +52,15 @@ dependencies {
 
 
     testCompile 'junit:junit:4.12'
+
+    androidTestCompile "org.mockito:mockito-android:2.11.0"
     androidTestCompile 'com.android.support.test:runner:1.0.1'
     androidTestCompile 'com.android.support.test:rules:1.0.1'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1') {
+        exclude module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:3.0.1') {
         exclude module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }

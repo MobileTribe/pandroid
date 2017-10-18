@@ -1,6 +1,6 @@
-package com.leroymerlin.pandroid.templates.feature.managers;
+package com.leroymerlin.pandroid.templates.feature;
 
-import com.leroymerlin.pandroid.templates.feature.models.FeatureModel;
+import com.leroymerlin.pandroid.templates.feature.FeatureModel;
 
 import io.reactivex.Observable;
 
