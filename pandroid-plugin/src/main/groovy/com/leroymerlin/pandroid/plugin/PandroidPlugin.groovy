@@ -1,10 +1,8 @@
 package com.leroymerlin.pandroid.plugin
 
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
-import com.leroymerlin.pandroid.plugin.GeneratePandroidTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.Copy
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -38,13 +36,6 @@ class PandroidPlugin implements Plugin<Project> {
                 include PROP_FILE
             }.singleFile.newInputStream());
             pluginVersion = properties.getProperty("pandroidVersion")
-        }else{
-            Constants.filesToCopy
-            project.task('copyPandroidFilesToDemo', type: Copy) {
-                from(Constants.filesToCopy)
-                into('build/pandroid/')
-            }
-            project.preBuild.dependsOn project.copyPandroidFilesToDemo
         }
 
         project.extensions.create('pandroid', PandroidPluginExtension, project, this)
@@ -76,7 +67,7 @@ class PandroidPlugin implements Plugin<Project> {
         def isAndroidApp = project.plugins.hasPlugin("com.android.application")
         if (isAndroidApp) {
             project.android.applicationVariants.all { variant ->
-                def task = new GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
+                def task = new com.leroymerlin.pandroid.plugin.GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
                 variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
             }
         }

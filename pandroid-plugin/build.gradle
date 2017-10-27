@@ -17,7 +17,7 @@ dependencies {
     compile project(':pandroid-annotations')
     compile deps.javapoet
 
-    testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.12'
     provided "com.android.tools.build:gradle:$androidPluginVersion"
     testCompile "com.android.tools.build:gradle:$androidPluginVersion"
 }

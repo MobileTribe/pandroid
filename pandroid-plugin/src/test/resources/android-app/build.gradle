@@ -2,9 +2,12 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        google()
+        maven { url 'https://maven.fabric.io/public' }
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0'
     }
 }
 
@@ -19,25 +22,36 @@ buildscript {
     }
     dependencies {
         Properties props = new Properties()
-        props.load(new FileInputStream(project.file("../../../version.properties")))
+        def file = project.file("../../../version.properties")
+        if (!file.exists()) { //ide test case
+            file = project.file("../../../../../version.properties")
+        }
+        props.load(new FileInputStream(file))
         def versionPlugin = props.getProperty('pandroidVersion')
         classpath "com.leroymerlin.pandroid:pandroid-plugin:${versionPlugin}"
     }
 }
 apply plugin: 'com.leroymerlin.pandroid'
 
-repositories.clear()
+//repositories.clear()
 repositories {
     mavenLocal()
+    google()
     jcenter()
 }
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:27.0.0'
+
+}
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25"
+    compileSdkVersion Integer.parseInt(androidSdkVersion)
+    buildToolsVersion androidBuildToolsVersion
+
 
     defaultConfig {
         applicationId "com.leroymerlin.pandroid.sample"
-        minSdkVersion 17
-        targetSdkVersion 25
+        minSdkVersion Integer.parseInt(androidMinSdkVersion)
+        targetSdkVersion Integer.parseInt(androidSdkVersion)
     }
 }

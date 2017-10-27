@@ -37,21 +37,24 @@ class LibraryConfigurator {
         }
         if (manifest != null) {
 
-            project.android.applicationVariants.all {
-                variant ->
-                    variant.outputs.first().processManifest.doLast {
-                        File[] manifestFiles = [
-                                variant.outputs.first().processManifest.manifestOutputFile,
-                                variant.outputs.first().processManifest.instantRunManifestOutputFile,
-                                variant.outputs.first().processManifest.aaptFriendlyManifestOutputFile
-                        ]
-                        manifestFiles.each {
-                            f ->
-                                if (f != null && f.exists()) {
-                                    XMLUtils.appendToXML(f, "<manifest>" + manifest.call(config) + "</manifest>")
-                                }
+            project.android.applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    output.processManifest.doLast {
+                        // Stores the path to the maifest.
+                        [aaptFriendlyManifestOutputDirectory, instantRunManifestOutputDirectory, manifestOutputDirectory].each {
+                            String manifestPath = "$it/AndroidManifest.xml"
+                            // Stores the contents of the manifest.
+                            def manifestFile = project.file(manifestPath)
+                            if (manifestFile != null && manifestFile.exists()) {
+                                XMLUtils.appendToXML(manifestFile, "<manifest>" + manifest.call(config) + "</manifest>")
+                            }
                         }
+
+
+
+
                     }
+                }
             }
         }
 

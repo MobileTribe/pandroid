@@ -4,6 +4,7 @@ import org.gradle.tooling.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+
 /**
  * Created by florian on 17/12/15.
  */
@@ -17,7 +18,7 @@ class IntegrationTest {
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
-            launcher.forTasks("install")
+            launcher.forTasks("pandroid-compiler:install", "pandroid-library:install", "pandroid-plugin:install", "pandroid-java:install", "pandroid-annotations:install")
             launcher.run()
         } finally {
             connection.close()

@@ -48,6 +48,9 @@
     public *;
 }
 
+#Dagger
+-dontwarn com.google.errorprone.annotations.*
+
 #OKHTTP
 -dontwarn okhttp3.**
 -keep class okhttp3.** { *;}
