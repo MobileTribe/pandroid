@@ -2,7 +2,6 @@ package com.leroymerlin.pandroid.demo.main.rest;
 
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,15 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
-import com.bumptech.glide.request.target.Target;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
-import com.leroymerlin.pandroid.demo.main.MainActivity;
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.future.NetActionDelegate;
 import com.leroymerlin.pandroid.future.SimpleAsyncTaskLoader;

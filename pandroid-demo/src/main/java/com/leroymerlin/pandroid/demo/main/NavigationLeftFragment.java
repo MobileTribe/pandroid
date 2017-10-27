@@ -43,63 +43,60 @@ public class NavigationLeftFragment extends PandroidFragment<FragmentOpener> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                boolean handle = false;
-                switch (item.getItemId()) {
-                    case R.id.navigation_opener:
-                        //tag::ActivityOpener[]
-                        sendEventSync(new CustomActivityOpener("from Navigation"));
-                        //end::ActivityOpener[]
-                        handle = true;
-                        break;
-                    case R.id.navigation_scanner:
-                        startFragment(ScannerFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_event_bus:
-                        startFragment(EventFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_rest:
-                        startFragment(RestFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_animation:
-                        startFragment(AnimationFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_list:
-                        sendEvent(new ListOpener(ListViewFragment.class, 40));
-                        handle = true;
-                        break;
-                    case R.id.navigation_simplelist:
-                        sendEvent(new ListOpener(SimpleRecyclerViewFragment.class, 40));
-                        handle = true;
-                        break;
-                    case R.id.navigation_recycler:
-                        sendEvent(new ListOpener(RecyclerViewFragment.class, 50));
-                        handle = true;
-                        break;
-                    case R.id.navigation_toast:
-                        startFragment(ToastFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_mvp:
-                        startFragment(PresenterFragment.class);
-                        handle = true;
-                        break;
-                    case R.id.navigation_rx:
-                        startFragment(RxFragment.class);
-                        handle = true;
-                        break;
-                }
-                if (handle) {
-                    eventBusManager.send(true, MainActivity.DRAWER_EVENT);
-                }
-                return handle;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            boolean handle = false;
+            switch (item.getItemId()) {
+                case R.id.navigation_opener:
+                    //tag::ActivityOpener[]
+                    sendEventSync(new CustomActivityOpener("from Navigation"));
+                    //end::ActivityOpener[]
+                    handle = true;
+                    break;
+                case R.id.navigation_scanner:
+                    startFragment(ScannerFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_event_bus:
+                    startFragment(EventFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_rest:
+                    startFragment(RestFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_animation:
+                    startFragment(AnimationFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_list:
+                    sendEvent(new ListOpener(ListViewFragment.class, 40));
+                    handle = true;
+                    break;
+                case R.id.navigation_simplelist:
+                    sendEvent(new ListOpener(SimpleRecyclerViewFragment.class, 40));
+                    handle = true;
+                    break;
+                case R.id.navigation_recycler:
+                    sendEvent(new ListOpener(RecyclerViewFragment.class, 50));
+                    handle = true;
+                    break;
+                case R.id.navigation_toast:
+                    startFragment(ToastFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_mvp:
+                    startFragment(PresenterFragment.class);
+                    handle = true;
+                    break;
+                case R.id.navigation_rx:
+                    startFragment(RxFragment.class);
+                    handle = true;
+                    break;
             }
+            if (handle) {
+                eventBusManager.send(true, MainActivity.DRAWER_EVENT);
+            }
+            return handle;
         });
     }
 }

@@ -12,7 +12,6 @@ android {
         targetSdkVersion Integer.parseInt(androidSdkVersion)
         versionCode Integer.parseInt(pandroidVersionId)
         versionName pandroidVersion
-        javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true // FIXME
     }
     buildTypes {
         release {
@@ -46,7 +45,7 @@ dependencies {
 
     //Test
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.1.4"
+    testCompile "org.robolectric:robolectric:3.2.2"
 
 
     //Support to simulate plugin work
@@ -57,7 +56,7 @@ dependencies {
                 transitive = true;
             }
     }
-    provided "frankiesardo:icepick-processor:$libraryIcepickVersion"
+    annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
     provided 'org.jetbrains:annotations-java5:15.0'

@@ -3,6 +3,7 @@ package com.leroymerlin.pandroid.ui.picture;
 
 //end::PictureManager[]
 
+import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
@@ -54,7 +55,7 @@ public interface PictureManager {
         protected boolean animated = true;
         protected int placeHolder;
         protected int errorImage;
-        protected int animator;
+        protected int animation;
         protected ImageView.ScaleType scaleType;
 
         public Loader(Loader baseLoader) {
@@ -117,9 +118,9 @@ public interface PictureManager {
             return this;
         }
 
-        public Loader animator(@AnimatorRes int animator) {
-            this.animator = animator;
-            animated(animator > 0);
+        public Loader animation(@AnimRes int animation) {
+            this.animation = animation;
+            animated(animation > 0);
             return this;
         }
 
@@ -134,7 +135,7 @@ public interface PictureManager {
             this.diskCache = defaultLoader.diskCache;
             this.memoryCache = defaultLoader.memoryCache;
             this.animated = defaultLoader.animated;
-            this.animator = defaultLoader.animator;
+            this.animation = defaultLoader.animation;
             this.headers.putAll(defaultLoader.headers);
             return this;
         }

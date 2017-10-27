@@ -9,8 +9,8 @@ configurations {
 
 dependencies {
     provided 'com.google.android:android:4.1.1.4'
-    provided 'com.android.databinding:baseLibrary:2.2.0'
+    provided 'com.android.databinding:baseLibrary:3.0.0'
 }
 
-targetCompatibility = JavaVersion.VERSION_1_7
-sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
