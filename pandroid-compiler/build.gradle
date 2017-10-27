@@ -10,5 +10,5 @@ dependencies {
     compile "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
     compile deps.javapoet
 }
-targetCompatibility = JavaVersion.VERSION_1_7
-sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8

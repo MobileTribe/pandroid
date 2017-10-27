@@ -80,4 +80,14 @@ public class EventBusLifecycleDelegate implements LifecycleDelegate<Object> {
     public void onDestroyView(Object target) {
 
     }
+
+    @Override
+    public void onRemove(Object target) {
+
+    }
+
+    @Override
+    public int getPriority() {
+        return LOW_PRIORITY;
+    }
 }

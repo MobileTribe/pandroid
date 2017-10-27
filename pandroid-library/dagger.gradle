@@ -7,7 +7,7 @@ repositories {
 
 
 dependencies {
-    annotationProcessor "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
     compile "com.google.dagger:dagger:$libraryDaggerVersion"
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile "com.google.dagger:dagger-android-support:$libraryDaggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
 }

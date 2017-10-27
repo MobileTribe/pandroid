@@ -4,13 +4,14 @@ import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
 import com.leroymerlin.pandroid.plugin.GeneratePandroidTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class PandroidPlugin implements Plugin<Project> {
 
     static final String PANDROID_GROUP = "pandroid"
-    static final String PROP_FILE = 'pandroid-version.properties'
+    static final String PROP_FILE = 'version.properties'
     Logger logger = LoggerFactory.getLogger('PandroidPlugin')
 
     def pluginVersion
@@ -30,12 +31,20 @@ class PandroidPlugin implements Plugin<Project> {
         this.project = project;
         this.configMapperBuilder = new PandroidConfigMapperBuilder();
 
-        if (!project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()) {
+        def directory = project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()
+        if (!directory) {
             Properties properties = new Properties()
             properties.load(project.zipTree(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).matching {
                 include PROP_FILE
             }.singleFile.newInputStream());
             pluginVersion = properties.getProperty("pandroidVersion")
+        }else{
+            Constants.filesToCopy
+            project.task('copyPandroidFilesToDemo', type: Copy) {
+                from(Constants.filesToCopy)
+                into('build/pandroid/')
+            }
+            project.preBuild.dependsOn project.copyPandroidFilesToDemo
         }
 
         project.extensions.create('pandroid', PandroidPluginExtension, project, this)

@@ -2,8 +2,8 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 apply from: file('../delivery.gradle')
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 configurations {
     provided
@@ -27,17 +27,19 @@ task(copyLocalProperties, type: Copy) {
     into('src/test/resources/android-app')
 }
 
-def filesToCopy = ['../pandroid-version.properties',
+def filesToCopy = ['../version.properties',
                    '../pandroid-library/pandroid.gradle',
                    '../pandroid-library/dagger.gradle',
                    '../pandroid-library/pandroid.properties',
                    '../pandroid-library/pandroid-proguard-rules.pro']
 
-task(copyPandroidGradle, type: Copy) {
+task(copyPandroidFilesToTest, type: Copy) {
     from(filesToCopy)
     into('src/test/resources/android-app/build/pandroid')
 }
-classes.finalizedBy copyPandroidGradle
+
+
+classes.finalizedBy copyPandroidFilesToTest
 classes.finalizedBy copyLocalProperties
 
 
@@ -46,38 +48,19 @@ jar {
 }
 
 
+//
+//
+//task pandroidInstall(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+//    project(it)
+//}.collect { it.getTasksByName('install', false) });
+//install.dependsOn pandroidInstall
+//
+//
+//task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+//    project(it)
+//}.collect { it.getTasksByName('uploadArtifacts', false) });
+//uploadArtifacts.dependsOn pandroidUploadArchives
+//
 
 
-task pandroidInstall(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
-    project(it)
-}.collect { it.getTasksByName('install', false) });
-install.dependsOn pandroidInstall
 
-
-task pandroidUploadArchives(dependsOn: [':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
-    project(it)
-}.collect { it.getTasksByName('uploadArtifacts', false) });
-uploadArtifacts.dependsOn pandroidUploadArchives
-
-
-
-delivery{
-    flows{
-        documentation{
-            step 'documentation', 'Generate documentation'
-            task 'createDoc', true
-            add 'pandroid-doc/html/.'
-        }
-
-    }
-}
-
-
-task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidoctor', false))
-
-
-project.afterEvaluate({
-    def docFlow = tasks.findByPath('documentationFlow')
-    tasks.findByPath('releaseGitStepCommitVersionFiles').dependsOn += docFlow
-    docFlow.mustRunAfter tasks.findByPath('releaseGitStepGenerateVersionFiles')
-})

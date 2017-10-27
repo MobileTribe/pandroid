@@ -176,7 +176,7 @@ Application Component can extend the BaseComponent in order to be injected autom
 In Pandroid, an Opener represent the argument of an Activity or a Fragment. In order to work an opener needs an OpenerEventReceiver.
 When you need to open an Activity or a Fragment you just send an opener in the event bus. The OpenerEventReceiver in charge
 will catch the event and open the Activity/Fragment with the opener as argument.
-Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field mOpener.
+Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field opener.
 The main idea behind Opener is to normalize navigation in the application and remove code responsive of it from your views.
 
 NOTE: See link:#_PandroidActivity[PandroidActivity]/link:#_pandroidfragment[PandroidFragment] part for more details.
@@ -448,6 +448,13 @@ to use the famous pattern MVP. The Presenter is bound to the application's lifec
 
 NOTE: see link:{github}{demoJava}main/mvp[the demo] to see it in action
 
+=== Templates
+
+To help you, Pandroid provides templates for Android Studio.
+In order to install them, you just have to apply link:https://github.com/MobileTribe/android-templates-gradle-plugin['com.leroymerlin.android-templates'] plugin on your project. Pandroid will add and update the templates automatically.
+
+To access the templates, restart once the IDE and a Pandroid entry will be available in the *"new"* menu (right click on your package > new, or cmd + n)
+
 == Security
 
 === Proguard
@@ -651,8 +658,8 @@ Material fragment will be in charge of fetching the position of the first view a
 
 [source,java]
 ----
-materialTransitionLayout.addAnimation(mOpener.ivInfos, R.id.material_iv);
-materialTransitionLayout.addAnimation(mOpener.tvInfos, R.id.material_tv);
+materialTransitionLayout.addAnimation(opener.ivInfos, R.id.material_iv);
+materialTransitionLayout.addAnimation(opener.tvInfos, R.id.material_tv);
 materialTransitionLayout.setRevealCenter(R.id.material_iv); //Optional Method
 materialTransitionLayout.open();
 ----

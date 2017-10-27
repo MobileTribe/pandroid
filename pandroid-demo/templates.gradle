@@ -1,0 +1,220 @@
+apply plugin: "com.leroymerlin.android-templates"
+
+
+def templatesFolder = file('src/templates/')
+def templatesJava = new File(templatesFolder, 'java')
+def templatesRes = new File(templatesFolder, 'res')
+
+android {
+    sourceSets {
+        main {
+            java.srcDirs += templatesJava
+            res.srcDirs += templatesRes
+        }
+
+    }
+}
+
+def javaFolder = new File(templatesJava, 'com/leroymerlin/pandroid/templates')
+
+
+templates {
+
+    template('PandroidActivity') {
+        def activityClassName = "Template"
+        category = "Pandroid"
+        description = "Creates a new basic PandroidActivity with a presenter and an opener"
+        javaFiles = fileTree(javaFolder).include('activity/*.java')
+        resFiles = files(
+                new File(templatesRes.path, "layout/activity_base.xml"),
+                new File(javaFolder, 'activity/AndroidManifest.xml')
+        )
+        parameters {
+            activityClass {
+                replace = "${activityClassName}Activity"
+                label = "Activity Name"
+                constraints = "class|unique|nonempty"
+                defaultValue = "MainActivity"
+                help = "The name of the fragment class to create"
+            }
+
+            layoutName {
+                replace = 'activity_base'
+                label = "Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'activity_${classToResource(activityClass)}'
+                help = "The name of the layout to create for the activity"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.activity"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+            openerClass {
+                value = '${activityClass}Opener';
+                replace = "${activityClassName}ActivityOpener";
+            }
+            presenterClass {
+                value = '${activityClass}Presenter';
+                replace = "${activityClassName}ActivityPresenter";
+            }
+        }
+    }
+
+    template('PandroidFragment') {
+        def fragmentClassName = "Template"
+        category = "Pandroid"
+        description = "Creates a new basic PandroidFragment with a presenter and an opener"
+        javaFiles = fileTree(javaFolder).include('fragment/*.java')
+        resFiles = files(new File(templatesRes.path, "layout/fragment_base.xml"))
+        parameters {
+            fragmentClass {
+                replace = "${fragmentClassName}Fragment"
+                label = "Fragment Name"
+                constraints = "class|unique|nonempty"
+                defaultValue = "HomeFragment"
+                help = "The name of the fragment class to create"
+            }
+
+            layoutName {
+                replace = 'fragment_base'
+                label = "Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'fragment_${classToResource(fragmentClass)}'
+                help = "The name of the layout to create for the fragment"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.fragment"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+            openerClass {
+                value = '${fragmentClass}Opener';
+                replace = "${fragmentClassName}FragmentOpener";
+            }
+            presenterClass {
+                value = '${fragmentClass}Presenter';
+                replace = "${fragmentClassName}FragmentPresenter";
+            }
+        }
+    }
+
+
+    template('PandroidApplication') {
+        def baseName = "Template"
+        category = "Pandroid"
+        description = "Creates a new basic PandroidApplication with a dagger component and module"
+        javaFiles = fileTree(javaFolder).include('application/*.java')
+        resFiles = fileTree(javaFolder).include('application/AndroidManifest.xml')
+        parameters {
+            applicationClass {
+                replace = "${baseName}Application"
+                label = "Application Name"
+                constraints = "class|unique|nonempty"
+                defaultValue = "Application"
+                help = "The name of the Application class"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.application"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+            componentName {
+                value = 'AppModule';
+                replace = "${baseName}AppModule";
+            }
+            presenterClass {
+                value = 'AppComponent';
+                replace = "${baseName}AppComponent";
+            }
+        }
+    }
+
+    template('PandroidFeature') {
+        def baseName = "Feature"
+        category = "Pandroid"
+        description = "Creates a fragment with an opener and a presenter. Implement basic data load in a recycler"
+        javaFiles = fileTree(javaFolder).include('feature/**/*.java')
+        resFiles = files(
+                new File(templatesRes, 'values/feature_values.xml'),
+                new File(templatesRes, 'layout/fragment_feature.xml'),
+                new File(templatesRes, 'layout/cell_feature.xml'),
+        )
+        parameters {
+            featureName {
+                replace = baseName
+                label = "Feature name"
+                constraints = "nonempty"
+                defaultValue = "MyFeature"
+            }
+
+            packageName {
+                replace = "com.leroymerlin.pandroid.templates.feature"
+                label = "Package Name"
+                constraints = "package"
+                help = "The name of the classes package"
+            }
+
+
+            layoutName {
+                replace = 'fragment_feature'
+                label = "Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'fragment_${classToResource(featureName)}'
+                help = "The name of the layout to create for the fragment"
+            }
+            cellLayoutName {
+                replace = 'cell_feature'
+                label = "Cell Layout Name"
+                constraints = "layout|unique|nonempty"
+                suggest = 'cell_${classToResource(featureName)}'
+                help = "The name of the layout used as cell in the recyclerview"
+            }
+            fragmentName {
+                replace = "${baseName}Fragment"
+                value = '${featureName}Fragment'
+            }
+
+            fragmentOpenerName {
+                replace = "${baseName}FragmentOpener"
+                value = '${featureName}FragmentOpener'
+            }
+
+            fragmentPresenterName {
+                replace = "${baseName}FragmentPresenter"
+                value = '${featureName}FragmentPresenter'
+            }
+
+            modelName {
+                replace = "${baseName}Model"
+                value = '${featureName}Model'
+            }
+            managerName {
+                replace = "${baseName}Manager"
+                value = '${featureName}Manager'
+            }
+
+            resName {
+                replace = "feature_"
+                value = '${classToResource(featureName)}_'
+            }
+
+            featureResName {
+                replace = "featureNameTitle"
+                value = '${featureName?uncap_first}Title'
+            }
+
+        }
+    }
+
+}
+

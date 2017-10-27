@@ -18,18 +18,18 @@ import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.mvp.PresenterFragment;
 import com.leroymerlin.pandroid.demo.main.opener.CustomActivityOpener;
-import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
 import com.leroymerlin.pandroid.demo.main.rest.RestFragment;
 import com.leroymerlin.pandroid.demo.main.rx.RxFragment;
 import com.leroymerlin.pandroid.demo.main.scanner.ScannerFragment;
 import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
+import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 import butterknife.BindView;
 
 /**
  * Created by florian on 08/12/15.
  */
-public class NavigationLeftFragment extends PandroidFragment {
+public class NavigationLeftFragment extends PandroidFragment<FragmentOpener> {
 
     @BindView(R.id.navigation_view)
     NavigationView navigationView;
