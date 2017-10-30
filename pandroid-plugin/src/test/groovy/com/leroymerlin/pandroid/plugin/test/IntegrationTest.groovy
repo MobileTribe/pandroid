@@ -18,7 +18,7 @@ class IntegrationTest {
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
-            launcher.forTasks("pandroid-compiler:install", "pandroid-library:install", "pandroid-plugin:install", "pandroid-java:install", "pandroid-annotations:install")
+            launcher.forTasks(":pandroid-compiler:install", ":pandroid-library:install", ":pandroid-plugin:install", ":pandroid-java:install", ":pandroid-annotations:install")
             launcher.run()
         } finally {
             connection.close()

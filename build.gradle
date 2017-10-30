@@ -54,3 +54,6 @@ delivery{
 }
 
 
+task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+    project(it)
+}.collect { it.getTasksByName('install', false) });
