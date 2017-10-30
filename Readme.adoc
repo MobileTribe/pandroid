@@ -6,9 +6,7 @@ image:./pandroid-doc/assets/logo.png[Pandroid,120,120,float="right",align="cente
 = Pandroid 2
 :hardbreaks:
 
-
 image:https://api.bintray.com/packages/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/images/download.svg[link="https://bintray.com/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/_latestVersion"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
-
 
 
 ## Note
@@ -24,10 +22,15 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.4.2* - (--)
+### *2.5.0* - (2017-10-30)
+*Features*
+- Android studio Pandroid templates
 *Refactor*
-- LifecyclerDelegate order with a priority
+- LifecyclerDelegate ordered with a priority
+- Dagger injection in Pandroid
+- Update optional dependencies
 *Fix*
+- Compatibility with Android plugin 3.0.0
 - RxWrapper - issue with ActionDelegate without parameter
 - AnimUtils - crash with DrawerLayout's size calculation
 
@@ -71,9 +74,9 @@ apply plugin: 'com.leroymerlin.pandroid'
 ----
 
 
-## Here we go!
+## Here we go! - link:{htmlPath}pandroid-doc/html/Tutorial.html[Tutorial]
 
-To learn how to use the library, please read link:{htmlPath}pandroid-doc/html/Tutorial.html[tutorial part] of this wiki. +
+To learn how to use the library, please read *link:{htmlPath}pandroid-doc/html/Tutorial.html[tutorial part]* of this wiki. +
 A demo project is also available in the *pandroid-demo* module of the repository.
 
 Please remember that Pandroid is an *open source* project : we count on you to maintain the panda ! +
