@@ -29,6 +29,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - LifecyclerDelegate ordered with a priority
 - Dagger injection in Pandroid
 - Update optional dependencies
+- Rename mOpener into opener
 *Fix*
 - Compatibility with Android plugin 3.0.0
 - RxWrapper - issue with ActionDelegate without parameter
