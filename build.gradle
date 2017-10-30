@@ -48,11 +48,26 @@ sonarqube {
 
 apply plugin: "com.leroymerlin.delivery"
 
-delivery{
+
+task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidoctor', false))
+
+delivery {
     subModules 'pandroid-plugin', 'pandroid-library', 'pandroid-java', 'pandroid-compiler', 'pandroid-annotations'
     enableReleaseGitFlow = true
+    flows {
+        documentation {
+            task 'createDoc'
+            add 'pandroid-doc/html/.'
+        }
+
+    }
 }
 
+tasks.whenTaskAdded {
+    if (it.name.equals('releaseGitStepPrepareVersionFiles')) {
+        it.dependsOn += documentationFlow
+    }
+}
 
 task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
     project(it)
