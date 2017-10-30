@@ -21,6 +21,7 @@ android {
     }
     lintOptions {
         disable 'InvalidPackage'
+        disable 'MissingPermission'
     }
 
 }
@@ -47,6 +48,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.robolectric:robolectric:3.2.2"
 
+    testCompile "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
+    testCompile "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
 
     //Support to simulate plugin work
     //Optional library have to be declared in pandroid.gradle

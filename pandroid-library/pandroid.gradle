@@ -5,7 +5,9 @@ dependencies {
 }
 
 plugins.withId('com.leroymerlin.android-templates') {
-    template "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion:templates"
+    dependencies{
+        template "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion:templates"
+    }
 }
 
 

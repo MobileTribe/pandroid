@@ -20,6 +20,7 @@ def javaFolder = new File(templatesJava, 'com/leroymerlin/pandroid/templates')
 
 templates {
 
+    templatesName = "Pandroid"
     template('PandroidActivity') {
         def activityClassName = "Template"
         category = "Pandroid"
