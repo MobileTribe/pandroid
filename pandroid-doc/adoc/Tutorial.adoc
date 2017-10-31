@@ -525,7 +525,7 @@ include::{demoJava}DemoApplication.java[tags=certificat]
 To perform async calls, Pandroid provides a generic delegate that you can use.
 [source,java]
 ----
-include::{libJava}future/ActionDelegate.java[]
+include::{javaJava}future/ActionDelegate.java[]
 ----
 
 To help you avoid errors during a view update once your activity or fragment has been released, Pandroid provides
