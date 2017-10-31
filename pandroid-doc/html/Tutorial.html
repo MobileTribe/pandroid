@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.4.1, Fri Aug 04 17:07:29 CEST 2017">
+<meta name="author" content="Pandroid v2.5.0-SNAPSHOT, Tue Oct 31 14:02:49 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.4.1, Fri Aug 04 17:07:29 CEST 2017</span><br>
+<span id="author" class="author">Pandroid v2.5.0-SNAPSHOT, Tue Oct 31 14:02:49 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -539,6 +539,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#rxandroid">2.10. RxAndroid</a></li>
 <li><a href="#android-databinding">2.11. Android DataBinding</a></li>
 <li><a href="#mvp">2.12. MVP</a></li>
+<li><a href="#templates">2.13. Templates</a></li>
 </ul>
 </li>
 <li><a href="#security">3. Security</a>
@@ -878,7 +879,7 @@ Application Component can extend the BaseComponent in order to be injected autom
 <p>In Pandroid, an Opener represent the argument of an Activity or a Fragment. In order to work an opener needs an OpenerEventReceiver.
 When you need to open an Activity or a Fragment you just send an opener in the event bus. The OpenerEventReceiver in charge
 will catch the event and open the Activity/Fragment with the opener as argument.
-Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field mOpener.
+Then you will be able to access the opener in the PandroidActivity/PandroidFragment with the field opener.
 The main idea behind Opener is to normalize navigation in the application and remove code responsive of it from your views.</p>
 </div>
 <div class="admonitionblock note">
@@ -909,21 +910,19 @@ This activity handles the following points :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">    <span class="annotation">@Inject</span>
-    <span class="directive">protected</span> LogWrapper logWrapper;
-    <span class="annotation">@Inject</span>
-    <span class="directive">protected</span> EventBusManager eventBusManager;
-
+<pre class="CodeRay highlight"><code data-lang="java">    <span class="comment">//@Inject</span>
+    <span class="comment">//AnyThingInBaseComponent instance;</span>
     <span class="annotation">@CallSuper</span>
     <span class="annotation">@Override</span>
     <span class="directive">protected</span> <span class="type">void</span> onCreate(Bundle savedInstanceState) {
         <span class="local-variable">super</span>.onCreate(savedInstanceState);
         <span class="comment">//initialize PandroidDelegate with the default from PandroidApplication</span>
+        BaseComponent baseComponent = PandroidApplication.getInjector(<span class="local-variable">this</span>).getBaseComponent();
+        logWrapper = baseComponent.logWrapper();
+        eventBusManager = baseComponent.eventBusManager();
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(<span class="local-variable">this</span>);
-
-        mOpener = ActivityOpener.getOpener(<span class="local-variable">this</span>);
-
+        opener = ActivityOpener.getOpener(<span class="local-variable">this</span>);
     }</code></pre>
 </div>
 </div>
@@ -1044,7 +1043,7 @@ This activity handles the following points :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">                        sendEventSync(<span class="keyword">new</span> CustomActivityOpener(<span class="string"><span class="delimiter">&quot;</span><span class="content">from Navigation</span><span class="delimiter">&quot;</span></span>));</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java">                    sendEventSync(<span class="keyword">new</span> CustomActivityOpener(<span class="string"><span class="delimiter">&quot;</span><span class="content">from Navigation</span><span class="delimiter">&quot;</span></span>));</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1061,8 +1060,8 @@ This activity handles the following points :</p>
         <span class="local-variable">super</span>.onCreate(savedInstanceState);
         setContentView(R.layout.activity_empty);
         <span class="comment">//I can access my opener if the activity was open by an ActivityEventReceiver</span>
-        <span class="keyword">if</span> (mOpener != <span class="predefined-constant">null</span>) {
-            <span class="predefined-type">String</span> myOpenerParam = mOpener.param;
+        <span class="keyword">if</span> (opener != <span class="predefined-constant">null</span>) {
+            <span class="predefined-type">String</span> myOpenerParam = opener.param;
             toastManager.makeToast(<span class="local-variable">this</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">param was : </span><span class="delimiter">&quot;</span></span> + myOpenerParam, <span class="predefined-constant">null</span>);
         }
     }</code></pre>
@@ -1204,11 +1203,11 @@ the event and find the right receiver</p>
         <span class="local-variable">super</span>.onResume(state);
         <span class="keyword">switch</span> (state) {
             <span class="keyword">case</span> FIRST_START:
-                <span class="comment">//the field mOpener is the Fragment Opener that was send to the event bus to open the fragment</span>
+                <span class="comment">//the field opener is the Fragment Opener that was send to the event bus to open the fragment</span>
                 <span class="comment">//here this opener is a MaterialOpener</span>
                 getView().findViewById(R.id.material_tv).setTag(<span class="string"><span class="delimiter">&quot;</span><span class="content">coucou</span><span class="delimiter">&quot;</span></span>);
-                materialTransitionLayout.addAnimationWithViewId(mOpener.ivInfos, R.id.material_iv);
-                materialTransitionLayout.addAnimationWithViewTag(mOpener.tvInfos, <span class="string"><span class="delimiter">&quot;</span><span class="content">coucou</span><span class="delimiter">&quot;</span></span>);</code></pre>
+                materialTransitionLayout.addAnimationWithViewId(opener.ivInfos, R.id.material_iv);
+                materialTransitionLayout.addAnimationWithViewTag(opener.tvInfos, <span class="string"><span class="delimiter">&quot;</span><span class="content">coucou</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 </div>
@@ -1553,6 +1552,16 @@ see <a href="https://github.com/MobileTribe/pandroid/tree/master///./../../pandr
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="templates">2.13. Templates</h3>
+<div class="paragraph">
+<p>To help you, Pandroid provides templates for Android Studio.
+In order to install them, you just have to apply <a href="https://github.com/MobileTribe/android-templates-gradle-plugin">'com.leroymerlin.android-templates'</a> plugin on your project. Pandroid will add and update the templates automatically.</p>
+</div>
+<div class="paragraph">
+<p>To access the templates, restart once the IDE and a Pandroid entry will be available in the <strong>"new"</strong> menu (right click on your package &gt; new, or cmd + n)</p>
 </div>
 </div>
 </div>
@@ -2020,8 +2029,8 @@ sendEvent(<span class="keyword">new</span> MaterialOpener(ivInfos, tvInfos));</c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">materialTransitionLayout.addAnimation(mOpener.ivInfos, R.id.material_iv);
-materialTransitionLayout.addAnimation(mOpener.tvInfos, R.id.material_tv);
+<pre class="CodeRay highlight"><code data-lang="java">materialTransitionLayout.addAnimation(opener.ivInfos, R.id.material_iv);
+materialTransitionLayout.addAnimation(opener.tvInfos, R.id.material_tv);
 materialTransitionLayout.setRevealCenter(R.id.material_iv); <span class="comment">//Optional Method</span>
 materialTransitionLayout.open();</code></pre>
 </div>
@@ -2571,7 +2580,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-08-04 17:07:20 +02:00
+Last updated 2017-10-31 14:02:44 +01:00
 </div>
 </div>
 </body>
