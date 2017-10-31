@@ -21,6 +21,7 @@ android {
     }
     lintOptions {
         disable 'InvalidPackage'
+        disable 'MissingPermission'
     }
 
 }
@@ -45,8 +46,10 @@ dependencies {
 
     //Test
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.1.4"
+    testCompile "org.robolectric:robolectric:3.2.2"
 
+    testCompile "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
+    testCompile "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
 
     //Support to simulate plugin work
     //Optional library have to be declared in pandroid.gradle
@@ -56,10 +59,17 @@ dependencies {
                 transitive = true;
             }
     }
-    provided "frankiesardo:icepick-processor:$libraryIcepickVersion"
+    annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
     provided 'org.jetbrains:annotations-java5:15.0'
 }
 
 
+//configure template with delivery
+
+def zipTemplatesTask = project(":pandroid-demo").getTasksByName("zipTemplates", false)
+task buildTemplate(type: DeliveryBuild, dependsOn: zipTemplatesTask) {
+    variantName = project.name
+    outputFiles = ["templates": zipTemplatesTask.outputs.files.singleFile.first()]
+}

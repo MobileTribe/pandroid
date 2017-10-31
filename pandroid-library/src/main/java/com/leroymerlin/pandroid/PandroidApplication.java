@@ -16,7 +16,7 @@ import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.DaggerPandroidComponent;
-import com.leroymerlin.pandroid.dagger.PandroidDaggerProvider;
+import com.leroymerlin.pandroid.dagger.PandroidInjector;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidDaggerProvider {
+public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidInjector {
 
 
     private static final String TAG = "PandroidApplication";
@@ -43,15 +43,14 @@ public class PandroidApplication extends Application implements PandroidDelegate
 
     protected BaseComponent mBaseComponent;
 
-    @Inject
     EventBusManager eventBusManager;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
         initializeBuildConfig();
         initializeLogger();
+        this.eventBusManager = getBaseComponent().eventBusManager();
         inject(this);
     }
 
@@ -71,11 +70,11 @@ public class PandroidApplication extends Application implements PandroidDelegate
     }
 
     @Override
-    public BaseComponent getBaseComponent() {
+    public <T extends BaseComponent> T getBaseComponent() {
         if (mBaseComponent == null) {
             mBaseComponent = createBaseComponent();
         }
-        return mBaseComponent;
+        return (T) mBaseComponent;
     }
 
     @VisibleForTesting
@@ -83,8 +82,8 @@ public class PandroidApplication extends Application implements PandroidDelegate
         this.mBaseComponent = mBaseComponent;
     }
 
-    public static PandroidApplication get(Context context) {
-        return (PandroidApplication) context.getApplicationContext();
+    public static <T extends PandroidInjector> T getInjector(Context context) {
+        return (T) context.getApplicationContext();
     }
 
     public void initializeBuildConfig() {

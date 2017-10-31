@@ -177,6 +177,7 @@ class PandroidPluginTest {
     @Test
     public void testAddSecureProperties() {
 
+
         project.pandroid {
             productFlavors {
 
@@ -189,6 +190,20 @@ class PandroidPluginTest {
 
             }
         }
+
+
+        project.android{
+            flavorDimensions "tier"
+            productFlavors{
+                azerty{
+                    dimension "tier"
+                }
+                querty{
+                    dimension "tier"
+                }
+            }
+        }
+
         project.evaluate()
         assert project.android.productFlavors.azerty != null
     }

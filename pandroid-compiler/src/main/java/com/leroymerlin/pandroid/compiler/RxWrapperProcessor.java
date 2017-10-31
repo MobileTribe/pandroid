@@ -270,7 +270,7 @@ class RxWrapperProcessor extends BaseProcessor {
                         modelBuilder.addMethod(methodBuilder.build());
                     } else { //method replacement
                         if (!rxWrapperAnnotation.single()) {
-                            throw new IllegalStateException("Can't wrappe a method as Observable. Please remove single or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
+                            throw new IllegalStateException("Can't wrap a method as Observable. Please remove single or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
                         }
 
 
@@ -362,7 +362,16 @@ class RxWrapperProcessor extends BaseProcessor {
 
                 parameterSpecs.add(parameterSpecBuilder.build());
                 if (returnType == null && mTypesUtils.isAssignable(mTypesUtils.erasure(variableElement.asType()), ACTIONDELEGATE_TYPE)) {
-                    returnType = ((ParameterizedTypeName) ParameterizedTypeName.get(variableElement.asType())).typeArguments.get(0);
+                    if (!mTypesUtils.erasure(variableElement.asType()).equals(mTypesUtils.erasure(ACTIONDELEGATE_TYPE))) {
+                        throw new IllegalStateException("Can't wrap a method with a class with parameter type " +mTypesUtils.erasure(variableElement.asType()) + ". Please use ActionDelegate instead in " + method.toString());
+                    }
+
+                    TypeName typeName = ParameterizedTypeName.get(variableElement.asType());
+                    if (typeName instanceof ParameterizedTypeName) {
+                        returnType = ((ParameterizedTypeName) typeName).typeArguments.get(0);
+                    } else { // action delegate with no ParameterizedTypeName
+                        returnType = TypeName.OBJECT;
+                    }
                     delegateParameter = ParameterSpec.builder(ClassName.get(variableElement.asType()), variableElement.getSimpleName().toString()).build();
                 } else {
                     parameterSpecsWithoutDelegate.add(parameterSpecBuilder.build());

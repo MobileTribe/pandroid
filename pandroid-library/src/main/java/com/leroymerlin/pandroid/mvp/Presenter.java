@@ -10,6 +10,8 @@ import android.view.View;
 
 import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
+import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
+import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
 
 import java.lang.ref.WeakReference;
 
@@ -20,20 +22,27 @@ import java.lang.ref.WeakReference;
 @RxWrapper
 public class Presenter<T> extends PandroidDelegate<T> {
 
-    private static final String TAG = "Presenter";
+    protected WeakReference<T> targetView;
 
-    private WeakReference<T> mView;
+    public Presenter() {
+    }
+
+    protected void initNestedLifecycleDelegate() {
+        addLifecycleDelegate(new RxLifecycleDelegate());
+        addLifecycleDelegate(new AutoBinderLifecycleDelegate());
+    }
 
     @CallSuper
     @Override
     public void onInit(T target) {
         super.onInit((T) this);
-        mView = new WeakReference<>(target);
+        initNestedLifecycleDelegate();
+        targetView = new WeakReference<T>(target);
     }
 
     @Nullable
     protected Context getContext() {
-        T view = mView.get();
+        T view = getView();
         if (view instanceof Context) {
             return (Context) view;
         } else if (view instanceof Fragment) {
@@ -68,10 +77,17 @@ public class Presenter<T> extends PandroidDelegate<T> {
         super.onDestroyView((T) this);
     }
 
-    @Nullable
-    @CheckResult
+    @Override
+    public void onRemove(T target) {
+        super.onRemove((T) this);
+        targetView = null;
+    }
+
     public T getView() {
-        return mView.get();
+        if(targetView != null){
+            return targetView.get();
+        }
+        throw new IllegalStateException("getView can't ");
     }
 
 }

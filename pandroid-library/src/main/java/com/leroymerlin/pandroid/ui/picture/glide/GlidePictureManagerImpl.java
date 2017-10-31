@@ -3,41 +3,36 @@ package com.leroymerlin.pandroid.ui.picture.glide;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
+import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
-import com.bumptech.glide.load.engine.cache.LruResourceCache;
-import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.module.GlideModule;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.leroymerlin.pandroid.PandroidApplication;
+import com.bumptech.glide.request.transition.Transition;
 import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import okhttp3.OkHttpClient;
-
 
 /**
  * <p>This implementation of {@link PictureManager} is backed by the Glide
- * library {@link https://github.com/bumptech/glide}.</p>
  * <p/>
  * <p>For performance reasons, consider using one of the <code>load</code> method that takes a
  * specific context like <code>Activity</code>, <code>Fragment</code> ... so that the load can be
@@ -59,7 +54,6 @@ public class GlidePictureManagerImpl implements PictureManager {
     public GlidePictureManagerImpl(Context context) {
         this.context = context;
     }
-
 
 
     @Override
@@ -107,53 +101,59 @@ public class GlidePictureManagerImpl implements PictureManager {
                     glideUrl = sourceModel;
                 }
 
+                RequestOptions options = new RequestOptions()
+                        .diskCacheStrategy(this.diskCache ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
+                        .skipMemoryCache(!this.memoryCache);
 
-                DrawableRequestBuilder builder = requestManager.load(glideUrl);
-
-                builder.diskCacheStrategy(this.diskCache ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE);
-                builder.skipMemoryCache(!this.memoryCache);
+                RequestBuilder<Drawable> builder = requestManager.load(glideUrl);
 
                 if (this.placeHolder > 0) {
-                    builder.placeholder(this.placeHolder);
+                    options = options.placeholder(this.placeHolder);
                 }
                 if (this.errorImage > 0) {
-                    builder.error(this.errorImage);
+                    options = options.error(this.errorImage);
                 }
+                GenericTransitionOptions genericTransitionOptions = new GenericTransitionOptions();
+
                 if (this.animated) {
-                    if (this.animator > 0) {
-                        builder.animate(this.animator);
+                    if (this.animation > 0) {
+                        builder.transition(GenericTransitionOptions.with(animation));
                     } else {
-                        builder.crossFade();
+
+                        builder.transition(DrawableTransitionOptions.withCrossFade());
                     }
                 } else {
-                    builder.dontAnimate();
+                    builder.transition(GenericTransitionOptions.<Drawable>withNoTransition());
                 }
 
                 if (this.scaleType == ImageView.ScaleType.FIT_CENTER) {
-                    builder.fitCenter();
+                    options = options.fitCenter();
                 } else if (this.scaleType == ImageView.ScaleType.CENTER_CROP) {
-                    builder.centerCrop();
+                    options = options.centerCrop();
                 }
                 if (this.target != null) {
                     if (this.scaleType == null) {
-                        builder.dontTransform();
+                        options.dontTransform();
                     } else {
                         this.target.setScaleType(this.scaleType);
                     }
                 }
 
+                builder.apply(options);
+
+
                 final ImageLoadingListener loaderListener = this.listener;
                 final ImageView loaderTarget = this.target;
                 if (loaderListener != null) {
-                    builder.listener(new RequestListener<Object, GlideDrawable>() {
+                    builder.listener(new RequestListener<Drawable>() {
                         @Override
-                        public boolean onException(Exception e, Object model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             loaderListener.onLoadingFailed(model, loaderTarget);
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, Object model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             loaderListener.onLoadingComplete(model, loaderTarget);
                             return false;
                         }
@@ -161,9 +161,9 @@ public class GlidePictureManagerImpl implements PictureManager {
                 }
 
                 if (loaderTarget == null) {
-                    builder.into(new SimpleTarget<GlideDrawable>() {
+                    builder.into(new SimpleTarget<Drawable>() {
                         @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
 
                         }
                     });

@@ -116,5 +116,8 @@ public class RxLifecycleDelegate extends SimpleLifecycleDelegate {
         return new RxLifecycleTransformer<>(predicate);
     }
 
-
+    @Override
+    public int getPriority() {
+        return HIGH_PRIORITY;
+    }
 }

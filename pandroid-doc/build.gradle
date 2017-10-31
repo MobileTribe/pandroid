@@ -7,7 +7,7 @@ asciidoctorj {
 }
 
 def prop = ant {
-    property(file:'../pandroid-version.properties')
+    property(file:'../version.properties')
 }
 
 asciidoctor {

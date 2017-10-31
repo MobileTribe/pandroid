@@ -1,7 +1,6 @@
 package com.leroymerlin.pandroid.plugin
 
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
-import com.leroymerlin.pandroid.plugin.GeneratePandroidTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.slf4j.Logger
@@ -10,7 +9,7 @@ import org.slf4j.LoggerFactory
 class PandroidPlugin implements Plugin<Project> {
 
     static final String PANDROID_GROUP = "pandroid"
-    static final String PROP_FILE = 'pandroid-version.properties'
+    static final String PROP_FILE = 'version.properties'
     Logger logger = LoggerFactory.getLogger('PandroidPlugin')
 
     def pluginVersion
@@ -30,7 +29,8 @@ class PandroidPlugin implements Plugin<Project> {
         this.project = project;
         this.configMapperBuilder = new PandroidConfigMapperBuilder();
 
-        if (!project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()) {
+        def directory = project.file(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).isDirectory()
+        if (!directory) {
             Properties properties = new Properties()
             properties.load(project.zipTree(getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()).matching {
                 include PROP_FILE
@@ -67,7 +67,7 @@ class PandroidPlugin implements Plugin<Project> {
         def isAndroidApp = project.plugins.hasPlugin("com.android.application")
         if (isAndroidApp) {
             project.android.applicationVariants.all { variant ->
-                def task = new GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
+                def task = new com.leroymerlin.pandroid.plugin.GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
                 variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
             }
         }

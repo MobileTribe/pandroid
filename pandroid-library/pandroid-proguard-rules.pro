@@ -21,7 +21,7 @@
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
--keepclasseswithmembernames class * { @icepick.State *;}
+-keepnames class * { @icepick.State *;}
 
 #BUTTERKNIFE
 # Retain generated class which implement Unbinder.
@@ -42,10 +42,14 @@
 
 #GLIDE
 -keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.GeneratedAppGlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
     **[] $VALUES;
     public *;
 }
+
+#Dagger
+-dontwarn com.google.errorprone.annotations.*
 
 #OKHTTP
 -dontwarn okhttp3.**

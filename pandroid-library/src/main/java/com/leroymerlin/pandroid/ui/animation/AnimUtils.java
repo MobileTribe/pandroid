@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.ui.animation;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.ScrollView;
 
@@ -90,6 +91,12 @@ public class AnimUtils {
     public static void mesureView(@NotNull View view) {
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        if (view instanceof DrawerLayout) {
+            widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    View.MeasureSpec.getSize(widthMeasureSpec), View.MeasureSpec.EXACTLY);
+            heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                    View.MeasureSpec.getSize(heightMeasureSpec), View.MeasureSpec.EXACTLY);
+        }
         view.measure(widthMeasureSpec, heightMeasureSpec);
     }
 

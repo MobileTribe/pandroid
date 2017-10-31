@@ -5,15 +5,12 @@ import com.android.build.gradle.internal.core.GradleVariantConfiguration
 import com.android.build.gradle.internal.scope.VariantScope
 import com.android.build.gradle.internal.tasks.BaseTask
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.android.build.gradle.internal.variant.BaseVariantOutputData
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.ParallelizableTask
 import org.gradle.api.tasks.TaskAction
 
-@ParallelizableTask
 public class GeneratePandroidTask extends BaseTask {
 
     // ----- PUBLIC TASK API -----
@@ -86,7 +83,7 @@ public class GeneratePandroidTask extends BaseTask {
         }
 
         public GeneratePandroidTask build(Project project) {
-            BaseVariantData<? extends BaseVariantOutputData> variantData = scope.getVariantData();
+            BaseVariantData variantData = scope.getVariantData();
 
             final GradleVariantConfiguration variantConfiguration =
                     variantData.getVariantConfiguration();

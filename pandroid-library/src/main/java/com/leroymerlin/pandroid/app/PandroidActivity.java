@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
 
+import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.annotations.RxWrapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
+import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.event.opener.ActivityOpener;
@@ -21,8 +23,6 @@ import com.leroymerlin.pandroid.log.LogWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 
 /**
@@ -36,15 +36,15 @@ import javax.inject.Inject;
 @RxWrapper
 public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivity implements Cancellable.CancellableRegister, OpenerReceiverProvider, PandroidDelegateProvider {
 
-    //tag::PandroidActivityInjection[]
-    @Inject
     protected LogWrapper logWrapper;
-    @Inject
     protected EventBusManager eventBusManager;
 
+    //tag::PandroidActivityInjection[]
+    //@Inject
+    //AnyThingInBaseComponent instance;
     //end::PandroidActivityInjection[]
 
-    protected T mOpener;
+    protected T opener;
 
     protected PandroidDelegate pandroidDelegate;
 
@@ -54,11 +54,12 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //initialize PandroidDelegate with the default from PandroidApplication
+        BaseComponent baseComponent = PandroidApplication.getInjector(this).getBaseComponent();
+        logWrapper = baseComponent.logWrapper();
+        eventBusManager = baseComponent.eventBusManager();
         pandroidDelegate = createDelegate();
         pandroidDelegate.onInit(this);
-
-        mOpener = ActivityOpener.getOpener(this);
-
+        opener = ActivityOpener.getOpener(this);
     }
 
     //end::PandroidActivityInjection[]
@@ -79,8 +80,8 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         pandroidDelegate.onCreateView(this, findViewById(android.R.id.content), savedInstanceState);
-        if (mOpener != null && mOpener.getTitle() != null && !mOpener.getTitle().isEmpty() && getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(mOpener.getTitle());
+        if (opener != null && opener.getTitle() != null && !opener.getTitle().isEmpty() && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(opener.getTitle());
         }
     }
 

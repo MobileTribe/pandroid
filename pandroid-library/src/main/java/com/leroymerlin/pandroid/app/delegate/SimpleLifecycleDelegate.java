@@ -10,7 +10,6 @@ import com.leroymerlin.pandroid.app.ResumeState;
  */
 public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
 
-
     protected Bundle savedInstanceState;
     protected ResumeState resumeState;
     protected boolean viewExist;
@@ -50,6 +49,16 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
     @Override
     public void onDestroyView(T target) {
         viewExist = false;
+    }
+
+    @Override
+    public void onRemove(T target) {
+
+    }
+
+    @Override
+    public int getPriority() {
+        return DEFAULT_PRIORITY;
     }
 
 }
