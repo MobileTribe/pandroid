@@ -21,6 +21,7 @@ import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
 import com.leroymerlin.pandroid.event.opener.ActivityEventReceiver;
+import com.leroymerlin.pandroid.log.CrashlyticsLogger;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.log.PandroidLogger;
@@ -58,6 +59,9 @@ public class PandroidApplication extends Application implements PandroidDelegate
     protected void initializeLogger() {
         logWrapper = PandroidLogger.getInstance();
         logWrapper.addLogger(LogcatLogger.getInstance());
+        if (PandroidConfig.isLibraryEnable("crashlytics")) {
+            logWrapper.addLogger(new CrashlyticsLogger(this));
+        }
     }
     //end::Logger[]
 

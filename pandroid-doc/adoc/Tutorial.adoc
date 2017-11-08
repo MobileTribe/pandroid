@@ -376,14 +376,8 @@ pandroid
 
 ----
 
-- add the CrashlyticsLogger to the logWrapper
-
-[source,java]
-----
-// this logger is configured to be activated when the BuildConfig.DEBUG is false
-// you can override this behaviour
-logWrapper.addLogger(new CrashlyticsLogger(this));
-----
+That's it ! The crashlytics logger will be added automatically. By default it is is configured to be activated when the BuildConfig.DEBUG is false
+If needed you can override this behaviour
 
 === RxAndroid
 

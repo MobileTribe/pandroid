@@ -43,7 +43,14 @@ dependencies {
     compile project(':pandroid-library')
     provided project(':pandroid-annotations')
 
-    compile optionalLibs
+    optionalLibs.each{
+        libDep ->
+            compile(libDep){
+                transitive = true;
+                exclude group: 'com.android.support', module: 'support-annotations'
+            }
+    }
+
     annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 

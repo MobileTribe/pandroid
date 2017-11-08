@@ -32,5 +32,5 @@ ext.optionalLibs = [
 ]
 
 ext.deps = [
-        javapoet: 'com.squareup:javapoet:1.7.0',
+        javapoet: 'com.squareup:javapoet:1.9.0',
 ]
