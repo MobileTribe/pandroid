@@ -65,7 +65,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?, PandroidCall> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        if (returnType instanceof ParameterizedType && (((ParameterizedType) returnType).getRawType() == PandroidCall.class || ((ParameterizedType) returnType).getRawType() == Call.class)) {
+        if (returnType instanceof ParameterizedType && (((ParameterizedType) returnType).getRawType() == PandroidCall.class || ((ParameterizedType) returnType).getRawType() == RxPandroidCall.class || ((ParameterizedType) returnType).getRawType() == Call.class)) {
             Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
             return new ResponseCallAdapter(actualTypeArguments[0], annotations);
         }
