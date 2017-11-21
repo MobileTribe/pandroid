@@ -48,7 +48,7 @@ public abstract class BaseProcessor {
     protected String getPackageName(Element element) throws Exception {
         PackageElement packageElement = mElementsUtils.getPackageOf(element);
         if (packageElement.isUnnamed()) {
-            throw new Exception("Aucun package est indiqué pour " + element.getSimpleName());
+            throw new Exception("No package found for " + element.getSimpleName());
         }
         return packageElement.getQualifiedName().toString();
     }
