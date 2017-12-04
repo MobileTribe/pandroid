@@ -208,19 +208,26 @@ apply plugin 'com.google.gms.google-services'
                         transitive true
                     }
                 }
-                if (!plugins.hasPlugin("io.fabric"))
+
+                if (!plugins.hasPlugin("io.fabric")) {
                     apply plugin: "io.fabric"
+                } else if (plugins.findPlugin("io.fabric") == null) {
+                    throw new GradleException("crashlytics plugin is missing. please add classpath 'io.fabric.tools:gradle:1.24.4'")
+                }
 
             }
             manifest {
                 config ->
-                    '''
+                    if (config.apiKey) {
+                        return '''
     <application>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="''' + config.apiKey + '''" />
      </application>
 '''
+                    }
+                    return ""
             }
         }
 
