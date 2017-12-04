@@ -5,11 +5,10 @@ dependencies {
 }
 
 plugins.withId('com.leroymerlin.android-templates') {
-    dependencies{
+    dependencies {
         template "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion:templates"
     }
 }
-
 
 //tag::Proguard[]
 android {
@@ -43,7 +42,7 @@ pandroid {
     configurators {
         "io.reactivex.rxjava2:rxandroid" { //RX
             gradle {
-                dependencies{
+                dependencies {
                     compile "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
                     compile "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
                 }
@@ -62,7 +61,7 @@ pandroid {
         "com.github.frankiesardo:icepick" { // IcepickLifecycleDelegate
             gradle {
                 repositories {
-                    maven {url "https://clojars.org/repo/"}
+                    maven { url "https://clojars.org/repo/" }
                 }
                 dependencies {
                     compile "frankiesardo:icepick:$libraryIcepickVersion"
@@ -168,7 +167,10 @@ apply plugin 'com.google.gms.google-services'
         "com.github.johnpersano:supertoasts" { //SuperToastManagerImpl
             gradle {
                 dependencies {
-                    compile "com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar"
+                    compile("com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar") {
+                        transitive = true
+                        exclude group: 'com.android.support', module: 'support-annotations'
+                    }
                 }
             }
         }
@@ -176,7 +178,9 @@ apply plugin 'com.google.gms.google-services'
             gradle {
                 dependencies {
                     compile "com.github.bumptech.glide:glide:$libraryGlideVersion"
+                    compile "com.github.bumptech.glide:annotations:$libraryGlideVersion"
                     compile "com.github.bumptech.glide:okhttp3-integration:$libraryGlideVersion"
+                    annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
                 }
             }
         }
@@ -190,7 +194,7 @@ apply plugin 'com.google.gms.google-services'
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.5'
+        classpath 'io.fabric.tools:gradle:1.24.4'
     }
     }
     //end::Crashlytics[]
@@ -204,19 +208,26 @@ apply plugin 'com.google.gms.google-services'
                         transitive true
                     }
                 }
-                if (!plugins.hasPlugin("io.fabric"))
+
+                if (!plugins.hasPlugin("io.fabric")) {
                     apply plugin: "io.fabric"
+                } else if (plugins.findPlugin("io.fabric") == null) {
+                    throw new GradleException("crashlytics plugin is missing. please add classpath 'io.fabric.tools:gradle:1.24.4'")
+                }
 
             }
             manifest {
                 config ->
-                    '''
+                    if (config.apiKey) {
+                        return '''
     <application>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="''' + config.apiKey + '''" />
      </application>
 '''
+                    }
+                    return ""
             }
         }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.leroymerlin.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.EventTag;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.event.EventBusManager;
@@ -55,7 +56,7 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
 
     @OnClick(R.id.event_send_tag)
     public void sendTag() {
-        eventBusManager.send(null, EVENT_TAG); // send a string object with no tag
+        eventBusManager.sendTag(EVENT_TAG); // send a string object with no tag
     }
 
     //tag::sendSimpleEvent[]
@@ -78,8 +79,8 @@ public class EventFragment extends PandroidFragment<FragmentOpener> {
     }
 
     @EventReceiver(value = EVENT_TAG)
-    public void receiveLocalTag() {
-        toastManager.makeToast(getActivity(), "message with tag " + EVENT_TAG + " received", null);
+    public void receiveLocalTag(@EventTag String tag) {
+        toastManager.makeToast(getActivity(), "message with tag: " + tag + " received", null);
     }
 
     //tag::sendSimpleEvent[]

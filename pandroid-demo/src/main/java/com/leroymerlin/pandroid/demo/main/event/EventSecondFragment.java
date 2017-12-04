@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leroymerlin.pandroid.annotations.EventTag;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.annotations.EventReceiver;
@@ -32,10 +33,10 @@ public class EventSecondFragment extends PandroidFragment {
 
     //tag::sendTaggedEvent[]
     @EventReceiver({TAG, "toto"}) //Generate provider with a tag to filter event
-    public void onReceiveMessage(String msg) {
+    public void onReceiveMessage(@EventTag String tag, String msg) { // '@EventTag String tag' parameter is optional
         String txt = tvMessage.getText().toString();
         String text = txt + "\n" + msg;
-        logWrapper.d(TAG, "message receive: " + msg);
+        logWrapper.d(TAG, "message with tag '"+tag+"' received : " + msg);
         tvMessage.setText(text);
     }
     //end::sendTaggedEvent[]

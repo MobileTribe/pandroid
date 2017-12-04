@@ -41,28 +41,28 @@ public class CrashlyticsLogger extends SimpleLogger {
     }
 
     @Override
-    void debug(String tag, String msg, Throwable tr) {
+    public void debug(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(DEBUG, msg, tr != null ? tr.getMessage() : "");
         }
     }
 
     @Override
-    void verbose(String tag, String msg, Throwable tr) {
+    public void verbose(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(VERBOSE, msg, tr != null ? tr.getMessage() : "");
         }
     }
 
     @Override
-    void info(String tag, String msg, Throwable tr) {
+    public void info(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(INFO, msg, tr != null ? tr.getMessage() : "");
         }
     }
 
     @Override
-    void warn(String tag, String msg, Throwable tr) {
+    public void warn(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(WARN, msg, tr != null ? tr.getMessage() : "");
             Crashlytics.logException(tr);
@@ -70,7 +70,7 @@ public class CrashlyticsLogger extends SimpleLogger {
     }
 
     @Override
-    void error(String tag, String msg, Throwable tr) {
+    public void error(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(ERROR, msg, tr != null ? tr.getMessage() : "");
             Crashlytics.logException(tr);
@@ -78,7 +78,7 @@ public class CrashlyticsLogger extends SimpleLogger {
     }
 
     @Override
-    void logAssert(String tag, String msg, Throwable tr) {
+    public void logAssert(String tag, String msg, Throwable tr) {
         if(initialized) {
             Crashlytics.log(ASSERT, msg, tr != null ? tr.getMessage() : "");
             Crashlytics.logException(tr);

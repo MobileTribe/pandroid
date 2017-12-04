@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.compiler;
 
 import com.google.common.collect.Lists;
 import com.leroymerlin.pandroid.annotations.EventReceiver;
+import com.leroymerlin.pandroid.annotations.EventTag;
 import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.ReceiversProvider;
@@ -71,7 +72,7 @@ public class EventBusProcessor extends BaseProcessor {
                 Method ReceiverProvider_MethodReceivers = ReceiversProvider.class.getMethod("getReceivers");
 
                 Method EventBusReceiver_MethodTags = EventBusManager.EventBusReceiver.class.getMethod("getTags");
-                Method EventBusReceiver_MethodHandle = EventBusManager.EventBusReceiver.class.getMethod("handle", Object.class);
+                Method EventBusReceiver_MethodHandle = EventBusManager.EventBusReceiver.class.getMethod("handle", String.class, Object.class);
 
 
                 ParameterizedTypeName weakReferenceType = ParameterizedTypeName.get(ClassName.get(WeakReference.class), parentClassName);
@@ -95,29 +96,41 @@ public class EventBusProcessor extends BaseProcessor {
                     }
                     tagInitBlockBuilder.add(")");
                     List<? extends VariableElement> params = e.getParameters();
-                    if (params.size() > 1) {
-                        log(processingEnvironment, getFullName(e) + " should have 1 or no parameter, have " + params.size(), Diagnostic.Kind.ERROR);
-                    }
+
+                    List<String> txtVariable = new ArrayList<>();
+
 
                     TypeName parameterTypeName = null;
 
-                    if (params.size() == 1) {
-                        parameterTypeName = ClassName.get(params.get(0).asType());
-                        if (parameterTypeName instanceof ParameterizedTypeName) { // remove <T> from typeName for instanceOf
-                            parameterTypeName = ((ParameterizedTypeName) parameterTypeName).rawType;
+                    for(int i = 0; i<params.size(); i++){
+                        if(params.get(i).getAnnotation(EventTag.class)!=null){
+                            //tag param
+                            txtVariable.add("tag");
+                        }else{
+                            txtVariable.add("($T) data");
+                            if(parameterTypeName!=null)
+                                log(processingEnvironment, getFullName(e) + " should have only 1 parameter of type " + ClassName.get(params.get(i).asType()), Diagnostic.Kind.ERROR);
+
+                            parameterTypeName = ClassName.get(params.get(i).asType());
+                            if (parameterTypeName instanceof ParameterizedTypeName) { // remove <T> from typeName for instanceOf
+                                parameterTypeName = ((ParameterizedTypeName) parameterTypeName).rawType;
+                            }
                         }
                     }
 
+                    String methodParams =String.join(", ", txtVariable);
+
                     MethodSpec.Builder receiverMethodBuilder = MethodSpec.methodBuilder(EventBusReceiver_MethodHandle.getName()).addAnnotation(Override.class).addModifiers(Modifier.PUBLIC).returns(TypeName.BOOLEAN)
-                            .addParameter(EventBusReceiver_MethodHandle.getParameterTypes()[0], "data");
+                            .addParameter(EventBusReceiver_MethodHandle.getParameterTypes()[0], "tag")
+                            .addParameter(EventBusReceiver_MethodHandle.getParameterTypes()[1], "data");
 
 
                     if (parameterTypeName != null) {
                         receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null && ( ( data instanceof $T ) || ( data == null && !getTags().isEmpty() ) ) )", parameterTypeName.box())
-                                .addStatement("weakReference.get()." + getMethodName(e) + "(($T) data)", parameterTypeName);
+                                .addStatement("weakReference.get()." + getMethodName(e) + "("+methodParams+")", parameterTypeName);
                     } else {
                         receiverMethodBuilder.beginControlFlow("if(weakReference.get() != null)")
-                                .addStatement("weakReference.get()." + getMethodName(e) + "()");
+                                .addStatement("weakReference.get()." + getMethodName(e) + "("+methodParams+")");
                     }
                     receiverMethodBuilder.addStatement("return true")
                             .endControlFlow()

@@ -38,7 +38,7 @@ public abstract class OpenerEventReceiver<V extends OpenerReceiverProvider, T ex
     }
 
     @Override
-    public boolean handle(Object data) {
+    public boolean handle(String tag, Object data) {
         if (data instanceof Opener && filter.contains(((Opener) data).getFilterTag())) {
             onOpenerReceived((T) data);
             return true;

@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.demo.globals.review;
 
 import com.leroymerlin.pandroid.demo.globals.model.Review;
 import com.leroymerlin.pandroid.net.PandroidCall;
+import com.leroymerlin.pandroid.net.RxPandroidCall;
 import com.leroymerlin.pandroid.net.http.Mock;
 import com.leroymerlin.pandroid.net.mock.ServiceMock;
 
@@ -17,7 +18,7 @@ import retrofit2.http.Path;
 public interface ReviewService {
 
     @GET("posts/{id}")
-    Call<Review> getReview(@Path("id") String id);
+    RxPandroidCall<Review> getReview(@Path("id") String id);
 
 
     //Mocks have to enable in PandroidCallFactory
@@ -32,7 +33,7 @@ public interface ReviewService {
     PandroidCall<Review> getReviewPandroidWay(@Path("id") String id);
 
     @GET("posts/{id}")
-    PandroidCall<Response<Review>> getReviewReponsePandroidWay(@Path("id") String id);
+    RxPandroidCall<Response<Review>> getReviewReponsePandroidWay(@Path("id") String id);
 
 }
 //end::Retrofit[]

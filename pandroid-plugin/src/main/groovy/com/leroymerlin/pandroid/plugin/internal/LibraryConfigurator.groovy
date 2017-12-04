@@ -47,8 +47,9 @@ class LibraryConfigurator {
                         ]
                         manifestFiles.each {
                             f ->
-                                if (f != null && f.exists()) {
-                                    XMLUtils.appendToXML(f, "<manifest>" + manifest.call(config) + "</manifest>")
+                                def libManifest = manifest.call(config)
+                                if (f != null && f.exists() && libManifest != null && !libManifest.toString().isEmpty()) {
+                                    XMLUtils.appendToXML(f, "<manifest>" + libManifest + "</manifest>")
                                 }
                         }
                     }

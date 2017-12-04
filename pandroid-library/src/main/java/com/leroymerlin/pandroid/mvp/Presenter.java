@@ -83,11 +83,12 @@ public class Presenter<T> extends PandroidDelegate<T> {
         targetView = null;
     }
 
+    @Nullable
     public T getView() {
         if(targetView != null){
             return targetView.get();
         }
-        throw new IllegalStateException("getView can't ");
+        return null;
     }
 
 }

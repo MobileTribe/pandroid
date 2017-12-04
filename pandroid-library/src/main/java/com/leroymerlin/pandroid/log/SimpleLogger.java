@@ -137,16 +137,16 @@ public abstract class SimpleLogger implements LogWrapper {
 
     }
 
-    abstract void debug(String tag, String msg, Throwable tr);
+    public abstract void debug(String tag, String msg, Throwable tr);
 
-    abstract void verbose(String tag, String msg, Throwable tr);
+    public abstract void verbose(String tag, String msg, Throwable tr);
 
-    abstract void info(String tag, String msg, Throwable tr);
+    public abstract void info(String tag, String msg, Throwable tr);
 
-    abstract void warn(String tag, String msg, Throwable tr);
+    public abstract void warn(String tag, String msg, Throwable tr);
 
-    abstract void error(String tag, String msg, Throwable tr);
+    public abstract void error(String tag, String msg, Throwable tr);
 
-    abstract void logAssert(String tag, String msg, Throwable tr);
+    public abstract void logAssert(String tag, String msg, Throwable tr);
 
 }

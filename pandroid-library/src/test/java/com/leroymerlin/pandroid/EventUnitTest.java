@@ -28,10 +28,15 @@ public class EventUnitTest {
     private EventBusManager.EventBusReceiver taggedListener;
     static final String GOOD_FILTER = "GOOD_FILTER";
 
+
+    private String resultTag;
+    private Object resultObject;
+
     @Before
     public void initTest() {
         eventBusManager = new EventBusManagerImpl();
         resultObject = null;
+        resultTag = null;
 
         taggedListener = new EventBusManager.EventBusReceiver() {
             @Override
@@ -40,8 +45,9 @@ public class EventUnitTest {
             }
 
             @Override
-            public boolean handle(Object data) {
+            public boolean handle(String tag, Object data) {
                 resultObject = data;
+                resultTag = tag;
                 return true;
             }
         };
@@ -50,7 +56,6 @@ public class EventUnitTest {
     private CountDownLatch lock = new CountDownLatch(1);
 
 
-    private Object resultObject;
 
     @Test
     public void testEventAsync() throws Exception {
@@ -61,8 +66,9 @@ public class EventUnitTest {
             }
 
             @Override
-            public boolean handle(Object data) {
+            public boolean handle(String tag, Object data) {
                 resultObject = data;
+                resultTag = tag;
                 lock.countDown();
                 return true;
             }
@@ -99,7 +105,7 @@ public class EventUnitTest {
             }
 
             @Override
-            public boolean handle(Object data) {
+            public boolean handle(String tag, Object data) {
                 if (data.equals("testListenerTag_GOOD_FILTER"))
                     Assert.fail();
                 return true;
@@ -114,6 +120,7 @@ public class EventUnitTest {
         test = "testListenerTag_GOOD_FILTER";
         eventBusManager.sendSync(test, "GOOD_FILTER");
         Assert.assertEquals(resultObject, test);
+        Assert.assertEquals(resultTag, "GOOD_FILTER");
     }
 
 
@@ -156,7 +163,7 @@ public class EventUnitTest {
             }
 
             @Override
-            public boolean handle(Object data) {
+            public boolean handle(String tag, Object data) {
                 return false;
             }
         });
