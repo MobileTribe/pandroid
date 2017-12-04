@@ -46,7 +46,7 @@ public class EventTests {
             }
 
             @Override
-            public boolean handle(Object data) {
+            public boolean handle(String tag, Object data) {
                 assertEquals(data, sendedObject);
                 received[0]++;
                 return true;

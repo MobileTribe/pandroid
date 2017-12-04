@@ -22,6 +22,18 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.5.1* - (2017-12-04)
+*Features*
+- EventBus - add @EventTag to receive tag in method
+- PictureManager - add circleCrop option
+*Refactor*
+- Update Google libraries
+- Enable Crashlytics logger automatically
+- Allow RxPandroidCall in retrofit service interface
+*Fix*
+- Finish getView method in Presenter
+
+
 ### *2.5.0* - (2017-10-30)
 *Features*
 - Android studio Pandroid templates
