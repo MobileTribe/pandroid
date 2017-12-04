@@ -9,6 +9,8 @@ public interface EventBusManager {
 
     String send(Object data);
 
+    String sendTag(String tag);
+
     String send(Object data, String messageTag);
 
     String send(Object data, String messageTag, DeliveryPolicy deliveryPolicy);
@@ -16,6 +18,8 @@ public interface EventBusManager {
     String send(Object data, String messageTag, DeliveryPolicy deliveryPolicy, String messageID);
 
     String sendSync(Object data);
+
+    String sendTagSync(String tag);
 
     String sendSync(Object data, String messageTag);
 
@@ -38,7 +42,7 @@ public interface EventBusManager {
     interface EventBusReceiver {
         List<String> getTags();
 
-        boolean handle(Object data);
+        boolean handle(String tag, Object data);
     }
 
     //tag::deliveryPolicy[]

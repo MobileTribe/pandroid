@@ -51,7 +51,7 @@ public class EventBusManagerImpl implements EventBusManager {
         for (int i = eventBusReceivers.size() - 1; i >= 0; i--) {
             EventBusReceiver receiver = eventBusReceivers.get(i);
             if ((message.messageTag == null && (receiver.getTags() == null || receiver.getTags().isEmpty())) || (receiver.getTags() != null && receiver.getTags().contains(message.messageTag))) {
-                if (receiver.handle(message.data)) {
+                if (receiver.handle(message.messageTag, message.data)) {
                     message.setDelivered();
                 }
             }
@@ -62,6 +62,11 @@ public class EventBusManagerImpl implements EventBusManager {
     @Override
     public String send(Object data) {
         return send(data, null);
+    }
+
+    @Override
+    public String sendTag(String tag) {
+        return send(null, tag);
     }
 
     @Override
@@ -98,6 +103,11 @@ public class EventBusManagerImpl implements EventBusManager {
     @Override
     public String sendSync(Object data) {
         return sendSync(data, null);
+    }
+
+    @Override
+    public String sendTagSync(String tag) {
+        return null;
     }
 
     @Override
