@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.5.0-SNAPSHOT, Tue Oct 31 14:02:49 CET 2017">
+<meta name="author" content="Pandroid v2.5.1-SNAPSHOT, Mon Dec 04 16:46:34 CET 2017">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.5.0-SNAPSHOT, Tue Oct 31 14:02:49 CET 2017</span><br>
+<span id="author" class="author">Pandroid v2.5.1-SNAPSHOT, Mon Dec 04 16:46:34 CET 2017</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -687,10 +687,10 @@ a gradle plugin which generates code and simplifies your life.</p>
     }
 
     <span class="annotation">@EventReceiver</span>({TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">toto</span><span class="delimiter">&quot;</span></span>}) <span class="comment">//Generate provider with a tag to filter event</span>
-    <span class="directive">public</span> <span class="type">void</span> onReceiveMessage(<span class="predefined-type">String</span> msg) {
+    <span class="directive">public</span> <span class="type">void</span> onReceiveMessage(<span class="annotation">@EventTag</span> <span class="predefined-type">String</span> tag, <span class="predefined-type">String</span> msg) { <span class="comment">// '@EventTag String tag' parameter is optional</span>
         <span class="predefined-type">String</span> txt = tvMessage.getText().toString();
         <span class="predefined-type">String</span> text = txt + <span class="string"><span class="delimiter">&quot;</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> + msg;
-        logWrapper.d(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">message receive: </span><span class="delimiter">&quot;</span></span> + msg);
+        logWrapper.d(TAG, <span class="string"><span class="delimiter">&quot;</span><span class="content">message with tag '</span><span class="delimiter">&quot;</span></span>+tag+<span class="string"><span class="delimiter">&quot;</span><span class="content">' received : </span><span class="delimiter">&quot;</span></span> + msg);
         tvMessage.setText(text);
     }</code></pre>
 </div>
@@ -1357,6 +1357,9 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">protected</span> <span class="type">void</span> initializeLogger() {
         logWrapper = PandroidLogger.getInstance();
         logWrapper.addLogger(LogcatLogger.getInstance());
+        <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">crashlytics</span><span class="delimiter">&quot;</span></span>)) {
+            logWrapper.addLogger(<span class="keyword">new</span> CrashlyticsLogger(<span class="local-variable">this</span>));
+        }
     }</code></pre>
 </div>
 </div>
@@ -1380,7 +1383,7 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
         maven { url <span class="string"><span class="delimiter">'</span><span class="content">https://maven.fabric.io/public</span><span class="delimiter">'</span></span> }
     }
     dependencies {
-        classpath <span class="string"><span class="delimiter">'</span><span class="content">io.fabric.tools:gradle:1.21.5</span><span class="delimiter">'</span></span>
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">io.fabric.tools:gradle:1.24.4</span><span class="delimiter">'</span></span>
     }
     }
 
@@ -1394,19 +1397,9 @@ pandroid
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>add the CrashlyticsLogger to the logWrapper</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// this logger is configured to be activated when the BuildConfig.DEBUG is false</span>
-<span class="comment">// you can override this behaviour</span>
-logWrapper.addLogger(<span class="keyword">new</span> CrashlyticsLogger(<span class="local-variable">this</span>));</code></pre>
-</div>
+<div class="paragraph">
+<p>That&#8217;s it ! The crashlytics logger will be added automatically. By default it is is configured to be activated when the BuildConfig.DEBUG is false
+If needed you can override this behaviour</p>
 </div>
 </div>
 </div>
@@ -1711,7 +1704,15 @@ None of these encryption methods are unbreakable. Keep in mind that the best way
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Unresolved directive in Tutorial.adoc - include::./../../pandroid-library/src/main/java/com/leroymerlin/pandroid/future/ActionDelegate.java<span class="type">[]</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.leroymerlin.pandroid.future</span>;
+
+<span class="directive">public</span> <span class="type">interface</span> <span class="class">ActionDelegate</span>&lt;T&gt; {
+
+    <span class="type">void</span> onSuccess(T result);
+
+    <span class="type">void</span> onError(<span class="exception">Exception</span> e);
+
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1847,7 +1848,7 @@ The mock has to be enabled during the declaration of your PandroidCallAdapterFac
 <pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">ReviewService</span> {
 
     <span class="annotation">@GET</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">posts/{id}</span><span class="delimiter">&quot;</span></span>)
-    Call&lt;Review&gt; getReview(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
+    RxPandroidCall&lt;Review&gt; getReview(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
 
 
     <span class="comment">//Mocks have to enable in PandroidCallFactory</span>
@@ -1862,7 +1863,7 @@ The mock has to be enabled during the declaration of your PandroidCallAdapterFac
     PandroidCall&lt;Review&gt; getReviewPandroidWay(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
 
     <span class="annotation">@GET</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">posts/{id}</span><span class="delimiter">&quot;</span></span>)
-    PandroidCall&lt;Response&lt;Review&gt;&gt; getReviewReponsePandroidWay(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
+    RxPandroidCall&lt;Response&lt;Review&gt;&gt; getReviewReponsePandroidWay(<span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> id);
 
 }</code></pre>
 </div>
@@ -2580,7 +2581,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-31 14:02:44 +01:00
+Last updated 2017-12-04 16:46:30 +01:00
 </div>
 </div>
 </body>
