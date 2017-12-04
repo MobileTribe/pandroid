@@ -117,13 +117,16 @@ public class GlidePictureManagerImpl implements PictureManager {
 
                 if (this.animated) {
                     if (this.animation > 0) {
-                        builder.transition(GenericTransitionOptions.with(animation));
+                        builder = builder.transition(GenericTransitionOptions.with(animation));
                     } else {
-
-                        builder.transition(DrawableTransitionOptions.withCrossFade());
+                        builder = builder.transition(DrawableTransitionOptions.withCrossFade());
                     }
                 } else {
-                    builder.transition(GenericTransitionOptions.<Drawable>withNoTransition());
+                    builder = builder.transition(GenericTransitionOptions.<Drawable>withNoTransition());
+                }
+
+                if(this.circleCrop){
+                    options = options.circleCrop();
                 }
 
                 if (this.scaleType == ImageView.ScaleType.FIT_CENTER) {
@@ -133,19 +136,19 @@ public class GlidePictureManagerImpl implements PictureManager {
                 }
                 if (this.target != null) {
                     if (this.scaleType == null) {
-                        options.dontTransform();
+                        options = options.dontTransform();
                     } else {
                         this.target.setScaleType(this.scaleType);
                     }
                 }
 
-                builder.apply(options);
+                builder = builder.apply(options);
 
 
                 final ImageLoadingListener loaderListener = this.listener;
                 final ImageView loaderTarget = this.target;
                 if (loaderListener != null) {
-                    builder.listener(new RequestListener<Drawable>() {
+                    builder = builder.listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             loaderListener.onLoadingFailed(model, loaderTarget);
