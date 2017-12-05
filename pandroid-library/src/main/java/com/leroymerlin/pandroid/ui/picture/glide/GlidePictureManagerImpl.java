@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.ui.picture.ImageLoadingListener;
 import com.leroymerlin.pandroid.ui.picture.PictureManager;
 
@@ -74,6 +75,7 @@ public class GlidePictureManagerImpl implements PictureManager {
             public void loadInternal() {
                 RequestManager requestManager = null;
                 Object loadContext = null;
+
                 if (this.loadContext != null) {
                     loadContext = this.loadContext.get();
                 }
@@ -94,11 +96,30 @@ public class GlidePictureManagerImpl implements PictureManager {
                 Object glideUrl = null;
                 Object sourceModel = this.sourceModel;
                 if (sourceModel instanceof String) {
-                    glideUrl = new GlideUrl((String) sourceModel, headerBuilder.build());
+                    glideUrl = new GlideUrl((String) sourceModel, headerBuilder.build()) {
+                        @Override
+                        public String getCacheKey() {
+                            if (customCacheKey != null) {
+                                return customCacheKey;
+                            }
+                            return super.getCacheKey();
+                        }
+                    };
                 } else if (sourceModel instanceof URL) {
-                    glideUrl = new GlideUrl((URL) sourceModel, headerBuilder.build());
+                    glideUrl = new GlideUrl((URL) sourceModel, headerBuilder.build()) {
+                        @Override
+                        public String getCacheKey() {
+                            if (customCacheKey != null) {
+                                return customCacheKey;
+                            }
+                            return super.getCacheKey();
+                        }
+                    };
                 } else {
                     glideUrl = sourceModel;
+                    if (sourceModel != null && customCacheKey != null) {
+                        LogcatLogger.getInstance().w(TAG, "Can't set cacheKey with a custom source model : " + sourceModel.toString());
+                    }
                 }
 
                 RequestOptions options = new RequestOptions()
@@ -125,21 +146,19 @@ public class GlidePictureManagerImpl implements PictureManager {
                     builder = builder.transition(GenericTransitionOptions.<Drawable>withNoTransition());
                 }
 
-                if(this.circleCrop){
-                    options = options.circleCrop();
-                }
 
                 if (this.scaleType == ImageView.ScaleType.FIT_CENTER) {
                     options = options.fitCenter();
                 } else if (this.scaleType == ImageView.ScaleType.CENTER_CROP) {
                     options = options.centerCrop();
+                } else if (this.scaleType == ImageView.ScaleType.CENTER_INSIDE) {
+                    options = options.centerInside();
                 }
-                if (this.target != null) {
-                    if (this.scaleType == null) {
-                        options = options.dontTransform();
-                    } else {
-                        this.target.setScaleType(this.scaleType);
-                    }
+                if (this.target != null && scaleType != null) {
+                    this.target.setScaleType(this.scaleType);
+                }
+                if (this.circleCrop) {
+                    options = options.circleCrop();
                 }
 
                 builder = builder.apply(options);

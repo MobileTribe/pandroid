@@ -22,6 +22,14 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.5.2* - (2017-12-05)
+*Feature*
+- PictureManager - add cache key option
+*Refactor*
+- Update GMS to 11.6.2
+*Fix*
+- PictureManager - circle crop not working without scaletype
+
 ### *2.5.1* - (2017-12-04)
 *Features*
 - EventBus - add @EventTag to receive tag in method
@@ -47,19 +55,6 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - RxWrapper - issue with ActionDelegate without parameter
 - AnimUtils - crash with DrawerLayout's size calculation
 
-### *2.4.1* - (2017-08-04)
-*Fix*
-- kapt - kotlin support error
-
-### *2.4.0* - (2017-08-04)
-*Features*
-- RX integration
-- Kotlin support
-*Refactor*
-- Opener concept expanded to Activity
-- Remove Data Binding
-
-WARNING: Opener package changed to 'com.leroymerlin.pandroid.event.opener'
 
 ### *Older release*
 *link:{htmlPath}pandroid-doc/html/Changelog.html[See Full ChangeLog]*
