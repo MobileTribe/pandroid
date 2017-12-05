@@ -2,6 +2,39 @@
 
 :hardbreaks:
 
+### *2.5.2* - (2017-12-05)
+*Feature*
+- PictureManager - add cache key option
+*Refactor*
+- Update GMS to 11.6.2
+*Fix*
+- PictureManager - circle crop not working without scaletype
+
+### *2.5.1* - (2017-12-04)
+*Features*
+- EventBus - add @EventTag to receive tag in method
+- PictureManager - add circleCrop option
+*Refactor*
+- Update Google libraries
+- Enable Crashlytics logger automatically
+- Allow RxPandroidCall in retrofit service interface
+*Fix*
+- Finish getView method in Presenter
+
+
+### *2.5.0* - (2017-10-30)
+*Features*
+- Android studio Pandroid templates
+*Refactor*
+- LifecyclerDelegate ordered with a priority
+- Dagger injection in Pandroid
+- Update optional dependencies
+- Rename mOpener into opener
+*Fix*
+- Compatibility with Android plugin 3.0.0
+- RxWrapper - issue with ActionDelegate without parameter
+- AnimUtils - crash with DrawerLayout's size calculation
+
 ### *2.4.1* - (2017-08-04)
 *Fix*
 - kapt - kotlin support error

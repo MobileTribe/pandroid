@@ -56,6 +56,7 @@ public interface PictureManager {
         protected int errorImage;
         protected int animation;
         protected boolean circleCrop;
+        protected String customCacheKey;
         protected ImageView.ScaleType scaleType;
 
         public Loader(Loader baseLoader) {
@@ -124,13 +125,18 @@ public interface PictureManager {
             return this;
         }
 
-        public Loader circleCrop(boolean crop){
+        public Loader circleCrop(boolean crop) {
             this.circleCrop = crop;
             return this;
         }
 
         public Loader animated(boolean animated) {
             this.animated = animated;
+            return this;
+        }
+
+        public Loader setCacheKey(String cacheKey) {
+            this.customCacheKey = cacheKey;
             return this;
         }
 
