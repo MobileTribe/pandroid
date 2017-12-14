@@ -40,16 +40,9 @@ public class PandroidPluginExtension {
         }
     }
 
-    void productFlavors(Action<? super NamedDomainObjectCollection<SecureProperty>> action) {
-        action.execute(secureProperties);
-        secureProperties.each {
-            prop ->
-                project.android.productFlavors.maybeCreate(prop.name)
-        }
-        project.android.productFlavors.each {
-            flavor ->
-                secureProperties.maybeCreate(flavor.name).apply(project)
-        }
+    void secureConfigFields(Action<? super NamedDomainObjectCollection<SecureProperty>> action){
+        action.execute(secureProperties)
     }
+
 
 }

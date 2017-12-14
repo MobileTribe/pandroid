@@ -38,7 +38,7 @@ class PandroidPlugin implements Plugin<Project> {
             pluginVersion = properties.getProperty("pandroidVersion")
         }
 
-        project.extensions.create('pandroid', PandroidPluginExtension, project, this)
+        PandroidPluginExtension extension = project.extensions.create('pandroid', PandroidPluginExtension, project, this)
 
         File pandroid = project.file('pandroid.properties')
         applyPropertiesOnProject(pandroid)
@@ -67,8 +67,15 @@ class PandroidPlugin implements Plugin<Project> {
         def isAndroidApp = project.plugins.hasPlugin("com.android.application")
         if (isAndroidApp) {
             project.android.applicationVariants.all { variant ->
+                extension.secureProperties.maybeCreate(variant.name)
                 def task = new com.leroymerlin.pandroid.plugin.GeneratePandroidTask.ConfigAction(variant.variantData.scope, configMapperBuilder).build(project);
                 variant.registerJavaGeneratingTask(task, task.getSourceOutputDir())
+                extension.secureProperties.each {
+                    prop ->
+                        if(variant.name.contains(prop.name)){
+                            prop.applyBuildConfigField(variant)
+                        }
+                }
             }
         }
     }

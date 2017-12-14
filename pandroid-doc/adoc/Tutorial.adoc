@@ -478,11 +478,12 @@ Pandroid extension provide tools to encrypt your critical keys. This encryption 
 [source,java]
 ----
 pandroid{
-    productFlavors{
+    secureConfigFields{
         all{
             secureField "YOUR_KEY_NAME", "YOUR_KEY"
         }
-        prod {
+        //apply on applicationVariant that contrains the name
+        prod { //proDebug prodRelease
             secureField "YOUR_KEY_NAME", "YOUR_PROD_KEY"
         }
     }
