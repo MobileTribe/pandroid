@@ -236,8 +236,11 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
                         @Override
                         public void onFailure(Call<R> call, final Throwable t) {
-
-                            onError(new Exception(t));
+                            if(t instanceof Exception) {
+                                onError(((Exception) t));
+                            } else {
+                                onError(new Exception(t));
+                            }
                         }
 
                         private void onError(final Exception e) {
