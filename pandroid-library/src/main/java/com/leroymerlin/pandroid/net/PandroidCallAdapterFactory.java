@@ -9,6 +9,7 @@ import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.future.ActionDelegate;
 import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.future.CancellableActionDelegate;
+import com.leroymerlin.pandroid.future.RxActionDelegate;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.net.http.Mock;
 import com.leroymerlin.pandroid.net.mock.ServiceMock;
@@ -19,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.TreeMap;
 
+import io.reactivex.Single;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
@@ -163,8 +165,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
                     }
                 };
             }
-            PandroidCallImpl<R> pandroidCall = new PandroidCallImpl<>(callWrapper, needResponse);
-            return rxAndroidEnable? new RxPandroidCall(pandroidCall): pandroidCall;
+            return rxAndroidEnable ? new RxPandroidCallImpl<>(callWrapper, needResponse) : new PandroidCallImpl<>(callWrapper, needResponse);
         }
     }
 
@@ -176,9 +177,9 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
         }
     }
 
-    private class PandroidCallImpl<R> implements PandroidCall<R> {
-        private final Call<R> call;
-        private final boolean needResponse;
+    protected class PandroidCallImpl<R> implements PandroidCall<R> {
+        protected final Call<R> call;
+        protected final boolean needResponse;
 
         PandroidCallImpl(Call<R> call, boolean needResponse) {
             this.call = call;
@@ -280,9 +281,7 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
 
         @Override
         public PandroidCall<R> clone() {
-            PandroidCallImpl<R> pandroidCall = new PandroidCallImpl<>(call.clone(), needResponse);
-            return rxAndroidEnable ? new RxPandroidCall(pandroidCall) : pandroidCall;
-
+            return new PandroidCallImpl<>(call.clone(), needResponse);
         }
 
         @Override
@@ -290,4 +289,26 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
             return call.request();
         }
     }
+
+    public class RxPandroidCallImpl<T> extends PandroidCallAdapterFactory.PandroidCallImpl<T> implements RxPandroidCall<T> {
+
+        RxPandroidCallImpl(Call<T> call, boolean needResponse) {
+            super(call, needResponse);
+        }
+
+        public Single<T> rxEnqueue() {
+            return RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<T>() {
+                @Override
+                public void subscribe(ActionDelegate<T> callback) {
+                    RxPandroidCallImpl.this.clone().enqueue(callback);
+                }
+            });
+        }
+
+        @Override
+        public RxPandroidCall<T> clone() {
+            return new RxPandroidCallImpl(call.clone(), needResponse);
+        }
+    }
+
 }
