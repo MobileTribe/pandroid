@@ -31,6 +31,14 @@
         <attr name="revealLayout" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="PandroidCompat">
+        <attr name="drawableLeftPCompat" format="reference" />
+        <attr name="drawableTopPCompat" format="reference" />
+        <attr name="drawableRightPCompat" format="reference" />
+        <attr name="drawableBottomPCompat" format="reference" />
+        <attr name="drawableTintPCompat" format="color" />
+    </declare-styleable>
+
 
     
 </resources>

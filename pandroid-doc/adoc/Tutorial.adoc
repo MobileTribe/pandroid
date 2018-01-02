@@ -798,6 +798,14 @@ include::{demoJava}main/scanner/ScannerFragment.java[tags=Vision]
 
 A custom Lollipop loader is available to create beautiful loading screens.
 
+.PandroidCompat
+
+PandroidCompat(TextView/EditText/...) are available to support Vector Drawable on pre lollipop devices.
+
+[source,xml]
+----
+include::{demoRes}layout/fragment_animation.xml[tags=vectorCompat]
+----
 
 == Storage
 

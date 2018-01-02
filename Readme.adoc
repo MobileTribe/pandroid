@@ -22,6 +22,11 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.5.4* - (2017-12-15)
+*Feature*
+- add PandroidCompat components to support VectorDrawable on TextView
+
+
 ### *2.5.3* - (2017-12-15)
 *Refactor*
 - change productFlavors to secureConfigFields to work with buildType too

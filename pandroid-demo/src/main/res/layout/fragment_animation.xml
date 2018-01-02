@@ -41,12 +41,15 @@
             android:text="@string/animation_rotate"
             android:textColor="@color/white"
             android:textSize="@dimen/xlarge_text" />
-
-        <Button
+<!-- tag::vectorCompat[] -->
+        <com.leroymerlin.pandroid.ui.support.PandroidCompatButton
             android:id="@+id/animation_btn_material"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/animation_open_material" />
+            android:text="@string/animation_open_material"
+            app:drawableLeftPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableTintPCompat="@color/pandroid_green"/>
+<!-- end::vectorCompat[] -->
 
         <ImageView
             android:id="@+id/animation_iv_material"
