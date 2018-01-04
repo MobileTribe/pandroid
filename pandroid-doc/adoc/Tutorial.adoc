@@ -478,11 +478,12 @@ Pandroid extension provide tools to encrypt your critical keys. This encryption 
 [source,java]
 ----
 pandroid{
-    productFlavors{
+    secureConfigFields{
         all{
             secureField "YOUR_KEY_NAME", "YOUR_KEY"
         }
-        prod {
+        //apply on applicationVariant that contrains the name
+        prod { //proDebug prodRelease
             secureField "YOUR_KEY_NAME", "YOUR_PROD_KEY"
         }
     }
@@ -790,6 +791,11 @@ pandroid{
 include::{demoJava}main/scanner/ScannerFragment.java[tags=Vision]
 ----
 
+=== LayoutInflater factories
+
+If you need a custom behaviour in your layout inflater you can override getLayoutInflaterFactories
+in PandroidActivity to provide your own Factories.
+By default Pandroid enable view support for pre lollipop devices.
 
 === Custom Views
 
@@ -797,6 +803,16 @@ include::{demoJava}main/scanner/ScannerFragment.java[tags=Vision]
 
 A custom Lollipop loader is available to create beautiful loading screens.
 
+
+.PandroidCompat
+
+PandroidCompat(TextView/EditText/...) are available to support Vector Drawable on pre lollipop devices.
+By default those view will be enable automatically like AppCompat Components.
+
+[source,xml]
+----
+include::{demoRes}layout/fragment_animation.xml[tags=vectorCompat]
+----
 
 == Storage
 

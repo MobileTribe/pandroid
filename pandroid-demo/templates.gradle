@@ -133,6 +133,10 @@ templates {
                 value = 'AppModule';
                 replace = "${baseName}AppModule";
             }
+            daggerComponentName{
+                value = "DaggerAppComponent"
+                replace = "Dagger${baseName}AppModule";
+            }
             presenterClass {
                 value = 'AppComponent';
                 replace = "${baseName}AppComponent";

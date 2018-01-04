@@ -25,29 +25,9 @@ class SecureProperty {
         props.put(key, value);
     }
 
-    public void apply(Project project) {
-        /*def hasAppPlugin = project.plugins.hasPlugin("com.android.application")
-        if (hasAppPlugin) {*/
-
-        /*project.android.buildTypes.each {
-            buildTypes ->
-                applyBuildConfigField(project, buildTypes)
-        }*/
-
-        project.android.applicationVariants.all {
-            variant ->
-
-                String name = variant.name
-                if (variant.flavorName.equals(this.name)) {
-                    applyBuildConfigField(project, variant);
-                }
-        }
-
-    }
-
     // variant.variantData.variantConfiguration.signingConfig
 
-    private void applyBuildConfigField(Project project, def variant) {
+    public void applyBuildConfigField(def variant) {
         def signingConfig = variant.buildType.signingConfig;
 
         if (signingConfig == null) {

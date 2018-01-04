@@ -179,7 +179,7 @@ class PandroidPluginTest {
 
 
         project.pandroid {
-            productFlavors {
+            secureConfigFields {
 
                 all {
                     secureField "key1", "encryptedKey"

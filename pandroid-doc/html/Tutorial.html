@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.5.2-SNAPSHOT, Tue Dec 05 11:30:13 CET 2017">
+<meta name="author" content="Pandroid v2.5.4-SNAPSHOT, Thu Jan 04 17:48:08 CET 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.5.2-SNAPSHOT, Tue Dec 05 11:30:13 CET 2017</span><br>
+<span id="author" class="author">Pandroid v2.5.4-SNAPSHOT, Thu Jan 04 17:48:08 CET 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -564,7 +564,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#list-header">5.3. List header</a></li>
 <li><a href="#toast">5.4. Toast</a></li>
 <li><a href="#scanner">5.5. Scanner</a></li>
-<li><a href="#custom-views">5.6. Custom Views</a></li>
+<li><a href="#layoutinflater-factories">5.6. LayoutInflater factories</a></li>
+<li><a href="#custom-views">5.7. Custom Views</a></li>
 </ul>
 </li>
 <li><a href="#storage">6. Storage</a>
@@ -915,6 +916,8 @@ This activity handles the following points :</p>
     <span class="annotation">@CallSuper</span>
     <span class="annotation">@Override</span>
     <span class="directive">protected</span> <span class="type">void</span> onCreate(Bundle savedInstanceState) {
+        <span class="comment">//override layout inflater factory if a custom factory is set</span>
+        PandroidViewFactory.installPandroidViewFactory(<span class="local-variable">this</span>);
         <span class="local-variable">super</span>.onCreate(savedInstanceState);
         <span class="comment">//initialize PandroidDelegate with the default from PandroidApplication</span>
         BaseComponent baseComponent = PandroidApplication.getInjector(<span class="local-variable">this</span>).getBaseComponent();
@@ -1640,11 +1643,12 @@ None of these encryption methods are unbreakable. Keep in mind that the best way
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">pandroid{
-    productFlavors{
+    secureConfigFields{
         all{
             secureField <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_KEY_NAME</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_KEY</span><span class="delimiter">&quot;</span></span>
         }
-        prod {
+        <span class="comment">//apply on applicationVariant that contrains the name</span>
+        prod { <span class="comment">//proDebug prodRelease</span>
             secureField <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_KEY_NAME</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">YOUR_PROD_KEY</span><span class="delimiter">&quot;</span></span>
         }
     }
@@ -2388,10 +2392,35 @@ The official documentation is available <a href="https://developers.google.com/v
 </div>
 </div>
 <div class="sect2">
-<h3 id="custom-views">5.6. Custom Views</h3>
+<h3 id="layoutinflater-factories">5.6. LayoutInflater factories</h3>
+<div class="paragraph">
+<p>If you need a custom behaviour in your layout inflater you can override getLayoutInflaterFactories
+in PandroidActivity to provide your own Factories.
+By default Pandroid enable view support for pre lollipop devices.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="custom-views">5.7. Custom Views</h3>
 <div class="paragraph">
 <div class="title">ProgressWheel</div>
 <p>A custom Lollipop loader is available to create beautiful loading screens.</p>
+</div>
+<div class="paragraph">
+<div class="title">PandroidCompat</div>
+<p>PandroidCompat(TextView/EditText/&#8230;&#8203;) are available to support Vector Drawable on pre lollipop devices.
+By default those view will be enable automatically like AppCompat Components.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">        <span class="tag">&lt;Button</span>
+            <span class="attribute-name">android:id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@+id/animation_btn_material</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:layout_width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">match_parent</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:layout_height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wrap_content</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@string/animation_open_material</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableLeftPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableTintPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@color/pandroid_green</span><span class="delimiter">&quot;</span></span>
+             <span class="tag">/&gt;</span></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2581,7 +2610,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-12-05 11:30:09 +01:00
+Last updated 2018-01-04 17:48:04 +01:00
 </div>
 </div>
 </body>

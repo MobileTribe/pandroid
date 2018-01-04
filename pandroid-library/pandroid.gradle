@@ -209,9 +209,7 @@ apply plugin 'com.google.gms.google-services'
                     }
                 }
 
-                if (plugins.findPlugin("io.fabric") == null) {
-                    throw new GradleException("crashlytics plugin is missing. please add classpath 'io.fabric.tools:gradle:1.24.4'")
-                } else if (!plugins.hasPlugin("io.fabric")) {
+                if (!plugins.hasPlugin("io.fabric")) {
                     apply plugin: "io.fabric"
                 }
 

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.leroymerlin.pandroid.ui.animation.view.AnimatedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/animation_root_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,12 +44,16 @@
             android:text="@string/animation_rotate"
             android:textColor="@color/white"
             android:textSize="@dimen/xlarge_text" />
-
+<!-- tag::vectorCompat[] -->
         <Button
             android:id="@+id/animation_btn_material"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/animation_open_material" />
+            android:text="@string/animation_open_material"
+            app:drawableLeftPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableTintPCompat="@color/pandroid_green"
+             />
+<!-- end::vectorCompat[] -->
 
         <ImageView
             android:id="@+id/animation_iv_material"
