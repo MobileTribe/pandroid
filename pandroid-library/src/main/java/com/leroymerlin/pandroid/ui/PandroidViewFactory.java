@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.leroymerlin.pandroid.log.LogcatLogger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,20 +31,31 @@ public class PandroidViewFactory implements LayoutInflater.Factory2 {
     }
 
     public static void installPandroidViewFactory(AppCompatActivity compatActivity) {
+        List<LayoutInflater.Factory2> factories = new ArrayList<>();
         if (compatActivity instanceof PandroidFactoryProvider) {
-            List<LayoutInflater.Factory2> factories = ((PandroidFactoryProvider) compatActivity).getLayoutInflaterFactories();
-            if (factories != null && !factories.isEmpty()) {
-                LayoutInflater inflater = LayoutInflater.from(compatActivity);
-                if (inflater.getFactory2() == null) {
-                    PandroidViewFactory factory = new PandroidViewFactory(compatActivity.getDelegate(), factories);
-                    LayoutInflaterCompat.setFactory2(inflater, factory);
-                } else {
-                    LogcatLogger.getInstance().w(TAG, "can't set layout inflater factory");
-                }
+            addProviderFactories((PandroidFactoryProvider) compatActivity, factories);
+        }
+        if (compatActivity.getApplication() instanceof PandroidFactoryProvider) {
+            addProviderFactories((PandroidFactoryProvider) compatActivity.getApplication(), factories);
+        }
+        if (!factories.isEmpty()) {
+            LayoutInflater inflater = LayoutInflater.from(compatActivity);
+            if (inflater.getFactory2() == null) {
+                PandroidViewFactory factory = new PandroidViewFactory(compatActivity.getDelegate(), factories);
+                LayoutInflaterCompat.setFactory2(inflater, factory);
+            } else {
+                LogcatLogger.getInstance().w(TAG, "can't set layout inflater factory");
             }
         } else {
-            LogcatLogger.getInstance().w(TAG, "Your activity should implement PandroidFactoryProvider to install PandroidLayoutInflaterFactory");
+            LogcatLogger.getInstance().w(TAG, "Your activity or application should implement PandroidFactoryProvider to install PandroidLayoutInflaterFactory");
+        }
 
+    }
+
+    private static void addProviderFactories(PandroidFactoryProvider compatActivity, List<LayoutInflater.Factory2> factories) {
+        List<LayoutInflater.Factory2> activityFactories = compatActivity.getLayoutInflaterFactories();
+        if (activityFactories != null) {
+            factories.addAll(activityFactories);
         }
     }
 
