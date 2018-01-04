@@ -44,10 +44,6 @@ public abstract class PandroidDrawerActivity<T extends ActivityOpener> extends P
         mDrawerToggle.syncState();
     }
 
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        super.setContentView(layoutResID);
-    }
 
 
     public abstract int getToolbarId();

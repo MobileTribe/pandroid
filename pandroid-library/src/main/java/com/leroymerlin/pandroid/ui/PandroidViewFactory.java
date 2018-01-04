@@ -1,0 +1,64 @@
+package com.leroymerlin.pandroid.ui;
+
+import android.content.Context;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import com.leroymerlin.pandroid.log.LogcatLogger;
+
+import java.util.List;
+
+/**
+ * Created by florian on 03/01/2018.
+ */
+
+public class PandroidViewFactory implements LayoutInflater.Factory2 {
+
+
+    private static final String TAG = "PandroidLayoutInflater";
+
+    private List<LayoutInflater.Factory2> factories;
+    private AppCompatDelegate appDelegate;
+
+    private PandroidViewFactory(AppCompatDelegate delegate, List<LayoutInflater.Factory2> factories) {
+        this.factories = factories;
+        this.appDelegate = delegate;
+    }
+
+    public static void installPandroidViewFactory(AppCompatActivity compatActivity) {
+        if (compatActivity instanceof PandroidFactoryProvider) {
+            List<LayoutInflater.Factory2> factories = ((PandroidFactoryProvider) compatActivity).getLayoutInflaterFactories();
+            if (factories != null && !factories.isEmpty()) {
+                LayoutInflater inflater = LayoutInflater.from(compatActivity);
+                if (inflater.getFactory2() == null) {
+                    PandroidViewFactory factory = new PandroidViewFactory(compatActivity.getDelegate(), factories);
+                    LayoutInflaterCompat.setFactory2(inflater, factory);
+                } else {
+                    LogcatLogger.getInstance().w(TAG, "can't set layout inflater factory");
+                }
+            }
+        } else {
+            LogcatLogger.getInstance().w(TAG, "Your activity should implement PandroidFactoryProvider to install PandroidLayoutInflaterFactory");
+
+        }
+    }
+
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        for (LayoutInflater.Factory2 factory2 : factories) {
+            View result = factory2.onCreateView(parent, name, context, attrs);
+            if (result != null)
+                return result;
+        }
+        return appDelegate.createView(parent, name, context, attrs);
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return onCreateView(null, name, context, attrs);
+    }
+}
