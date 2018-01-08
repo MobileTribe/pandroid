@@ -96,6 +96,7 @@ public class GeneratePandroidTask extends BaseTask {
             task.setVariantName(variantData.name)
             task.setAppPackageName(variantConfiguration.originalApplicationId)
             this.mapperBuilder.addExtraField(Boolean.class, PandroidConfigMapperBuilder.FIELD_VIEW_SUPPORT, ((PandroidPluginExtension) project.pandroid).enableViewSupport.toString())
+            task.setMapperBuilder(this.mapperBuilder)
             task.setSourceOutputDir(new File(scope.globalScope.getBuildDir(), "generated" + "/source/pandroid/" + variantData.getVariantConfiguration().getDirName()));
             return task;
         }

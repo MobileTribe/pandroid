@@ -85,7 +85,7 @@ public class PandroidConfigMapperBuilder {
             setupConfigMethodBuilder.addStatement("$T.$L = $T.$L", pandroidConfigClassName, field, buildConfigClassName, field);
         }
         for (String field : mapperFieldsName) {
-            setupConfigMethodBuilder.addStatement("$T.$L = $T.$L", pandroidConfigClassName, field, PandroidMapper.MAPPER_IMPL_NAME, field);
+            setupConfigMethodBuilder.addStatement("$T.$L = $L.$L", pandroidConfigClassName, field, PandroidMapper.MAPPER_IMPL_NAME, field);
         }
         result.addMethod(setupConfigMethodBuilder.build());
         // ###### setupConfig ######
