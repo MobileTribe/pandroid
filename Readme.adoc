@@ -22,6 +22,11 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.5.5* - (2018-01-08)
+*Refactor*
+- RxLifecycleDelege - add bindLifecycleObserveOnMain method
+- PandroidCompat - add option in Pandroid extension to enable support
+
 ### *2.5.4* - (2018-01-04)
 *Feature*
 - add PandroidCompat components to support VectorDrawable on TextView
