@@ -41,7 +41,8 @@ public class ToastFragment extends PandroidFragment<FragmentOpener> {
                 toastManager.makeToast(getActivity(), (String) v.getText(), new ToastManager.ToastListener() {
                     @Override
                     public void onDismiss() {
-                        Toast.makeText(getActivity(), "onDismiss", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "onDismiss", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -59,7 +60,8 @@ public class ToastFragment extends PandroidFragment<FragmentOpener> {
 
                     @Override
                     public void onActionClicked() {
-                        Toast.makeText(getActivity(), "onActionClicked", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "onActionClicked", Toast.LENGTH_SHORT).show();
                     }
                 }, R.style.Toast_Warm);
                 break;
