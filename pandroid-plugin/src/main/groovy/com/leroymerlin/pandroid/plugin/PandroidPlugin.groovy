@@ -80,6 +80,10 @@ class PandroidPlugin implements Plugin<Project> {
                 }
             }
         }
+
+        project.afterEvaluate {
+            this.configMapperBuilder.addExtraField(Boolean.class, PandroidConfigMapperBuilder.FIELD_VIEW_SUPPORT, extension.enableViewSupport.toString())
+        }
     }
 
     File getEmbededFile(String fileName) {
