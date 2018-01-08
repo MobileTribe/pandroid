@@ -791,11 +791,14 @@ pandroid{
 include::{demoJava}main/scanner/ScannerFragment.java[tags=Vision]
 ----
 
-=== LayoutInflater factories
+=== Custom LayoutInflater factories
 
-If you need a custom behaviour in your layout inflater you can override getLayoutInflaterFactories
-in PandroidActivity to provide your own Factories.
-By default Pandroid enable view support for pre lollipop devices.
+If you need a custom behaviour in your layout inflater you can override *getLayoutInflaterFactories*
+in PandroidApplication to provide your own factories. If needed you can implement *PandroidFactoryProvider*
+in your Activity to add a local factory.
+
+By default Pandroid is configure to add a ViewCompatFactory if you enable it in the extension.
+See Pandroid *PandroidCompat* for details
 
 === Custom Views
 
@@ -807,7 +810,16 @@ A custom Lollipop loader is available to create beautiful loading screens.
 .PandroidCompat
 
 PandroidCompat(TextView/EditText/...) are available to support Vector Drawable on pre lollipop devices.
-By default those view will be enable automatically like AppCompat Components.
+To enable this support use pandroid extension
+
+[source,gradle]
+----
+pandroid {
+    enableViewSupport = true
+}
+----
+
+Or use PandroidCompat views in your xml
 
 [source,xml]
 ----

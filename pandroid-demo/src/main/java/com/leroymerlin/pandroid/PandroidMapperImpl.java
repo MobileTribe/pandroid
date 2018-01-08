@@ -19,6 +19,8 @@ public class PandroidMapperImpl extends PandroidMapper {
 
     public static final String PACKAGE = "com.leroymerlin.pandroid.demo";
 
+    public static final boolean VIEW_SUPPORT = true;
+
     @Override
     public void setupConfig() {
         PandroidConfig.DEBUG = BuildConfig.DEBUG;
@@ -28,6 +30,7 @@ public class PandroidMapperImpl extends PandroidMapper {
         PandroidConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         PandroidConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         PandroidConfig.LIBRARIES = PandroidMapperImpl.LIBRARIES;
+        PandroidConfig.VIEW_SUPPORT = PandroidMapperImpl.VIEW_SUPPORT;
     }
 
     @Override

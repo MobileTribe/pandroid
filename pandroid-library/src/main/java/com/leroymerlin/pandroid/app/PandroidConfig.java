@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 public class PandroidConfig {
 
 
+    public static boolean VIEW_SUPPORT = false;
     public static boolean DEBUG = false;
     public static String APPLICATION_ID = "";
     public static String BUILD_TYPE = "debug";

@@ -34,24 +34,27 @@ public class GeneratePandroidTask extends BaseTask {
 
     private String appPackageName;
 
+
+    @Input
     public void setMapperBuilder(PandroidConfigMapperBuilder mapperBuilder) {
         this.mapperBuilder = mapperBuilder;
     }
 
-    @Input
     public String getApplicationId() {
         return applicationId;
     }
 
+    @Input
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
     }
 
-    @Input
     public String getAppPackageName() {
         return appPackageName;
     }
 
+
+    @Input
     public void setAppPackageName(String appPackageName) {
         this.appPackageName = appPackageName;
     }
@@ -92,7 +95,7 @@ public class GeneratePandroidTask extends BaseTask {
             task.setApplicationId(variantData.applicationId)
             task.setVariantName(variantData.name)
             task.setAppPackageName(variantConfiguration.originalApplicationId)
-            task.setMapperBuilder(this.mapperBuilder)
+            this.mapperBuilder.addExtraField(Boolean.class, PandroidConfigMapperBuilder.FIELD_VIEW_SUPPORT, ((PandroidPluginExtension) project.pandroid).enableViewSupport.toString())
             task.setSourceOutputDir(new File(scope.globalScope.getBuildDir(), "generated" + "/source/pandroid/" + variantData.getVariantConfiguration().getDirName()));
             return task;
         }
