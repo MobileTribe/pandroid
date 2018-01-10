@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.5.4-SNAPSHOT, Thu Jan 04 17:48:08 CET 2018">
+<meta name="author" content="Pandroid v2.5.5-SNAPSHOT, Wed Jan 10 17:37:36 CET 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.5.4-SNAPSHOT, Thu Jan 04 17:48:08 CET 2018</span><br>
+<span id="author" class="author">Pandroid v2.5.5-SNAPSHOT, Wed Jan 10 17:37:36 CET 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -564,7 +564,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#list-header">5.3. List header</a></li>
 <li><a href="#toast">5.4. Toast</a></li>
 <li><a href="#scanner">5.5. Scanner</a></li>
-<li><a href="#layoutinflater-factories">5.6. LayoutInflater factories</a></li>
+<li><a href="#custom-layoutinflater-factories">5.6. Custom LayoutInflater factories</a></li>
 <li><a href="#custom-views">5.7. Custom Views</a></li>
 </ul>
 </li>
@@ -1498,6 +1498,7 @@ in order to access useful methods to register you Observable on the app lifecycl
 
 <span class="comment">//RxFragment.java</span>
 <span class="directive">public</span> <span class="type">class</span> <span class="class">RxFragment</span> <span class="directive">extends</span> RxPandroidFragment&lt;FragmentOpener&gt; {
+    <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="predefined-type">String</span> TAG = <span class="string"><span class="delimiter">&quot;</span><span class="content">RxFragment</span><span class="delimiter">&quot;</span></span>;
     <span class="annotation">@Inject</span>
     RxReviewManager reviewManager;
 
@@ -1506,20 +1507,14 @@ in order to access useful methods to register you Observable on the app lifecycl
         <span class="local-variable">super</span>.onResume();
 
         reviewManager.rxGetLastReview()
-                .flatMap(<span class="keyword">new</span> Function&lt;RxActionDelegate.Result&lt;Review&gt;, SingleSource&lt;Review&gt;&gt;() {
-                    <span class="annotation">@Override</span>
-                    <span class="directive">public</span> SingleSource&lt;Review&gt; apply(<span class="annotation">@NonNull</span> RxActionDelegate.Result&lt;Review&gt; reviewResult) <span class="directive">throws</span> <span class="exception">Exception</span> {
-                        <span class="keyword">return</span> reviewResult.result != <span class="predefined-constant">null</span> ? Single.just(reviewResult.result) : reviewManager.rxGetReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>);
-                    }
-                })
-                .compose(<span class="local-variable">this</span>.&lt;Review&gt;bindLifecycle())
-                .subscribe(<span class="keyword">new</span> Consumer&lt;Review&gt;() {
-                    <span class="annotation">@Override</span>
-                    <span class="directive">public</span> <span class="type">void</span> accept(<span class="annotation">@NonNull</span> Review review) <span class="directive">throws</span> <span class="exception">Exception</span> {
-                        <span class="comment">//we are sure fragment is still not detached thanks to the compose</span>
-                        <span class="comment">//no need to check getActivity()!=null</span>
-                        toastManager.makeToast(getActivity(), review.getTitle(), <span class="predefined-constant">null</span>);
-                    }
+                .flatMap(reviewResult -&gt; reviewResult.result != <span class="predefined-constant">null</span> ? Single.just(reviewResult.result) : reviewManager.rxGetReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>))
+                .compose(<span class="local-variable">this</span>.&lt;Review&gt;bindLifecycleObserveOnMain())
+                .subscribe(review -&gt; {
+                    <span class="comment">//we are sure fragment is still not detached thanks to the compose</span>
+                    <span class="comment">//no need to check getActivity()!=null</span>
+                    toastManager.makeToast(getActivity(), review.getTitle(), <span class="predefined-constant">null</span>);
+                }, throwable -&gt; {
+                    logWrapper.w(TAG, throwable);
                 });</code></pre>
 </div>
 </div>
@@ -2392,11 +2387,15 @@ The official documentation is available <a href="https://developers.google.com/v
 </div>
 </div>
 <div class="sect2">
-<h3 id="layoutinflater-factories">5.6. LayoutInflater factories</h3>
+<h3 id="custom-layoutinflater-factories">5.6. Custom LayoutInflater factories</h3>
 <div class="paragraph">
-<p>If you need a custom behaviour in your layout inflater you can override getLayoutInflaterFactories
-in PandroidActivity to provide your own Factories.
-By default Pandroid enable view support for pre lollipop devices.</p>
+<p>If you need a custom behaviour in your layout inflater you can override <strong>getLayoutInflaterFactories</strong>
+in PandroidApplication to provide your own factories. If needed you can implement <strong>PandroidFactoryProvider</strong>
+in your Activity to add a local factory.</p>
+</div>
+<div class="paragraph">
+<p>By default Pandroid is configure to add a ViewCompatFactory if you enable it in the extension.
+See Pandroid <strong>PandroidCompat</strong> for details</p>
 </div>
 </div>
 <div class="sect2">
@@ -2408,18 +2407,48 @@ By default Pandroid enable view support for pre lollipop devices.</p>
 <div class="paragraph">
 <div class="title">PandroidCompat</div>
 <p>PandroidCompat(TextView/EditText/&#8230;&#8203;) are available to support Vector Drawable on pre lollipop devices.
-By default those view will be enable automatically like AppCompat Components.</p>
+To enable this support use pandroid extension</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">        <span class="tag">&lt;Button</span>
+<pre class="CodeRay highlight"><code data-lang="gradle">pandroid {
+    enableViewSupport = true
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or use PandroidCompat views in your xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">        <span class="comment">&lt;!-- if pandroid{ enableViewSupport = true } Button will be replace by Pandroid support view--&gt;</span>
+        <span class="tag">&lt;Button</span>
+            <span class="attribute-name">tools:ignore</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MissingPrefix</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">android:id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@+id/animation_btn_material</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">android:layout_width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">match_parent</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">android:layout_height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wrap_content</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">android:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@string/animation_open_material</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">app:drawableLeftPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableRightPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableTopPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableBottomPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
             <span class="attribute-name">app:drawableTintPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@color/pandroid_green</span><span class="delimiter">&quot;</span></span>
-             <span class="tag">/&gt;</span></code></pre>
+             <span class="tag">/&gt;</span>
+
+        <span class="comment">&lt;!-- if pandroid{ enableViewSupport = false } you can use Pandroid support view--&gt;</span>
+        <span class="tag">&lt;com.leroymerlin.pandroid.ui.support.PandroidCompatButton</span>
+            <span class="attribute-name">tools:ignore</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">MissingPrefix</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:layout_width</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">match_parent</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:layout_height</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wrap_content</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:text</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@string/animation_open_material</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableLeftPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableRightPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableTopPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableBottomPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@drawable/ic_error_outline_24dp</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">app:drawableTintPCompat</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">@color/pandroid_green</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">android:visibility</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">gone</span><span class="delimiter">&quot;</span></span>
+            <span class="attribute-name">tools:visibility</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">visible</span><span class="delimiter">&quot;</span></span>
+            <span class="tag">/&gt;</span></code></pre>
 </div>
 </div>
 </div>
@@ -2610,7 +2639,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-01-04 17:48:04 +01:00
+Last updated 2018-01-10 17:37:30 +01:00
 </div>
 </div>
 </body>
