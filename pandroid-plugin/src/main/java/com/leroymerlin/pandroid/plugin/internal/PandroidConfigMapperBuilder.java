@@ -23,9 +23,18 @@ import javax.lang.model.element.Modifier;
 
 public class PandroidConfigMapperBuilder {
 
+    public static final String FIELD_VIEW_SUPPORT = "VIEW_SUPPORT";
+
+
     List<String> libraries = new ArrayList<String>();
+    List<FieldSpec> extraFields = new ArrayList<>();
 
     public PandroidConfigMapperBuilder() {
+    }
+
+
+    public void addExtraField(Class type, String name, String value){
+        this.extraFields.add(FieldSpec.builder(type, name, Modifier.STATIC, Modifier.FINAL, Modifier.PUBLIC).initializer("$L", value).build());
     }
 
     public void addLibrary(String name) {
@@ -33,6 +42,7 @@ public class PandroidConfigMapperBuilder {
     }
 
     static final List<String> fieldsName = Arrays.asList("DEBUG", "APPLICATION_ID", "BUILD_TYPE", "FLAVOR", "VERSION_CODE", "VERSION_NAME");
+    static final List<String> mapperFieldsName = Arrays.asList("LIBRARIES", FIELD_VIEW_SUPPORT);
 
 
     public void buildClass(String applicationId, String packageName, File outputFolder) throws IOException {
@@ -56,8 +66,16 @@ public class PandroidConfigMapperBuilder {
                                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC).initializer(tagInitBlockBuilder.build()).build());
 
 
+        // ###### EXTRA FIELDS ######
+        for(FieldSpec extraField : extraFields){
+            result.addField(extraField);
+        }
+        // ###### EXTRA FIELDS ######
+
+
         // ###### PACKAGE ATTR ######
         result.addField(FieldSpec.builder(String.class, PandroidMapper.PACKAGE_ATTR, Modifier.STATIC, Modifier.FINAL, Modifier.PUBLIC).initializer("$S", packageName).build());
+        // ###### PACKAGE ATTR ######
 
         // ###### setupConfig ######
         ClassName pandroidConfigClassName = ClassName.get("com.leroymerlin.pandroid.app", "PandroidConfig");
@@ -66,7 +84,9 @@ public class PandroidConfigMapperBuilder {
         for (String field : fieldsName) {
             setupConfigMethodBuilder.addStatement("$T.$L = $T.$L", pandroidConfigClassName, field, buildConfigClassName, field);
         }
-        setupConfigMethodBuilder.addStatement("$T.LIBRARIES = $L.LIBRARIES", pandroidConfigClassName, PandroidMapper.MAPPER_IMPL_NAME);
+        for (String field : mapperFieldsName) {
+            setupConfigMethodBuilder.addStatement("$T.$L = $L.$L", pandroidConfigClassName, field, PandroidMapper.MAPPER_IMPL_NAME, field);
+        }
         result.addMethod(setupConfigMethodBuilder.build());
         // ###### setupConfig ######
 

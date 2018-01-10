@@ -22,7 +22,7 @@ class VectorCompatHelper {
             int drawableLeftRes = typedArray.getResourceId(R.styleable
                     .PandroidCompat_drawableLeftPCompat, 0);
             int drawableTopRes = typedArray.getResourceId(R.styleable
-                    .PandroidCompat_drawableTintPCompat, 0);
+                    .PandroidCompat_drawableTopPCompat, 0);
             int drawableRightRes = typedArray.getResourceId(R.styleable
                     .PandroidCompat_drawableRightPCompat, 0);
             int drawableBottomRes = typedArray.getResourceId(R.styleable

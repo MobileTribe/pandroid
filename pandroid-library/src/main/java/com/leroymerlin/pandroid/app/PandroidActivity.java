@@ -39,7 +39,7 @@ import java.util.List;
  * If static field TAG is set PandroidActivity inject Broadcast receiver himself
  */
 @RxWrapper
-public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivity implements Cancellable.CancellableRegister, OpenerReceiverProvider, PandroidDelegateProvider, PandroidFactoryProvider {
+public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivity implements Cancellable.CancellableRegister, OpenerReceiverProvider, PandroidDelegateProvider {
 
     protected LogWrapper logWrapper;
     protected EventBusManager eventBusManager;
@@ -230,19 +230,4 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
         eventBusManager.sendSync(event);
     }
 
-
-    /**
-     * factories to use in the layout inflater. By default Pandroid add a CompatViewFactory
-     * on pre-lollipop version
-     *
-     * @return list of custom LayoutInflater factories
-     */
-    @Override
-    public List<LayoutInflater.Factory2> getLayoutInflaterFactories() {
-        ArrayList<LayoutInflater.Factory2> factories = new ArrayList<>();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            factories.add(new PandroidCompatViewFactory());
-        }
-        return factories;
-    }
 }

@@ -2,7 +2,9 @@ package com.leroymerlin.pandroid;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.VisibleForTesting;
+import android.view.LayoutInflater;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
@@ -25,6 +27,8 @@ import com.leroymerlin.pandroid.log.CrashlyticsLogger;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.LogcatLogger;
 import com.leroymerlin.pandroid.log.PandroidLogger;
+import com.leroymerlin.pandroid.ui.PandroidFactoryProvider;
+import com.leroymerlin.pandroid.ui.support.PandroidCompatViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ import javax.inject.Inject;
 /**
  * Created by florian on 04/12/15.
  */
-public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidInjector {
+public class PandroidApplication extends Application implements PandroidDelegateProvider, ReceiversProvider, PandroidInjector, PandroidFactoryProvider {
 
 
     private static final String TAG = "PandroidApplication";
@@ -159,6 +163,21 @@ public class PandroidApplication extends Application implements PandroidDelegate
     @Override
     public List<EventBusManager.EventBusReceiver> getReceivers() {
         return new ArrayList<EventBusManager.EventBusReceiver>(createBaseActivityReceivers());
+    }
+
+    /**
+     * factories to use in the layout inflater. If pandroid view support is enable CompatViewFactory
+     * will be added
+     *
+     * @return list of custom LayoutInflater factories
+     */
+    @Override
+    public List<LayoutInflater.Factory2> getLayoutInflaterFactories() {
+        ArrayList<LayoutInflater.Factory2> factories = new ArrayList<>();
+        if (PandroidConfig.VIEW_SUPPORT) {
+            factories.add(new PandroidCompatViewFactory());
+        }
+        return factories;
     }
 
 }

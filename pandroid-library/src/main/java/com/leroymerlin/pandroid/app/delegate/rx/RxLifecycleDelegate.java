@@ -10,6 +10,7 @@ import com.leroymerlin.pandroid.app.delegate.SimpleLifecycleDelegate;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -22,6 +23,16 @@ public class RxLifecycleDelegate extends SimpleLifecycleDelegate {
 
     private final BehaviorSubject<RxLifeCycleEvent> mLifecycleSubject = BehaviorSubject.create();
 
+
+    @RxModel(targets = {PandroidDelegateProvider.class})
+    public static <T> MainObserverTransformer<T> observeOnMain() {
+        return bindLifecycleObserveOnMain(null);
+    }
+
+    @RxModel(targets = {PandroidDelegateProvider.class})
+    public static <T> MainObserverTransformer<T> bindLifecycleObserveOnMain(@Nullable PandroidDelegateProvider provider) {
+        return new MainObserverTransformer<>(provider);
+    }
 
     @RxModel(targets = {PandroidDelegateProvider.class})
     public static <T> RxLifecycleTransformer<T> bindLifecycle(PandroidDelegateProvider provider, final RxLifeCycleEvent event) {
@@ -38,6 +49,7 @@ public class RxLifecycleDelegate extends SimpleLifecycleDelegate {
             }
         }));
     }
+
 
     @RxModel(targets = {PandroidDelegateProvider.class})
     public static <T> RxLifecycleTransformer<T> bindLifecycle(PandroidDelegateProvider provider) {
@@ -115,6 +127,7 @@ public class RxLifecycleDelegate extends SimpleLifecycleDelegate {
     private <T> RxLifecycleTransformer<T> bind(Observable<?> predicate) {
         return new RxLifecycleTransformer<>(predicate);
     }
+
 
     @Override
     public int getPriority() {

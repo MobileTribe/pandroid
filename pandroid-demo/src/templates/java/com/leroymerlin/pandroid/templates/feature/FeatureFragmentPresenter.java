@@ -44,8 +44,7 @@ public class FeatureFragmentPresenter extends RxPresenter<FeatureFragmentPresent
     public void reload() {
         PresenterView target = getView();
         loadData()
-                .compose(this.bindLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.bindLifecycleObserveOnMain())
                 .doOnSubscribe(featureModels -> target.showLoader())
                 .doOnDispose(target::hideLoader)
                 .doOnError((throwable) -> target.hideLoader())

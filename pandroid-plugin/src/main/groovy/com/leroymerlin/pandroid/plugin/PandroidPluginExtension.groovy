@@ -15,6 +15,8 @@ public class PandroidPluginExtension {
     final NamedDomainObjectContainer<LibraryConfigurator> configurators
     final NamedDomainObjectContainer<SecureProperty> secureProperties
 
+    boolean enableViewSupport = false
+
 
     PandroidPluginExtension(Project project, PandroidPlugin plugin) {
         this.plugin = plugin;

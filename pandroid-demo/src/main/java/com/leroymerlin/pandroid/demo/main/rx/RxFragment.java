@@ -31,6 +31,7 @@ import io.reactivex.functions.Function;
 
 //tag::RxWrapper[]
 public class RxFragment extends RxPandroidFragment<FragmentOpener> {
+    private static final String TAG = "RxFragment";
     @Inject
     RxReviewManager reviewManager;
 
@@ -55,20 +56,14 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
         super.onResume();
 
         reviewManager.rxGetLastReview()
-                .flatMap(new Function<RxActionDelegate.Result<Review>, SingleSource<Review>>() {
-                    @Override
-                    public SingleSource<Review> apply(@NonNull RxActionDelegate.Result<Review> reviewResult) throws Exception {
-                        return reviewResult.result != null ? Single.just(reviewResult.result) : reviewManager.rxGetReview("1");
-                    }
-                })
-                .compose(this.<Review>bindLifecycle())
-                .subscribe(new Consumer<Review>() {
-                    @Override
-                    public void accept(@NonNull Review review) throws Exception {
-                        //we are sure fragment is still not detached thanks to the compose
-                        //no need to check getActivity()!=null
-                        toastManager.makeToast(getActivity(), review.getTitle(), null);
-                    }
+                .flatMap(reviewResult -> reviewResult.result != null ? Single.just(reviewResult.result) : reviewManager.rxGetReview("1"))
+                .compose(this.<Review>bindLifecycleObserveOnMain())
+                .subscribe(review -> {
+                    //we are sure fragment is still not detached thanks to the compose
+                    //no need to check getActivity()!=null
+                    toastManager.makeToast(getActivity(), review.getTitle(), null);
+                }, throwable -> {
+                    logWrapper.w(TAG, throwable);
                 });
 
         //end::RxWrapper[]

@@ -5,7 +5,6 @@
     android:id="@+id/animation_root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingPrefix"
     >
 
     <LinearLayout
@@ -45,14 +44,34 @@
             android:textColor="@color/white"
             android:textSize="@dimen/xlarge_text" />
 <!-- tag::vectorCompat[] -->
+        <!-- if pandroid{ enableViewSupport = true } Button will be replace by Pandroid support view-->
         <Button
+            tools:ignore="MissingPrefix"
             android:id="@+id/animation_btn_material"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/animation_open_material"
             app:drawableLeftPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableRightPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableTopPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableBottomPCompat="@drawable/ic_error_outline_24dp"
             app:drawableTintPCompat="@color/pandroid_green"
              />
+
+        <!-- if pandroid{ enableViewSupport = false } you can use Pandroid support view-->
+        <com.leroymerlin.pandroid.ui.support.PandroidCompatButton
+            tools:ignore="MissingPrefix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/animation_open_material"
+            app:drawableLeftPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableRightPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableTopPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableBottomPCompat="@drawable/ic_error_outline_24dp"
+            app:drawableTintPCompat="@color/pandroid_green"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
 <!-- end::vectorCompat[] -->
 
         <ImageView

@@ -44,7 +44,9 @@ class PandroidPlugin implements Plugin<Project> {
         applyPropertiesOnProject(pandroid)
 
 
-        project.task("copyEmbededFiles", group: PANDROID_GROUP) << this.&copyEmbededFiles
+        project.task("copyEmbededFiles", group: PANDROID_GROUP).doFirst {
+            this.copyEmbededFiles()
+        }
         project.preBuild.dependsOn project.copyEmbededFiles
 
         applyEmbededFiles()
@@ -77,6 +79,10 @@ class PandroidPlugin implements Plugin<Project> {
                         }
                 }
             }
+        }
+
+        project.afterEvaluate {
+            this.configMapperBuilder.addExtraField(Boolean.class, PandroidConfigMapperBuilder.FIELD_VIEW_SUPPORT, extension.enableViewSupport.toString())
         }
     }
 

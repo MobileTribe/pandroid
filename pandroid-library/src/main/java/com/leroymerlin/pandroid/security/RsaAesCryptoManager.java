@@ -46,11 +46,11 @@ public class RsaAesCryptoManager implements CryptoManager {
     private static final String KEYPAIR_ALGO = "RSA";
     private static final String RSA_FORMAT = "RSA/ECB/PKCS1Padding";
 
-    private static final String KEY_ALIAS = "_k_";
-    private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    protected static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    protected String keyAlias = "_k_";
 
-    private final LogWrapper logWrapper;
-    private KeyStore keyStore;
+    protected final LogWrapper logWrapper;
+    protected KeyStore keyStore;
     Context context;
 
 
@@ -149,12 +149,12 @@ public class RsaAesCryptoManager implements CryptoManager {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     protected void initializeKeystore() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // Create new key if needed
-        if (!keyStore.containsAlias(KEY_ALIAS)) {
+        if (!keyStore.containsAlias(keyAlias)) {
             Calendar start = Calendar.getInstance();
             Calendar end = Calendar.getInstance();
             end.add(Calendar.YEAR, 1);
             KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(context)
-                    .setAlias(KEY_ALIAS)
+                    .setAlias(keyAlias)
                     .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
                     .setSerialNumber(BigInteger.ONE)
                     .setStartDate(start.getTime())
@@ -169,9 +169,9 @@ public class RsaAesCryptoManager implements CryptoManager {
     @TargetApi(Build.VERSION_CODES.M)
     protected void initializeKeystoreAndroidM() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // Create new key if needed
-        if (!keyStore.containsAlias(KEY_ALIAS)) {
+        if (!keyStore.containsAlias(keyAlias)) {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE);
-            keyPairGenerator.initialize(new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
+            keyPairGenerator.initialize(new KeyGenParameterSpec.Builder(keyAlias, KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                     .setUserAuthenticationRequired(false)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1).build());
@@ -185,7 +185,7 @@ public class RsaAesCryptoManager implements CryptoManager {
         try {
             Key publicKey = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
+                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
                 publicKey = privateKeyEntry.getCertificate().getPublicKey();
             } else {
                 publicKey = loadKeyPair().getPublic();
@@ -206,7 +206,7 @@ public class RsaAesCryptoManager implements CryptoManager {
         try {
             Key privateKey = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
+                KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
                 privateKey = privateKeyEntry.getPrivateKey();
 
             } else {

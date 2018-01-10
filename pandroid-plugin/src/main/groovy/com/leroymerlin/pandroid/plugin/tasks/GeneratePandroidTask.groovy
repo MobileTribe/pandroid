@@ -34,24 +34,27 @@ public class GeneratePandroidTask extends BaseTask {
 
     private String appPackageName;
 
+
+    @Input
     public void setMapperBuilder(PandroidConfigMapperBuilder mapperBuilder) {
         this.mapperBuilder = mapperBuilder;
     }
 
-    @Input
     public String getApplicationId() {
         return applicationId;
     }
 
+    @Input
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
     }
 
-    @Input
     public String getAppPackageName() {
         return appPackageName;
     }
 
+
+    @Input
     public void setAppPackageName(String appPackageName) {
         this.appPackageName = appPackageName;
     }
