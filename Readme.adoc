@@ -22,62 +22,6 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.5.5* - (2018-01-08)
-*Refactor*
-- RxLifecycleDelege - add bindLifecycleObserveOnMain method
-- PandroidCompat - add option in Pandroid extension to enable support
-
-### *2.5.4* - (2018-01-04)
-*Feature*
-- add PandroidCompat components to support VectorDrawable on TextView
-- add custom LayoutInflaterFactory support in PandroidActivity
-*Refactor*
-- SecureField now support buildTypes as name
-*Fix*
-- remove useless error wrapping un PandroidDelegate
-
-WARNING: pandroid { productFlavors {...}} has been renamed to pandroid { secureConfigFields {... }}
-
-
-### *2.5.3* - (2017-12-15)
-*Refactor*
-- change productFlavors to secureConfigFields to work with buildType too
-*Fix*
-- crashlytics configurator with  firebase
-
-### *2.5.2* - (2017-12-05)
-*Feature*
-- PictureManager - add cache key option
-*Refactor*
-- Update GMS to 11.6.2
-*Fix*
-- PictureManager - circle crop not working without scaletype
-
-### *2.5.1* - (2017-12-04)
-*Features*
-- EventBus - add @EventTag to receive tag in method
-- PictureManager - add circleCrop option
-*Refactor*
-- Update Google libraries
-- Enable Crashlytics logger automatically
-- Allow RxPandroidCall in retrofit service interface
-*Fix*
-- Finish getView method in Presenter
-
-
-### *2.5.0* - (2017-10-30)
-*Features*
-- Android studio Pandroid templates
-*Refactor*
-- LifecyclerDelegate ordered with a priority
-- Dagger injection in Pandroid
-- Update optional dependencies
-- Rename mOpener into opener
-*Fix*
-- Compatibility with Android plugin 3.0.0
-- RxWrapper - issue with ActionDelegate without parameter
-- AnimUtils - crash with DrawerLayout's size calculation
-
 
 ### *Older release*
 *link:{htmlPath}pandroid-doc/html/Changelog.html[See Full ChangeLog]*
