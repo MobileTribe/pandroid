@@ -42,11 +42,12 @@
 
 #GLIDE
 -keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.GeneratedAppGlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-    **[] $VALUES;
-    public *;
+  **[] $VALUES;
+  public *;
 }
+-keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
 
 #Dagger
 -dontwarn com.google.errorprone.annotations.*
