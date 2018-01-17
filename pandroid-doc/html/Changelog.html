@@ -514,6 +514,10 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel2">
+<li><a href="#strong-2-5-6-strong-2018-01-08"><strong>2.5.6</strong> - (2018-01-08)</a></li>
+<li><a href="#strong-2-5-5-strong-2018-01-08"><strong>2.5.5</strong> - (2018-01-08)</a></li>
+<li><a href="#strong-2-5-4-strong-2018-01-04"><strong>2.5.4</strong> - (2018-01-04)</a></li>
+<li><a href="#strong-2-5-3-strong-2017-12-15"><strong>2.5.3</strong> - (2017-12-15)</a></li>
 <li><a href="#strong-2-5-2-strong-2017-12-05"><strong>2.5.2</strong> - (2017-12-05)</a></li>
 <li><a href="#strong-2-5-1-strong-2017-12-04"><strong>2.5.1</strong> - (2017-12-04)</a></li>
 <li><a href="#strong-2-5-0-strong-2017-10-30"><strong>2.5.0</strong> - (2017-10-30)</a></li>
@@ -540,6 +544,54 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 <div id="content">
+<div class="sect2">
+<h3 id="strong-2-5-6-strong-2018-01-08"><strong>2.5.6</strong> - (2018-01-08)</h3>
+<div class="paragraph">
+<p><strong>Refactor</strong><br>
+- Update Glide to 4.5.0</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="strong-2-5-5-strong-2018-01-08"><strong>2.5.5</strong> - (2018-01-08)</h3>
+<div class="paragraph">
+<p><strong>Refactor</strong><br>
+- RxLifecycleDelege - add bindLifecycleObserveOnMain method<br>
+- PandroidCompat - add option in Pandroid extension to enable support</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="strong-2-5-4-strong-2018-01-04"><strong>2.5.4</strong> - (2018-01-04)</h3>
+<div class="paragraph">
+<p><strong>Feature</strong><br>
+- add PandroidCompat components to support VectorDrawable on TextView<br>
+- add custom LayoutInflaterFactory support in PandroidActivity<br>
+<strong>Refactor</strong><br>
+- SecureField now support buildTypes as name<br>
+<strong>Fix</strong><br>
+- remove useless error wrapping un PandroidDelegate</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+pandroid { productFlavors {&#8230;&#8203;}} has been renamed to pandroid { secureConfigFields {&#8230;&#8203; }}
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="strong-2-5-3-strong-2017-12-15"><strong>2.5.3</strong> - (2017-12-15)</h3>
+<div class="paragraph">
+<p><strong>Refactor</strong><br>
+- change productFlavors to secureConfigFields to work with buildType too<br>
+<strong>Fix</strong><br>
+- crashlytics configurator with  firebase</p>
+</div>
+</div>
 <div class="sect2">
 <h3 id="strong-2-5-2-strong-2017-12-05"><strong>2.5.2</strong> - (2017-12-05)</h3>
 <div class="paragraph">
@@ -766,7 +818,7 @@ Opener package changed to 'com.leroymerlin.pandroid.event.opener'
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-01-10 17:37:30 +01:00
+Last updated 2018-01-17 17:09:17 +01:00
 </div>
 </div>
 </body>

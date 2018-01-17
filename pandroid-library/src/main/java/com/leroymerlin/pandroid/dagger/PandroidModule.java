@@ -8,7 +8,9 @@ import com.leroymerlin.pandroid.event.EventBusManagerImpl;
 import com.leroymerlin.pandroid.log.LogWrapper;
 import com.leroymerlin.pandroid.log.PandroidLogger;
 
+import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -16,11 +18,12 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import okhttp3.internal.platform.Platform;
 
 /**
  * Created by mehdi on 30/11/2015.
@@ -65,7 +68,7 @@ public class PandroidModule {
         return getTrustManagers();
     }
 
-    protected List<TrustManager> getTrustManagers() {
+    protected List<TrustManager>  getTrustManagers() {
         return new ArrayList<>();
     }
 
@@ -116,9 +119,25 @@ public class PandroidModule {
     protected OkHttpClient.Builder getOkHttpClientBuilder(SSLContext sslContext) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-        builder.sslSocketFactory(socketFactory, Platform.get().trustManager(socketFactory));
+        builder.sslSocketFactory(socketFactory, getTrustManager());
         return builder;
     }
 
+    protected X509TrustManager getTrustManager() {
+        try {
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+
+            trustManagerFactory.init((KeyStore) null);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                throw new IllegalStateException("Unexpected default trust managers:"
+                        + Arrays.toString(trustManagers));
+            }
+            return (X509TrustManager) trustManagers[0];
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }
