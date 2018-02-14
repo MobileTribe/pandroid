@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
-import android.support.annotation.CheckResult;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -19,6 +18,7 @@ import java.lang.ref.WeakReference;
  * Created by Mehdi on 07/11/2016.
  */
 
+@SuppressWarnings("unchecked")
 @RxWrapper
 public class Presenter<T> extends PandroidDelegate<T> {
 
@@ -37,7 +37,6 @@ public class Presenter<T> extends PandroidDelegate<T> {
     public void onInit(T target) {
         super.onInit((T) this);
         initNestedLifecycleDelegate();
-        targetView = new WeakReference<T>(target);
     }
 
     @Nullable
@@ -54,6 +53,7 @@ public class Presenter<T> extends PandroidDelegate<T> {
 
     @Override
     public void onCreateView(T target, View view, Bundle savedInstanceState) {
+        targetView = new WeakReference<>(target);
         super.onCreateView((T) this, view, savedInstanceState);
     }
 
@@ -74,13 +74,14 @@ public class Presenter<T> extends PandroidDelegate<T> {
 
     @Override
     public void onDestroyView(T target) {
+        targetView.clear();
         super.onDestroyView((T) this);
     }
 
     @Override
     public void onRemove(T target) {
-        super.onRemove((T) this);
         targetView = null;
+        super.onRemove((T) this);
     }
 
     @Nullable

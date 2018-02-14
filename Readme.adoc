@@ -22,6 +22,10 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.5.7*
+*Fix*
+- RxActionDelegate - crash with multiple result on Single
+
 
 ### *Older release*
 *link:{htmlPath}pandroid-doc/html/Changelog.html[See Full ChangeLog]*

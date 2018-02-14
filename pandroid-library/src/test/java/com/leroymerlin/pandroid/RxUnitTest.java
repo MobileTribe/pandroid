@@ -34,86 +34,68 @@ public class RxUnitTest {
 
 
         //check success
-        RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<String>() {
-            @Override
-            public void subscribe(ActionDelegate<String> delegate) {
-                delegate.onSuccess(RESULT_VALUE);
-            }
-        }).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                Assert.assertEquals(s, RESULT_VALUE);
-                lock1.countDown();
-            }
-        });
+        RxActionDelegate.single(delegate -> delegate.onSuccess(RESULT_VALUE))
+                .subscribe(s -> {
+                    Assert.assertEquals(s, RESULT_VALUE);
+                    lock1.countDown();
+                });
         Assert.assertEquals(lock1.await(2000, TimeUnit.MILLISECONDS), true);
 
 
         //check error
         final CountDownLatch lock2 = new CountDownLatch(1);
-        RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<String>() {
-            @Override
-            public void subscribe(ActionDelegate<String> delegate) {
-                delegate.onError(new Exception());
-            }
-        }).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                Assert.fail("should not be called");
-                lock2.countDown();
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
-                lock2.countDown();
-            }
-        });
+        RxActionDelegate.single(delegate -> delegate.onError(new Exception()))
+                .subscribe(s -> Assert.fail("should not be called"),
+                        throwable -> lock2.countDown());
         Assert.assertEquals(lock2.await(2000, TimeUnit.MILLISECONDS), true);
 
 
         //check async call on success
         final CountDownLatch lock3 = new CountDownLatch(1);
-        RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<String>() {
-            @Override
-            public void subscribe(ActionDelegate<String> delegate) {
-                syncCallTest(delegate);
-            }
-        }).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                Assert.assertEquals(s, RESULT_VALUE);
-                lock3.countDown();
-            }
-        });
+        RxActionDelegate.single(this::syncCallTest)
+                .subscribe(s -> {
+                    Assert.assertEquals(s, RESULT_VALUE);
+                    lock3.countDown();
+                });
         Assert.assertEquals(lock3.await(2000, TimeUnit.MILLISECONDS), true);
 
 
         //check dispose
         final CountDownLatch lock4 = new CountDownLatch(1);
-        RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<String>() {
-            @Override
-            public void subscribe(ActionDelegate<String> delegate) {
-                syncCallTest(delegate);
-            }
-        }).subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                Assert.fail("should not be called");
-                lock4.countDown();
-            }
-        }).dispose();
+        RxActionDelegate.single(this::syncCallTest)
+                .subscribe(s -> Assert.fail("should not be called")).dispose();
         Assert.assertEquals(lock4.await(2000, TimeUnit.MILLISECONDS), false);
+
+
+        final CountDownLatch lock5 = new CountDownLatch(1);
+        //check success after error
+        RxActionDelegate.single(delegate -> {
+            delegate.onError(new Exception());
+            delegate.onSuccess(RESULT_VALUE);
+        }).subscribe(s -> {
+                    Assert.fail("should not be called");
+                },
+                throwable -> {
+                    lock5.countDown();
+                });
+        Assert.assertEquals(lock5.await(2000, TimeUnit.MILLISECONDS), true);
+
+
+        final CountDownLatch lock6 = new CountDownLatch(2);
+        //check multiple success
+        RxActionDelegate.single(delegate -> {
+            delegate.onSuccess(RESULT_VALUE);
+            delegate.onSuccess(RESULT_VALUE); //should be ignored
+        }).subscribe(s -> {
+            lock5.countDown();
+        });
+        Assert.assertEquals(lock6.await(2000, TimeUnit.MILLISECONDS), false);
 
 
     }
 
     private void syncCallTest(final ActionDelegate<String> actionDelegate) {
-        Single.timer(500, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
-            @Override
-            public void accept(@NonNull Long aLong) throws Exception {
-                actionDelegate.onSuccess(RESULT_VALUE);
-            }
-        });
+        Single.timer(500, TimeUnit.MILLISECONDS).subscribe(aLong -> actionDelegate.onSuccess(RESULT_VALUE));
     }
 
 
@@ -125,18 +107,11 @@ public class RxUnitTest {
         final CountDownLatch lock = new CountDownLatch(4);
 
 
-        RxActionDelegate.observableWrapped(new RxActionDelegate.OnSubscribeAction<String>() {
-            @Override
-            public void subscribe(ActionDelegate<String> delegate) {
-                syncStreamTest(delegate);
-            }
-        }).subscribe(new Consumer<RxActionDelegate.Result<String>>() {
-            @Override
-            public void accept(@NonNull RxActionDelegate.Result<String> result) throws Exception {
-                results.add(result);
-                lock.countDown();
-            }
-        });
+        RxActionDelegate.observableWrapped(this::syncStreamTest)
+                .subscribe(result -> {
+                    results.add(result);
+                    lock.countDown();
+                });
         Assert.assertEquals(lock.await(2000, TimeUnit.MILLISECONDS), true);
 
         Assert.assertEquals(results.get(0).result, RESULT_VALUE);

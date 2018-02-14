@@ -21,7 +21,6 @@
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
--keepnames class * { @icepick.State *;}
 
 #BUTTERKNIFE
 # Retain generated class which implement Unbinder.
