@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
-import android.support.annotation.CheckResult;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -35,7 +34,7 @@ public class Presenter<T> extends PandroidDelegate<T> {
 
     @CallSuper
     @Override
-    public final void onInit(T target) {
+    public void onInit(T target) {
         super.onInit((T) this);
         initNestedLifecycleDelegate();
     }
