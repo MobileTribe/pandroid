@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.leroymerlin.pandroid.annotations.RxWrapper;
+import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;
 import com.leroymerlin.pandroid.app.delegate.impl.AutoBinderLifecycleDelegate;
 import com.leroymerlin.pandroid.app.delegate.rx.RxLifecycleDelegate;
@@ -28,7 +29,9 @@ public class Presenter<T> extends PandroidDelegate<T> {
     }
 
     protected void initNestedLifecycleDelegate() {
-        addLifecycleDelegate(new RxLifecycleDelegate());
+        if (PandroidConfig.isLibraryEnable("rxandroid")) {
+            addLifecycleDelegate(new RxLifecycleDelegate());
+        }
         addLifecycleDelegate(new AutoBinderLifecycleDelegate());
     }
 
@@ -86,7 +89,7 @@ public class Presenter<T> extends PandroidDelegate<T> {
 
     @Nullable
     public T getView() {
-        if(targetView != null){
+        if (targetView != null) {
             return targetView.get();
         }
         return null;
