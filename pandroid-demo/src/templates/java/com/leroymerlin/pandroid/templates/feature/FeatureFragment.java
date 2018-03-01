@@ -65,8 +65,8 @@ public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> i
                     TextView cellTv;
 
                     @Override
-                    protected void setView(View view) {
-                        super.setView(view);
+                    protected void bindView(View view) {
+                        super.bindView(view);
                         cellTv = (TextView) view.findViewById(R.id.feature_cell_tv);
                     }
 

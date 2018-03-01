@@ -1,4 +1,4 @@
-include ':pandroid-plugin'
+include ':pandroid-plugin', ':pandroid-kotlin'
 include ':pandroid-compiler'
 include ':pandroid-annotations'
 include ':pandroid-java'

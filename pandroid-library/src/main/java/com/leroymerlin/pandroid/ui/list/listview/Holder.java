@@ -6,7 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public interface Holder<T> {
-    public View getView(LayoutInflater inflater, ViewGroup parent, T content);
 
-    public void setContent(T content, int index);
+    View getView(LayoutInflater inflater, ViewGroup parent, T content);
+
+    void setContent(T content, int index);
 }

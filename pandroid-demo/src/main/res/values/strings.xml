@@ -48,6 +48,7 @@
     <string name="opener_new_fragment">Open new fragment</string>
     <string name="opener_home">back_home</string>
     <string name="navigation_opener">Opener navigation</string>
+    <string name="navigation_list_kotlin">Kotlin Adapter DSL</string>
 
 
 </resources>

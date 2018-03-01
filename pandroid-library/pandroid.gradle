@@ -4,6 +4,10 @@ dependencies {
     provided "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
 }
 
+plugins.withId('kotlin-android') {
+    compile "com.leroymerlin.pandroid:pandroid-kotlin:$pandroidVersion"
+}
+
 plugins.withId('com.leroymerlin.android-templates') {
     dependencies {
         template "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion:templates"

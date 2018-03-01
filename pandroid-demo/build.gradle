@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply from: '../pandroid-library/dagger.gradle'
 apply plugin: 'com.leroymerlin.delivery'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
@@ -24,9 +25,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../pandroid-library/pandroid-proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,6 +40,7 @@ dependencies {
     //Support to simulate plugin work
     annotationProcessor project(':pandroid-compiler')
     compile project(':pandroid-library')
+    compile project(':pandroid-kotlin')
     provided project(':pandroid-annotations')
 
     optionalLibs.each{
@@ -69,6 +68,7 @@ dependencies {
         exclude module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 }
 
@@ -90,3 +90,6 @@ delivery {
 
 
 apply from: 'templates.gradle'
+repositories {
+    mavenCentral()
+}

@@ -685,11 +685,18 @@ See demo's examples
 include::{demoJava}main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
 ----
 
-A easiest implementation is available for simple RecyclerView
+A easiest implementation is available for RecyclerView
 
 [source,java]
 ----
-include::{demoJava}main/list/SimpleRecyclerViewFragment.java[tags=SimpleRecyclerViewAdapter]
+include::{demoJava}main/list/SimpleRecyclerViewFragment.java[tags=PandroidAdapter]
+----
+
+If you use Kotlin a dsl is available
+
+[source,java]
+----
+include::{demoJava}main/list/KotlinRVFragment.kt[tags=KotlinDSL]
 ----
 
 === List header
