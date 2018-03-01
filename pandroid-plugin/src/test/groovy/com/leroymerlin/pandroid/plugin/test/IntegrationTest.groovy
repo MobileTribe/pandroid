@@ -3,11 +3,13 @@ package com.leroymerlin.pandroid.plugin.test
 import org.gradle.tooling.*
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 /**
  * Created by florian on 17/12/15.
  */
+@Ignore
 class IntegrationTest {
 
 
