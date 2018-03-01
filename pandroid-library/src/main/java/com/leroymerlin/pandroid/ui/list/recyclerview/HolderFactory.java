@@ -19,7 +19,7 @@ public abstract class HolderFactory<T> {
 
     public static <T> HolderFactory<T> create(Class<? extends RecyclerHolder<T>> holderClass) {
         try {
-            Constructor<? extends RecyclerHolder<T>> constructor = holderClass.getConstructor(LayoutInflater.class, ViewGroup.class);
+            final Constructor<? extends RecyclerHolder<T>> constructor = holderClass.getConstructor(LayoutInflater.class, ViewGroup.class);
             return new HolderFactory<T>() {
                 @Override
                 public RecyclerHolder<T> createHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -35,9 +35,9 @@ public abstract class HolderFactory<T> {
         }
     }
 
-    public static <T> HolderFactory<T> create(@LayoutRes int layoutId, Class<? extends RecyclerHolder<T>> holderClass) {
+    public static <T> HolderFactory<T> create(@LayoutRes final int layoutId, Class<? extends RecyclerHolder<T>> holderClass) {
         try {
-            Constructor<? extends RecyclerHolder<T>> constructor = holderClass.getConstructor(View.class);
+            final Constructor<? extends RecyclerHolder<T>> constructor = holderClass.getConstructor(View.class);
             return new HolderFactory<T>() {
                 @Override
                 public RecyclerHolder<T> createHolder(LayoutInflater inflater, ViewGroup parent) {
@@ -53,7 +53,7 @@ public abstract class HolderFactory<T> {
         }
     }
 
-    public static <T> HolderFactory<T> create(@LayoutRes int layoutId, @NotNull HolderBinder<T> binder) {
+    public static <T> HolderFactory<T> create(@LayoutRes final int layoutId, @NotNull final HolderBinder<T> binder) {
         return new HolderFactory<T>() {
             @Override
             public RecyclerHolder<T> createHolder(LayoutInflater inflater, ViewGroup parent) {

@@ -41,7 +41,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:27.0.0'
 
 }
 android {
@@ -54,4 +53,5 @@ android {
         minSdkVersion Integer.parseInt(androidMinSdkVersion)
         targetSdkVersion Integer.parseInt(androidSdkVersion)
     }
+
 }

@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+apply from: file('../delivery.gradle')
+
+
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
     buildToolsVersion androidBuildToolsVersion

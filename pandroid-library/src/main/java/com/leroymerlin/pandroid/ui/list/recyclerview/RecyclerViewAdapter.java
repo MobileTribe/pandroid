@@ -111,8 +111,8 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
         notifyItemChanged(index);
     }
 
-    public void addDiff(@NotNull List<? extends T> collection) {
-        List<T> oldCollection = Collections.unmodifiableList(content);
+    public void addDiff(final @NotNull List<? extends T> collection) {
+        final List<T> oldCollection = Collections.unmodifiableList(content);
         DiffUtil.Callback diffCallback = new DiffUtil.Callback() {
             @Override
             public int getOldListSize() {
