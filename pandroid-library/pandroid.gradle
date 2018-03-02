@@ -5,6 +5,7 @@ dependencies {
 }
 
 plugins.withId('kotlin-android') {
+    compile 'androidx.core:core-ktx:0.2'
     compile "com.leroymerlin.pandroid:pandroid-kotlin:$pandroidVersion"
 }
 
