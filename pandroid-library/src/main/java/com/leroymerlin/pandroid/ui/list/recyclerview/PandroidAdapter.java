@@ -16,7 +16,7 @@ public class PandroidAdapter<T> extends RecyclerViewAdapter<T> {
 
     public PandroidAdapter(@Nullable SparseArray<HolderFactory<T>> holderFactories) {
         super();
-        factory = new SimpleFactory<>();
+        factory = (RecyclerFactory<? extends RecyclerHolder<T>>) new SimpleFactory<>();
         if (holderFactories != null) {
             for (int i = 0; i < holderFactories.size(); i++) {
                 int itemType = holderFactories.keyAt(i);

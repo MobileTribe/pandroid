@@ -126,7 +126,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
 
             @Override
             public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                return oldCollection.get(oldItemPosition).getClass() == collection.get(newItemPosition).getClass();
+                return oldCollection.get(oldItemPosition).hashCode() == collection.get(newItemPosition).hashCode();
             }
 
             @Override
