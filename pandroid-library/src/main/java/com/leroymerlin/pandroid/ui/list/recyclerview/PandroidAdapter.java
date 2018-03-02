@@ -5,8 +5,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import java.util.Map;
-
 /**
  * Created by florian on 19/11/14.
  */
@@ -46,8 +44,16 @@ public class PandroidAdapter<T> extends RecyclerViewAdapter<T> {
         this.itemTypeMatcher = typeMatcher;
     }
 
+    public void registerFactory(Class itemClass, HolderFactory<T> factory) {
+        registerFactory(itemClass.hashCode(), factory);
+    }
+
     public void registerFactory(int itemType, HolderFactory<T> factory) {
         getFactory().holderFactories.put(itemType, factory);
+    }
+
+    public void unregisterFactory(Class itemClass) {
+        unregisterFactory(itemClass.hashCode());
     }
 
     public void unregisterFactory(int itemType) {

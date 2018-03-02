@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.RxPandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerFactory;
+import com.leroymerlin.pandroid.ui.list.recyclerview.HolderFactory;
+import com.leroymerlin.pandroid.ui.list.recyclerview.PandroidAdapter;
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder;
-import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerViewAdapter;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 
 import java.util.List;
@@ -23,10 +23,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-/**
- * Created by florian on 11/10/2017.
- */
 
 public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> implements FeatureFragmentPresenter.PresenterView {
 
@@ -45,7 +41,7 @@ public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> i
     @BindView(R.id.feature_rv)
     RecyclerView recyclerView;
 
-    private RecyclerViewAdapter<FeatureModel> adapter;
+    private PandroidAdapter<FeatureModel> adapter;
 
     @Nullable
     @Override
@@ -58,25 +54,8 @@ public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> i
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.featureNameTitle);
 
-        adapter = new RecyclerViewAdapter<>(new RecyclerFactory<RecyclerHolder<FeatureModel>>() {
-            @Override
-            public RecyclerHolder<FeatureModel> create(LayoutInflater inflater, ViewGroup parent, int viewType) {
-                return new RecyclerHolder<FeatureModel>(inflater.inflate(R.layout.cell_feature, parent, false)) {
-                    TextView cellTv;
-
-                    @Override
-                    protected void bindView(View view) {
-                        super.bindView(view);
-                        cellTv = (TextView) view.findViewById(R.id.feature_cell_tv);
-                    }
-
-                    @Override
-                    public void setContent(FeatureModel content, int index) {
-                        cellTv.setText(content.getTitle());
-                    }
-                };
-            }
-        });
+        adapter = new PandroidAdapter<>();
+        adapter.registerFactory(FeatureModel.class, HolderFactory.create(FeatureModelHolder.class));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
     }
@@ -108,5 +87,27 @@ public class FeatureFragment extends RxPandroidFragment<FeatureFragmentOpener> i
     public void onError(String message) {
         retry.setVisibility(View.VISIBLE);
         toastManager.makeToast(getActivity(), message, null, R.style.Toast_Error);
+    }
+
+
+    private static class FeatureModelHolder extends RecyclerHolder<FeatureModel>{
+
+        private TextView cellTv;
+
+        public FeatureModelHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.cell_feature, parent, false));
+        }
+
+        @Override
+        protected void bindView(View view) {
+            super.bindView(view);
+            cellTv = view.findViewById(R.id.feature_cell_tv);
+
+        }
+
+        @Override
+        public void setContent(FeatureModel content, int index) {
+            cellTv.setText(content.getTitle());
+        }
     }
 }
