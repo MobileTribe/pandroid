@@ -53,7 +53,7 @@ apply plugin: "com.leroymerlin.delivery"
 task('createDoc', dependsOn: project(':pandroid-doc').getTasksByName('asciidoctor', false))
 
 delivery {
-    linkedSubModules 'pandroid-plugin', 'pandroid-library', 'pandroid-java', 'pandroid-compiler', 'pandroid-annotations'
+    linkedSubModules 'pandroid-plugin', 'pandroid-library', 'pandroid-java', 'pandroid-compiler', 'pandroid-annotations', 'pandroid-kotlin'
     enableReleaseGitFlow = true
 
     flows {
@@ -68,6 +68,6 @@ delivery {
 tasks.findByPath('releaseGitStepGenerateVersionFiles').dependsOn += documentationFlow
 
 
-task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java'].collect {
+task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java', ':pandroid-kotlin'].collect {
     project(it)
 }.collect { it.getTasksByName('install', false) });
