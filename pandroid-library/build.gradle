@@ -64,6 +64,7 @@ dependencies {
     }
     annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
 
     provided 'org.jetbrains:annotations-java5:15.0'
 }

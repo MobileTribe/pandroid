@@ -573,7 +573,19 @@ Options are available such as adding a placeholder image or a delegate method (l
 
 Glide is an optional library. To use it you need to add the dependency to the Pandroid dependencies in your build.gradle file.
 
-Tip : See https://github.com/bumptech/glide to use Glide
+[source,java]
+----
+pandroid{
+    dependencies {
+        library("glide"){
+            glideModule "com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule" //default value
+            //can be ignored if set to null or if in your glide module your override isManifestParsingEnabled
+        }
+    }
+}
+----
+
+Tip : See https://github.com/bumptech/glide to setup GlideModule
 
 .Installation
 
