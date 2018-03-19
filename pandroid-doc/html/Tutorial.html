@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.5.7-SNAPSHOT, Wed Feb 14 11:21:11 CET 2018">
+<meta name="author" content="Pandroid v2.5.8-SNAPSHOT, Mon Mar 19 16:44:31 CET 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.5.7-SNAPSHOT, Wed Feb 14 11:21:11 CET 2018</span><br>
+<span id="author" class="author">Pandroid v2.5.8-SNAPSHOT, Mon Mar 19 16:44:31 CET 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1881,8 +1881,20 @@ Options are available such as adding a placeholder image or a delegate method (l
 <div class="paragraph">
 <p>Glide is an optional library. To use it you need to add the dependency to the Pandroid dependencies in your build.gradle file.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">pandroid{
+    dependencies {
+        library(<span class="string"><span class="delimiter">&quot;</span><span class="content">glide</span><span class="delimiter">&quot;</span></span>){
+            glideModule <span class="string"><span class="delimiter">&quot;</span><span class="content">com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule</span><span class="delimiter">&quot;</span></span> <span class="comment">//default value</span>
+            <span class="comment">//can be ignored if set to null or if in your glide module your override isManifestParsingEnabled</span>
+        }
+    }
+}</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>Tip : See <a href="https://github.com/bumptech/glide" class="bare">https://github.com/bumptech/glide</a> to use Glide</p>
+<p>Tip : See <a href="https://github.com/bumptech/glide" class="bare">https://github.com/bumptech/glide</a> to setup GlideModule</p>
 </div>
 <div class="ulist">
 <div class="title">Installation</div>
@@ -2070,8 +2082,8 @@ See demo&#8217;s examples</p>
                     <span class="directive">public</span> TextView tvContent;
 
                     <span class="annotation">@Override</span>
-                    <span class="directive">protected</span> <span class="type">void</span> setView(<span class="predefined-type">View</span> view) {
-                        <span class="local-variable">super</span>.setView(view);
+                    <span class="directive">protected</span> <span class="type">void</span> bindView(<span class="predefined-type">View</span> view) {
+                        <span class="local-variable">super</span>.bindView(view);
                         tvContent = (TextView) view;
                     }
 
@@ -2088,8 +2100,8 @@ See demo&#8217;s examples</p>
         SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = <span class="keyword">new</span> SimpleItemTouchHelperCallback(adapter) {
             <span class="annotation">@Override</span>
             <span class="directive">public</span> <span class="type">void</span> onSwiped(RecyclerView.ViewHolder viewHolder, <span class="type">int</span> direction) {
-                <span class="local-variable">super</span>.onSwiped(viewHolder, direction);
                 toastManager.makeToast(getActivity(), <span class="string"><span class="delimiter">&quot;</span><span class="content">Item </span><span class="delimiter">&quot;</span></span> + viewHolder.getAdapterPosition() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> removed</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">null</span>, R.style.Toast_Warm);
+                <span class="local-variable">super</span>.onSwiped(viewHolder, direction);
             }
         };
         ItemTouchHelper touchHelper = <span class="keyword">new</span> ItemTouchHelper(simpleItemTouchHelperCallback);
@@ -2107,18 +2119,46 @@ See demo&#8217;s examples</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A easiest implementation is available for simple RecyclerView</p>
+<p>A easiest implementation is available for RecyclerView</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">        adapter = <span class="keyword">new</span> SimpleRecyclerViewAdapter&lt;&gt;(<span class="keyword">new</span> SimpleRecyclerViewAdapter.SimpleHolder&lt;<span class="predefined-type">String</span>&gt;(R.layout.cell_list) {
-            <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> setContent(<span class="predefined-type">String</span> content, <span class="predefined-type">View</span> view, <span class="type">int</span> index) {
-                ((TextView) view).setText(content);
-            }
-        });
+<pre class="CodeRay highlight"><code data-lang="java">        adapter = <span class="keyword">new</span> PandroidAdapter&lt;&gt;();
+        adapter.registerFactory(<span class="integer">0</span>, HolderFactory.&lt;<span class="predefined-type">String</span>&gt;create(R.layout.cell_list, (cellView, data, index) -&gt; ((TextView) cellView).setText(data)));
         adapter.addAll(getData());
+        adapter.setOnItemClickListener((parent, itemView, position, id) -&gt; {
+            changeData(position);
+        });
         rvMenu.setAdapter(adapter);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you use Kotlin a dsl is available</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">        rvMenu.apply {
+            <span class="local-variable">this</span>.adapter = adapter&lt;<span class="predefined-type">String</span>&gt; {
+                holder {
+                    layout = R.layout.cell_list
+                    itemType = <span class="integer">0</span> <span class="comment">//your can use class has type, hashcode will be used</span>
+                    binder = { view, data, index -&gt; (view as <span class="predefined-type">Button</span>).text = data }
+                }
+                holder {
+                    layout = R.layout.cell_list
+                    itemType = <span class="integer">1</span>
+                    holderClass = CustomTxtHolder::<span class="type">class</span>
+                }
+                <span class="class">holder</span> {
+                    itemType = <span class="integer">2</span>
+                    factory = CustomHolderFactory()
+                }
+                itemTypes { adapter: PandroidAdapter&lt;<span class="predefined-type">String</span>&gt;, item: <span class="predefined-type">String</span>, position: Int -&gt; position % <span class="integer">3</span> }
+
+            }
+            <span class="local-variable">this</span>.layoutManager = LinearLayoutManager(activity)
+        }
+        <span class="local-variable">this</span>.adapter.addAll(data)</code></pre>
 </div>
 </div>
 </div>
@@ -2624,7 +2664,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-02-14 11:21:07 +01:00
+Last updated 2018-03-19 16:44:25 +01:00
 </div>
 </div>
 </body>
