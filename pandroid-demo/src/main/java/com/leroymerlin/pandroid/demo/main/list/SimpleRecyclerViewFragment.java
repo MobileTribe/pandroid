@@ -9,9 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.ui.list.recyclerview.SimpleRecyclerViewAdapter;
+import com.leroymerlin.pandroid.ui.list.recyclerview.HolderFactory;
+import com.leroymerlin.pandroid.ui.list.recyclerview.PandroidAdapter;
+import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder;
+
+import java.util.Random;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
 
 
 /**
@@ -21,7 +26,7 @@ public class SimpleRecyclerViewFragment extends ListFragment {
 
     @BindView(R.id.recycler_view_rv)
     protected RecyclerView rvMenu;
-    private SimpleRecyclerViewAdapter<String> adapter;
+    private PandroidAdapter<String> adapter;
 
 
     @Override
@@ -34,17 +39,25 @@ public class SimpleRecyclerViewFragment extends ListFragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        //tag::SimpleRecyclerViewAdapter[]
-        adapter = new SimpleRecyclerViewAdapter<>(new SimpleRecyclerViewAdapter.SimpleHolder<String>(R.layout.cell_list) {
-            @Override
-            public void setContent(String content, View view, int index) {
-                ((TextView) view).setText(content);
-            }
-        });
+        //tag::PandroidAdapter[]
+        adapter = new PandroidAdapter<>();
+        adapter.registerFactory(0, HolderFactory.<String>create(R.layout.cell_list, (cellView, data, index) -> ((TextView) cellView).setText(data)));
         adapter.addAll(getData());
+        adapter.setOnItemClickListener((parent, itemView, position, id) -> {
+            changeData(position);
+        });
         rvMenu.setAdapter(adapter);
-        //end::SimpleRecyclerViewAdapter[]
+        //end::PandroidAdapter[]
+
+
         rvMenu.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private void changeData(int position) {
+        Random random = new Random();
+        adapter.addDiff(Observable.fromIterable(getData())
+                .filter(item -> random.nextBoolean())
+                .toList().blockingGet());
     }
 
 

@@ -5,5 +5,5 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 public interface RecyclerFactory<T> {
-    public T create(LayoutInflater inflater, ViewGroup parent, int viewType);
+    T create(LayoutInflater inflater, ViewGroup parent, int viewType);
 }

@@ -12,6 +12,7 @@ import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
+import com.leroymerlin.pandroid.demo.main.list.KotlinRVFragment;
 import com.leroymerlin.pandroid.demo.main.list.ListOpener;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
@@ -74,6 +75,10 @@ public class NavigationLeftFragment extends PandroidFragment<FragmentOpener> {
                     break;
                 case R.id.navigation_simplelist:
                     sendEvent(new ListOpener(SimpleRecyclerViewFragment.class, 40));
+                    handle = true;
+                    break;
+                case R.id.navigation_list_kotlin:
+                    sendEvent(new ListOpener(KotlinRVFragment.class, 40));
                     handle = true;
                     break;
                 case R.id.navigation_recycler:

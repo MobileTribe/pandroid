@@ -573,7 +573,19 @@ Options are available such as adding a placeholder image or a delegate method (l
 
 Glide is an optional library. To use it you need to add the dependency to the Pandroid dependencies in your build.gradle file.
 
-Tip : See https://github.com/bumptech/glide to use Glide
+[source,java]
+----
+pandroid{
+    dependencies {
+        library("glide"){
+            glideModule "com.leroymerlin.pandroid.ui.picture.glide.PandroidGlideModule" //default value
+            //can be ignored if set to null or if in your glide module your override isManifestParsingEnabled
+        }
+    }
+}
+----
+
+Tip : See https://github.com/bumptech/glide to setup GlideModule
 
 .Installation
 
@@ -685,11 +697,18 @@ See demo's examples
 include::{demoJava}main/list/RecyclerViewFragment.java[tags=RecyclerViewAdapter]
 ----
 
-A easiest implementation is available for simple RecyclerView
+A easiest implementation is available for RecyclerView
 
 [source,java]
 ----
-include::{demoJava}main/list/SimpleRecyclerViewFragment.java[tags=SimpleRecyclerViewAdapter]
+include::{demoJava}main/list/SimpleRecyclerViewFragment.java[tags=PandroidAdapter]
+----
+
+If you use Kotlin a dsl is available
+
+[source,java]
+----
+include::{demoJava}main/list/KotlinRVFragment.kt[tags=KotlinDSL]
 ----
 
 === List header

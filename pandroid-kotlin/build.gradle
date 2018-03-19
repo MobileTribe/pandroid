@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+apply from: file('../delivery.gradle')
+
+
+android {
+    compileSdkVersion Integer.parseInt(androidSdkVersion)
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(androidMinSdkVersion)
+        targetSdkVersion Integer.parseInt(androidSdkVersion)
+        versionCode Integer.parseInt(pandroidVersionId)
+        versionName pandroidVersion
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        all {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+
+
+
+dependencies {
+    compile project(':pandroid-library')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}

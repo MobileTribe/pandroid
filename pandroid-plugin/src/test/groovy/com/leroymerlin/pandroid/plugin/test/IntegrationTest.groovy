@@ -9,7 +9,6 @@ import org.junit.Test
 /**
  * Created by florian on 17/12/15.
  */
-@Ignore
 class IntegrationTest {
 
 
@@ -20,7 +19,7 @@ class IntegrationTest {
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
-            launcher.forTasks(":pandroid-compiler:install", ":pandroid-library:install", ":pandroid-plugin:install", ":pandroid-java:install", ":pandroid-annotations:install")
+            launcher.forTasks(":pandroid-compiler:install", ":pandroid-library:install", ":pandroid-plugin:install", ":pandroid-java:install", ":pandroid-annotations:install", ":pandroid-kotlin:install")
             launcher.run()
         } finally {
             connection.close()

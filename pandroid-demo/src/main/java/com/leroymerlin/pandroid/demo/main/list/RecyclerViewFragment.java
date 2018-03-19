@@ -55,8 +55,8 @@ public class RecyclerViewFragment extends ListFragment {
                     public TextView tvContent;
 
                     @Override
-                    protected void setView(View view) {
-                        super.setView(view);
+                    protected void bindView(View view) {
+                        super.bindView(view);
                         tvContent = (TextView) view;
                     }
 
@@ -73,8 +73,8 @@ public class RecyclerViewFragment extends ListFragment {
         SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(adapter) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                super.onSwiped(viewHolder, direction);
                 toastManager.makeToast(getActivity(), "Item " + viewHolder.getAdapterPosition() + " removed", null, R.style.Toast_Warm);
+                super.onSwiped(viewHolder, direction);
             }
         };
         ItemTouchHelper touchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);

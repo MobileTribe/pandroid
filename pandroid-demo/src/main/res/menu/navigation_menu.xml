@@ -30,6 +30,10 @@
             android:id="@+id/navigation_simplelist"
             android:checked="false"
             android:title="@string/navigation_simplelist" />
+        <item
+            android:id="@+id/navigation_list_kotlin"
+            android:checked="false"
+            android:title="@string/navigation_list_kotlin" />
 
         <item
             android:id="@+id/navigation_recycler"

@@ -25,8 +25,8 @@ android {
         disable 'MissingPermission'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
@@ -64,6 +64,7 @@ dependencies {
     }
     annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
 
     provided 'org.jetbrains:annotations-java5:15.0'
 }

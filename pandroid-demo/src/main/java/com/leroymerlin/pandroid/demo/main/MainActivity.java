@@ -13,6 +13,8 @@ import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.anim.MaterialFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventSecondFragment;
+import com.leroymerlin.pandroid.demo.main.list.KotlinRVFragment;
+import com.leroymerlin.pandroid.demo.main.list.ListOpener;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
@@ -65,7 +67,7 @@ public class MainActivity extends PandroidDrawerActivity<ActivityOpener> {
             case VIEW_RESTORED:
                 break;
         }
-
+        //sendEvent(new ListOpener(KotlinRVFragment.class, 200));
     }
 
     @Override
@@ -103,6 +105,7 @@ public class MainActivity extends PandroidDrawerActivity<ActivityOpener> {
                 .addFragment(RestFragment.class)
                 .addFragment(ListViewFragment.class)
                 .addFragment(RecyclerViewFragment.class)
+                .addFragment(KotlinRVFragment.class)
                 .addFragment(SimpleRecyclerViewFragment.class)
                 .addFragment(AnimationFragment.class)
                 .addFragment(ToastFragment.class)
