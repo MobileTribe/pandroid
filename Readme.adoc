@@ -29,6 +29,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 - Kotlin - add adapter DSL to create adapter
 *Refactor*
 - Adapter - refactor RecyclerViewAdapter
+- Glide - add default glide module to setup okhttpclient
 *Fix*
 - Presenter - remove RxLifeCyclerDelegate if RX not setup
 
