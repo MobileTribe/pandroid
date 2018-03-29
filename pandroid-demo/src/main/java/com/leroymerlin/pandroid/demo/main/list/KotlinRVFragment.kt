@@ -21,8 +21,29 @@ import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder
  */
 class KotlinRVFragment : ListFragment() {
 
-    val rvMenu: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.recycler_view_rv) }
-    val adapter: PandroidAdapter<String> by lazy { rvMenu.adapter as PandroidAdapter<String> }
+    val rvMenu: RecyclerView by lazy { view!!.findViewById<RecyclerView>(R.id.recycler_view_rv) }
+
+    val rvAdapter: PandroidAdapter<String> by lazy {
+        //tag::KotlinDSL[]
+        adapter<String> {
+            holder {
+                layout = R.layout.cell_list
+                itemType = 0 //your can use class has type, hashcode will be used
+                binder = { view, data, index -> (view as Button).text = data }
+            }
+            holder {
+                layout = R.layout.cell_list
+                itemType = 1
+                holderClass = CustomTxtHolder::class
+            }
+            holder {
+                itemType = 2
+                factory = CustomHolderFactory()
+            }
+            itemTypes { adapter: PandroidAdapter<String>, item: String, position: Int -> position % 3 }
+        }
+        //end::KotlinDSL[]
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recycler_view, container, false)
@@ -30,33 +51,11 @@ class KotlinRVFragment : ListFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //tag::KotlinDSL[]
         rvMenu.apply {
-            this.adapter = adapter<String> {
-                holder {
-                    layout = R.layout.cell_list
-                    itemType = 0 //your can use class has type, hashcode will be used
-                    binder = { view, data, index -> (view as Button).text = data }
-                }
-                holder {
-                    layout = R.layout.cell_list
-                    itemType = 1
-                    holderClass = CustomTxtHolder::class
-                }
-                holder {
-                    itemType = 2
-                    factory = CustomHolderFactory()
-                }
-                itemTypes { adapter: PandroidAdapter<String>, item: String, position: Int -> position % 3 }
-
-            }
-            this.layoutManager = LinearLayoutManager(activity)
+            this.adapter = rvAdapter;
+            this.layoutManager = LinearLayoutManager(activity);
         }
-        this.adapter.addAll(data)
-        //end::KotlinDSL[]
-
-
+        this.rvAdapter.addAll(data)
     }
 
     class CustomTxtHolder(view: View) : RecyclerHolder<String>(view) {
@@ -74,7 +73,6 @@ class KotlinRVFragment : ListFragment() {
             }
         }
     }
-
 
 
 }

@@ -11,15 +11,15 @@ configurations {
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile project(':pandroid-java')
-    compile project(':pandroid-annotations')
-    compile deps.javapoet
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation project(':pandroid-java')
+    implementation project(':pandroid-annotations')
+    implementation deps.javapoet
 
-    testCompile 'junit:junit:4.12'
-    provided "com.android.tools.build:gradle:$androidPluginVersion"
-    testCompile "com.android.tools.build:gradle:$androidPluginVersion"
+    testImplementation 'junit:junit:4.12'
+    compileOnly "com.android.tools.build:gradle:$androidPluginVersion"
+    testImplementation "com.android.tools.build:gradle:$androidPluginVersion"
 }
 
 task(copyLocalProperties, type: Copy) {

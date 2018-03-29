@@ -22,7 +22,14 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.5.8*
+### *2.6.0* - (soon)
+
+*Refactor*
+- Migrate fragment to SupportFragment (Fragment is depreciated in Android P)
+- Update libraries versions
+- Migrate compile dependencies to implementation/api
+
+### *2.5.8* - (2018-03-19)
 
 *Feature*
 - PandroidAdapter - advance RecyclerViewAdapter
@@ -33,7 +40,7 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 *Fix*
 - Presenter - remove RxLifeCyclerDelegate if RX not setup
 
-### *2.5.7*
+### *2.5.7* - (2018-02-14)
 *Fix*
 - RxActionDelegate - crash with multiple result on Single
 

@@ -1,13 +1,13 @@
 dependencies {
     annotationProcessor "com.leroymerlin.pandroid:pandroid-compiler:$pandroidVersion"
-    compile "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
-    provided "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
+    implementation "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
+    compileOnly "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
 }
 
 plugins.withId('kotlin-android') {
     dependencies {
-        compile 'androidx.core:core-ktx:0.2'
-        compile "com.leroymerlin.pandroid.kotlin:pandroid-kotlin:$pandroidVersion"
+        implementation 'androidx.core:core-ktx:0.2'
+        implementation "com.leroymerlin.pandroid.kotlin:pandroid-kotlin:$pandroidVersion"
     }
 }
 
@@ -50,8 +50,8 @@ pandroid {
         "io.reactivex.rxjava2:rxandroid" { //RX
             gradle {
                 dependencies {
-                    compile "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
-                    compile "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
+                    implementation "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
+                    implementation "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
                 }
             }
         }
@@ -59,7 +59,7 @@ pandroid {
         "com.jakewharton:butterknife" { // ButterknifeLifecycleDelegate
             gradle {
                 dependencies {
-                    compile "com.jakewharton:butterknife:$libraryButterknifeVersion"
+                    implementation "com.jakewharton:butterknife:$libraryButterknifeVersion"
                     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
 
                 }
@@ -71,7 +71,7 @@ pandroid {
                     maven { url "https://clojars.org/repo/" }
                 }
                 dependencies {
-                    compile "frankiesardo:icepick:$libraryIcepickVersion"
+                    implementation "frankiesardo:icepick:$libraryIcepickVersion"
                     annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
                 }
             }
@@ -79,16 +79,16 @@ pandroid {
         "com.squareup.retrofit2:retrofit" { //Retrofit
             gradle {
                 dependencies {
-                    compile "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion"
-                    compile "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion"
-                    compile "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion"
+                    implementation "com.squareup.retrofit2:retrofit:$libraryRetrofitVersion"
+                    implementation "com.squareup.retrofit2:converter-gson:$libraryRetrofitVersion"
+                    implementation "com.squareup.okhttp3:logging-interceptor:$libraryLoggingInterceptorVersion"
                 }
             }
         }
         "com.google.android.gms:play-services-vision" { //PandroidScannerView
             gradle {
                 dependencies {
-                    compile "com.google.android.gms:play-services-vision:$libraryGmsVersion"
+                    implementation "com.google.android.gms:play-services-vision:$libraryGmsVersion"
                 }
             }
             manifest {
@@ -123,7 +123,7 @@ apply plugin 'com.google.gms.google-services'
 */
             gradle {
                 dependencies {
-                    compile "com.google.firebase:firebase-analytics:$libraryGmsVersion"
+                    implementation "com.google.firebase:firebase-analytics:$libraryGmsVersion"
                 }
             }
         }
@@ -146,7 +146,7 @@ apply plugin 'com.google.gms.google-services'
                 */
 
                 dependencies {
-                    compile "com.google.android.gms:play-services-analytics:$libraryGmsVersion"
+                    implementation "com.google.android.gms:play-services-analytics:$libraryGmsVersion"
                 }
             }
 
@@ -174,9 +174,9 @@ apply plugin 'com.google.gms.google-services'
         "com.github.johnpersano:supertoasts" { //SuperToastManagerImpl
             gradle {
                 dependencies {
-                    compile("com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar") {
+                    implementation("com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar") {
                         transitive = true
-                        exclude group: 'com.android.support', module: 'support-annotations'
+                        exclude group: 'com.android.support', module: "appcompat-v7"
                     }
                 }
             }
@@ -184,8 +184,10 @@ apply plugin 'com.google.gms.google-services'
         "com.github.bumptech.glide:glide" { //GlidePictureManagerImpl
             gradle {
                 dependencies {
-                    compile "com.github.bumptech.glide:glide:$libraryGlideVersion"
-                    compile "com.github.bumptech.glide:annotations:$libraryGlideVersion"
+                    implementation("com.github.bumptech.glide:glide:$libraryGlideVersion"){
+                        exclude group: 'com.android.support', module: "support-fragment"
+                    }
+                    implementation "com.github.bumptech.glide:annotations:$libraryGlideVersion"
                     annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
                 }
             }
@@ -216,7 +218,7 @@ apply plugin 'com.google.gms.google-services'
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.24.4'
+        classpath 'io.fabric.tools:gradle:1.25.2'
     }
     }
     //end::Crashlytics[]
@@ -226,7 +228,7 @@ apply plugin 'com.google.gms.google-services'
                     maven { url "https://maven.fabric.io/public" }
                 }
                 dependencies {
-                    compile("com.crashlytics.sdk.android:crashlytics:$libraryCrashlyticsVersion@aar") {
+                    implementation("com.crashlytics.sdk.android:crashlytics:$libraryCrashlyticsVersion@aar") {
                         transitive true
                     }
                 }

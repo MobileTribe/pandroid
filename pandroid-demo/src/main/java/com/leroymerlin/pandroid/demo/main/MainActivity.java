@@ -1,20 +1,17 @@
 package com.leroymerlin.pandroid.demo.main;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.app.PandroidDrawerActivity;
 import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.demo.R;
-import com.leroymerlin.pandroid.demo.globals.review.ReviewManager;
-import com.leroymerlin.pandroid.demo.globals.review.ReviewService;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;
 import com.leroymerlin.pandroid.demo.main.anim.MaterialFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventFragment;
 import com.leroymerlin.pandroid.demo.main.event.EventSecondFragment;
 import com.leroymerlin.pandroid.demo.main.list.KotlinRVFragment;
-import com.leroymerlin.pandroid.demo.main.list.ListOpener;
 import com.leroymerlin.pandroid.demo.main.list.ListViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.RecyclerViewFragment;
 import com.leroymerlin.pandroid.demo.main.list.SimpleRecyclerViewFragment;
@@ -26,11 +23,8 @@ import com.leroymerlin.pandroid.demo.main.toast.ToastFragment;
 import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.opener.ActivityOpener;
 import com.leroymerlin.pandroid.event.opener.FragmentEventReceiver;
-import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by florian on 02/12/15.
@@ -84,7 +78,7 @@ public class MainActivity extends PandroidDrawerActivity<ActivityOpener> {
 
     @Override
     public Fragment getCurrentFragment() {
-        return getFragmentManager().findFragmentById(R.id.main_content_container);
+        return getSupportFragmentManager().findFragmentById(R.id.main_content_container);
     }
 
     //tag::FragmentReceivers[]

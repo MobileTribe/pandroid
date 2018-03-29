@@ -175,6 +175,7 @@ public class MaterialTransitionLayout extends FrameLayout {
         ObjectAnimator animatorTranslationY = ObjectAnimator.ofFloat(transitionView, "y", toInfos.getY());
         animators.add(animatorTranslationY);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             animators.add(ObjectAnimator.ofFloat(transitionView, "elevation", toInfos.elevation));
         }

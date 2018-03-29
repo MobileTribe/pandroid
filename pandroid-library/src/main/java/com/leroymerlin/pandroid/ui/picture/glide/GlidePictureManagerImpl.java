@@ -1,10 +1,10 @@
 package com.leroymerlin.pandroid.ui.picture.glide;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
 import com.bumptech.glide.GenericTransitionOptions;

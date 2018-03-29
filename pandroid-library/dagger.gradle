@@ -7,7 +7,9 @@ repositories {
 
 
 dependencies {
-    compile "com.google.dagger:dagger:$libraryDaggerVersion"
-    compile "com.google.dagger:dagger-android-support:$libraryDaggerVersion"
+    implementation "com.google.dagger:dagger:$libraryDaggerVersion"
+    implementation("com.google.dagger:dagger-android-support:$libraryDaggerVersion"){
+        exclude group: 'com.android.support'
+    }
     annotationProcessor "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
 }

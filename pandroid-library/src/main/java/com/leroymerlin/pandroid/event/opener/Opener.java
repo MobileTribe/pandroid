@@ -1,9 +1,7 @@
 package com.leroymerlin.pandroid.event.opener;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 

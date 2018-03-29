@@ -1,16 +1,8 @@
 package com.leroymerlin.pandroid.event.opener;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-
-import com.leroymerlin.pandroid.R;
-import com.leroymerlin.pandroid.app.PandroidFragment;
 
 /**
  * Created by florian on 12/11/14.

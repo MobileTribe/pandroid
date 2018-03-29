@@ -1,13 +1,11 @@
 package com.leroymerlin.pandroid.app;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.annotations.RxWrapper;
@@ -22,9 +20,7 @@ import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 import com.leroymerlin.pandroid.event.opener.OpenerReceiverProvider;
 import com.leroymerlin.pandroid.future.Cancellable;
 import com.leroymerlin.pandroid.log.LogWrapper;
-import com.leroymerlin.pandroid.ui.PandroidFactoryProvider;
 import com.leroymerlin.pandroid.ui.PandroidViewFactory;
-import com.leroymerlin.pandroid.ui.support.PandroidCompatViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +202,7 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
 
     @Override
     public FragmentManager provideFragmentManager() {
-        return getFragmentManager();
+        return getSupportFragmentManager();
     }
 
     @Override
