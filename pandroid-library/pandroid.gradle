@@ -1,6 +1,6 @@
 dependencies {
     annotationProcessor "com.leroymerlin.pandroid:pandroid-compiler:$pandroidVersion"
-    implementation "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
+    api "com.leroymerlin.pandroid:pandroid-library:$pandroidVersion"
     compileOnly "com.leroymerlin.pandroid:pandroid-annotations:$pandroidVersion"
 }
 

@@ -22,7 +22,6 @@ import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder
 class KotlinRVFragment : ListFragment() {
 
     val rvMenu: RecyclerView by lazy { view!!.findViewById<RecyclerView>(R.id.recycler_view_rv) }
-
     val rvAdapter: PandroidAdapter<String> by lazy {
         //tag::KotlinDSL[]
         adapter<String> {

@@ -38,8 +38,8 @@ dependencies {
 
     //Support to simulate plugin work
     annotationProcessor project(':pandroid-compiler')
-    api project(':pandroid-library')
-    api project(':pandroid-kotlin')
+    implementation project(':pandroid-library')
+    implementation project(':pandroid-kotlin')
     compileOnly project(':pandroid-annotations')
 
     optionalLibs.each{
