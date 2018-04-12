@@ -35,30 +35,31 @@ android {
 dependencies {
 
     //Core
-    compile project(':pandroid-java')
+    api project(':pandroid-java')
     annotationProcessor project(':pandroid-compiler')
-    provided project(':pandroid-annotations')
-    compile "com.android.support:support-core-ui:$librarySupportVersion"
-    compile "com.android.support:appcompat-v7:$librarySupportVersion"
-    compile "com.android.support:cardview-v7:$librarySupportVersion"
-    compile "com.android.support:gridlayout-v7:$librarySupportVersion"
-    compile "com.android.support:palette-v7:$librarySupportVersion"
-    compile "com.android.support:recyclerview-v7:$librarySupportVersion"
-    compile "com.android.support:support-v13:$librarySupportVersion"
-    compile "com.android.support:design:$librarySupportVersion"
+    compileOnly project(':pandroid-annotations')
+    api "com.android.support:support-annotations:$librarySupportVersion"
+    api "com.android.support:support-core-ui:$librarySupportVersion"
+    api "com.android.support:appcompat-v7:$librarySupportVersion"
+    api "com.android.support:cardview-v7:$librarySupportVersion"
+    api "com.android.support:gridlayout-v7:$librarySupportVersion"
+    api "com.android.support:palette-v7:$librarySupportVersion"
+    api "com.android.support:recyclerview-v7:$librarySupportVersion"
+    api "com.android.support:support-v13:$librarySupportVersion"
+    api "com.android.support:design:$librarySupportVersion"
 
     //Test
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.5.1"
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:3.5.1"
 
-    testCompile "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
-    testCompile "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
+    testImplementation "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
+    testImplementation "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
 
     //Support to simulate plugin work
     //Optional library have to be declared in pandroid.gradle
     optionalLibs.each {
         libDep ->
-            provided(libDep) {
+            compileOnly(libDep) {
                 transitive = true;
             }
     }
@@ -66,7 +67,7 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
 
-    provided 'org.jetbrains:annotations-java5:15.0'
+    compileOnly 'org.jetbrains:annotations-java5:15.0'
 }
 
 //configure template with delivery

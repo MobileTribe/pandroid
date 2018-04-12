@@ -6,13 +6,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -41,11 +39,6 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
     @BindView(R.id.scanner_psv)
     PandroidScannerView pandroidScannerView;
 
-    @BindView(R.id.scanner_wv)
-    WebView wvInfos;
-
-    @BindView(R.id.sliding_layout)
-    View panel;
 
     @Inject
     ToastManager toastManager;
@@ -69,8 +62,6 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
         } else {
             requestCameraPermission();
         }
-        wvInfos.getSettings().setJavaScriptEnabled(true);
-        wvInfos.loadUrl("https://htmlpreview.github.io/?https://github.com/MobileTribe/pandroid/blob/master/pandroid-doc/html/Tutorial.html#scanner");
     }
 
     /**
@@ -104,6 +95,7 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
     }
 
     //tag::Vision[]
+
     /**
      * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
      * (e.g., because onResume was called before the camera source was created), this will be called
@@ -198,16 +190,15 @@ public class ScannerFragment extends PandroidFragment<FragmentOpener> {
 
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
-        if (!FragmentCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA)) {
-            FragmentCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+        if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            requestPermissions(permissions, RC_HANDLE_CAMERA_PERM);
             return;
         }
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentCompat.requestPermissions(ScannerFragment.this, permissions,
+                requestPermissions(permissions,
                         RC_HANDLE_CAMERA_PERM);
             }
         };

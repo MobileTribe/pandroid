@@ -82,7 +82,7 @@ public class CircularFrameLayout extends FrameLayout {
             mCenterX = a.getDimension(R.styleable.CircularFrameLayout_centerX, mCenterX);
             mCenterY = a.getDimension(R.styleable.CircularFrameLayout_centerY, mCenterY);
             centerCanMove = a.getBoolean(R.styleable.CircularFrameLayout_centerMove, false);
-            setCenterOnChild(a.getResourceId(R.styleable.CircularFrameLayout_centerOn, -1));
+            setCenterOnChild(a.getResourceId(R.styleable.CircularFrameLayout_centerOn, 0));
             setClipOutEnable(a.getBoolean(R.styleable.CircularFrameLayout_clipOut, mClipOutEnable));
 
 
@@ -135,7 +135,7 @@ public class CircularFrameLayout extends FrameLayout {
         if (!mClipOutEnable || isOpen()) {
             return super.drawChild(canvas, child, drawingTime);
         }
-        if(isClose()){
+        if (isClose()) {
             return false;
         }
         updateCenterView();
@@ -175,18 +175,18 @@ public class CircularFrameLayout extends FrameLayout {
         //Background is not supported in circularFrameLayout
     }
 
-    public void setCenterOnChild(@IdRes int viewId) {
-        if (viewId > 0) {
+    public void setCenterOnChild(@IdRes Integer viewId) {
+        if (viewId != null && viewId != 0) {
             centerViewId = viewId;
             updateCenterView();
         } else {
-            centerViewId = -1;
+            centerViewId = 0;
             cachedCenterView = null;
         }
     }
 
     private void updateCenterView() {
-        if (centerViewId <= 0 && cachedCenterView == null)
+        if (centerViewId == 0 && cachedCenterView == null)
             return;
         if (cachedCenterView == null) {
             cachedCenterView = findViewById(centerViewId);
@@ -218,7 +218,7 @@ public class CircularFrameLayout extends FrameLayout {
 
     private void setCenter(float centerX, float centerY, boolean followingView) {
         if (!followingView) {
-            this.setCenterOnChild(-1); // we remove followed view
+            this.setCenterOnChild(null); // we remove followed view
         }
 
         if (mCenterX != centerX || mCenterY != centerY) {
@@ -402,7 +402,7 @@ public class CircularFrameLayout extends FrameLayout {
     }
 
     private boolean useCircularRevealAnimation() {
-        return LOLLIPOP_PLUS && (centerViewId <= 0 || !centerCanMove);
+        return LOLLIPOP_PLUS && (centerViewId == 0 || !centerCanMove);
     }
 
 

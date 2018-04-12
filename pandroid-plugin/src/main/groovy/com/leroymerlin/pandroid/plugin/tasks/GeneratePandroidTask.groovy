@@ -3,15 +3,15 @@ package com.leroymerlin.pandroid.plugin
 import com.android.annotations.NonNull
 import com.android.build.gradle.internal.core.GradleVariantConfiguration
 import com.android.build.gradle.internal.scope.VariantScope
-import com.android.build.gradle.internal.tasks.BaseTask
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.leroymerlin.pandroid.plugin.internal.PandroidConfigMapperBuilder
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
-public class GeneratePandroidTask extends BaseTask {
+public class GeneratePandroidTask extends DefaultTask {
 
     // ----- PUBLIC TASK API -----
 
@@ -93,7 +93,6 @@ public class GeneratePandroidTask extends BaseTask {
 
             GeneratePandroidTask task = project.task(getName(), type: GeneratePandroidTask)
             task.setApplicationId(variantData.applicationId)
-            task.setVariantName(variantData.name)
             task.setAppPackageName(variantConfiguration.originalApplicationId)
             task.setMapperBuilder(this.mapperBuilder)
             task.setSourceOutputDir(new File(scope.globalScope.getBuildDir(), "generated" + "/source/pandroid/" + variantData.getVariantConfiguration().getDirName()));

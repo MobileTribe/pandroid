@@ -1,8 +1,7 @@
 package com.leroymerlin.pandroid.event.opener;
 
 import android.app.Activity;
-import android.app.Application;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
@@ -13,8 +12,6 @@ import com.leroymerlin.pandroid.log.LogWrapper;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Abstract EventBusReceiver in charge of receiving Opener event

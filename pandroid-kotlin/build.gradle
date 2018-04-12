@@ -31,6 +31,6 @@ android {
 
 
 dependencies {
-    compile project(':pandroid-library')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api project(':pandroid-library')
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

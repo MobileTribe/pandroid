@@ -1,15 +1,15 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 apply from: file('../delivery.gradle')
 
-configurations {
-    provided
-    //compile.extendsFrom provided
-}
+//configurations {
+//    provided
+//    //compile.extendsFrom provided
+//}
 
 dependencies {
-    provided 'com.google.android:android:4.1.1.4'
-    provided 'com.android.databinding:baseLibrary:3.0.1'
+    compileOnly 'com.google.android:android:4.1.1.4'
+//    compileOnly 'com.android.databinding:baseLibrary:3.0.1'
 }
 
 targetCompatibility = JavaVersion.VERSION_1_7

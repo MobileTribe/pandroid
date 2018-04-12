@@ -1,7 +1,5 @@
 package com.leroymerlin.pandroid.templates.feature;
 
-import android.app.Fragment;
-
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 /**

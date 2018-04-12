@@ -121,7 +121,7 @@ public interface PictureManager {
 
         public Loader animation(@AnimRes int animation) {
             this.animation = animation;
-            animated(animation > 0);
+            animated(animation != 0);
             return this;
         }
 

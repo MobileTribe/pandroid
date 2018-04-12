@@ -1,7 +1,5 @@
 package com.leroymerlin.pandroid.demo.main.opener;
 
-import android.app.Fragment;
-
 import com.leroymerlin.pandroid.event.opener.FragmentOpener;
 
 /**

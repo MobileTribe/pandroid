@@ -1,15 +1,10 @@
 package com.leroymerlin.pandroid.templates.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.Fragment;
 
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidActivity;
-import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.app.ResumeState;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.event.EventBusManager;
@@ -41,7 +36,7 @@ public class TemplateActivity extends PandroidActivity<TemplateActivityOpener> i
 
     @Override
     public Fragment getCurrentFragment() {
-        return getFragmentManager().findFragmentById(R.id.main_content_container); //useful to handle onBackListener in fragment
+        return getSupportFragmentManager().findFragmentById(R.id.main_content_container); //useful to handle onBackListener in fragment
     }
 
 

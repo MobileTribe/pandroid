@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -120,6 +121,7 @@ public class MaterialTransitionLayout extends FrameLayout {
         return transitionView;
     }
 
+    @SuppressWarnings(value = "ObjectAnimatorBinding")
     private List<Animator> createViewAnimators(final View transitionView, final ViewInfosContainer fromInfos, final ViewInfosContainer toInfos) {
         List<Animator> animators = new ArrayList<>();
         if (transitionView instanceof TextView) {
@@ -174,7 +176,6 @@ public class MaterialTransitionLayout extends FrameLayout {
         animators.add(animatorTranslationX);
         ObjectAnimator animatorTranslationY = ObjectAnimator.ofFloat(transitionView, "y", toInfos.getY());
         animators.add(animatorTranslationY);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             animators.add(ObjectAnimator.ofFloat(transitionView, "elevation", toInfos.elevation));
         }

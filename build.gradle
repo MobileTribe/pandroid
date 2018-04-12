@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.31'
     apply from: file('support.gradle')
     repositories {
         jcenter()
@@ -9,9 +9,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.3-2"
-        classpath 'com.leroymerlin.plugins:delivery-plugin:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath 'com.leroymerlin.plugins:delivery-plugin:3.0.2'
         classpath 'com.leroymerlin.plugins:android-templates-plugin:1.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -34,7 +33,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
     }
 }
 
