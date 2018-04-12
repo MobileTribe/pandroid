@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.5.8-SNAPSHOT, Mon Mar 19 16:44:31 CET 2018">
+<meta name="author" content="Pandroid v2.6.0-SNAPSHOT, Thu Apr 12 16:51:31 CEST 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.5.8-SNAPSHOT, Mon Mar 19 16:44:31 CET 2018</span><br>
+<span id="author" class="author">Pandroid v2.6.0-SNAPSHOT, Thu Apr 12 16:51:31 CEST 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1386,7 +1386,7 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
         maven { url <span class="string"><span class="delimiter">'</span><span class="content">https://maven.fabric.io/public</span><span class="delimiter">'</span></span> }
     }
     dependencies {
-        classpath <span class="string"><span class="delimiter">'</span><span class="content">io.fabric.tools:gradle:1.24.4</span><span class="delimiter">'</span></span>
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">io.fabric.tools:gradle:1.25.2</span><span class="delimiter">'</span></span>
     }
     }
 
@@ -2137,28 +2137,23 @@ See demo&#8217;s examples</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">        rvMenu.apply {
-            <span class="local-variable">this</span>.adapter = adapter&lt;<span class="predefined-type">String</span>&gt; {
-                holder {
-                    layout = R.layout.cell_list
-                    itemType = <span class="integer">0</span> <span class="comment">//your can use class has type, hashcode will be used</span>
-                    binder = { view, data, index -&gt; (view as <span class="predefined-type">Button</span>).text = data }
-                }
-                holder {
-                    layout = R.layout.cell_list
-                    itemType = <span class="integer">1</span>
-                    holderClass = CustomTxtHolder::<span class="type">class</span>
-                }
-                <span class="class">holder</span> {
-                    itemType = <span class="integer">2</span>
-                    factory = CustomHolderFactory()
-                }
-                itemTypes { adapter: PandroidAdapter&lt;<span class="predefined-type">String</span>&gt;, item: <span class="predefined-type">String</span>, position: Int -&gt; position % <span class="integer">3</span> }
-
+<pre class="CodeRay highlight"><code data-lang="java">        adapter&lt;<span class="predefined-type">String</span>&gt; {
+            holder {
+                layout = R.layout.cell_list
+                itemType = <span class="integer">0</span> <span class="comment">//your can use class has type, hashcode will be used</span>
+                binder = { view, data, index -&gt; (view as <span class="predefined-type">Button</span>).text = data }
             }
-            <span class="local-variable">this</span>.layoutManager = LinearLayoutManager(activity)
-        }
-        <span class="local-variable">this</span>.adapter.addAll(data)</code></pre>
+            holder {
+                layout = R.layout.cell_list
+                itemType = <span class="integer">1</span>
+                holderClass = CustomTxtHolder::<span class="type">class</span>
+            }
+            <span class="class">holder</span> {
+                itemType = <span class="integer">2</span>
+                factory = CustomHolderFactory()
+            }
+            itemTypes { adapter: PandroidAdapter&lt;<span class="predefined-type">String</span>&gt;, item: <span class="predefined-type">String</span>, position: Int -&gt; position % <span class="integer">3</span> }
+        }</code></pre>
 </div>
 </div>
 </div>
@@ -2549,7 +2544,7 @@ To help you doing so, Pandroid provides a SimpleAsyncTaskLoader.</p>
         jcenter()
     }
     dependencies {
-        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.0.0</span><span class="delimiter">'</span></span>
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.2.0</span><span class="delimiter">'</span></span>
     }
 }
 <span class="comment">//apply the plugin at the end of your build.gradle to avoid error</span>
@@ -2600,7 +2595,7 @@ pandroid {
         jcenter()
     }
     dependencies {
-        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.0.0</span><span class="delimiter">'</span></span>
+        classpath <span class="string"><span class="delimiter">'</span><span class="content">com.google.gms:google-services:3.2.0</span><span class="delimiter">'</span></span>
     }
 }
 <span class="comment">//apply the plugin at the end of your build.gradle to avoid error</span>
@@ -2664,7 +2659,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-03-19 16:44:25 +01:00
+Last updated 2018-04-12 16:51:14 +02:00
 </div>
 </div>
 </body>
