@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.6.0-SNAPSHOT, Thu Apr 12 16:51:31 CEST 2018">
+<meta name="author" content="Pandroid v2.6.1-SNAPSHOT, Tue Apr 17 21:37:25 CEST 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.6.0-SNAPSHOT, Thu Apr 12 16:51:31 CEST 2018</span><br>
+<span id="author" class="author">Pandroid v2.6.1-SNAPSHOT, Tue Apr 17 21:37:25 CEST 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -963,9 +963,9 @@ This activity handles the following points :</p>
         Fragment fragment = getCurrentFragment(); <span class="comment">//override this methode to give your current fragment</span>
         <span class="keyword">if</span> (fragment != <span class="predefined-constant">null</span> &amp;&amp; fragment <span class="keyword">instanceof</span> OnBackListener &amp;&amp; ((OnBackListener) fragment).onBackPressed()) {
             <span class="comment">//back handle by current fragment</span>
-        } <span class="keyword">else</span> <span class="keyword">if</span> (getFragmentManager().getBackStackEntryCount() &gt; <span class="integer">0</span>) {
+        } <span class="keyword">else</span> <span class="keyword">if</span> (getSupportFragmentManager().getBackStackEntryCount() &gt; <span class="integer">0</span>) {
             <span class="comment">//back handle by getFragmentManager</span>
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         } <span class="keyword">else</span> {
             onBackExit();
         }
@@ -2659,7 +2659,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-12 16:51:14 +02:00
+Last updated 2018-04-17 21:37:18 +02:00
 </div>
 </div>
 </body>
