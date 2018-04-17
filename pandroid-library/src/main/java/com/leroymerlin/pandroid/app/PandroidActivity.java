@@ -152,9 +152,9 @@ public class PandroidActivity<T extends ActivityOpener> extends AppCompatActivit
         Fragment fragment = getCurrentFragment(); //override this methode to give your current fragment
         if (fragment != null && fragment instanceof OnBackListener && ((OnBackListener) fragment).onBackPressed()) {
             //back handle by current fragment
-        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             //back handle by getFragmentManager
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         } else {
             onBackExit();
         }
