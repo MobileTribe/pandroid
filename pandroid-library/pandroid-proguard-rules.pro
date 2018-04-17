@@ -38,6 +38,10 @@
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+-keepclassmembernames,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
 #GLIDE
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -65,3 +69,7 @@
 #DATA BINDING
 -keep class android.databinding.** { *; }
 -dontwarn android.databinding.**
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }

@@ -22,7 +22,13 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
-### *2.6.0* - (soon)
+### *2.6.1* - (2018-04-17)
+
+*Fix*
+- SupportFragment - fix back pressed with support fragment
+- Proguard - update rules
+
+### *2.6.0* - (2018-04-12)
 
 *Refactor*
 - Migrate fragment to SupportFragment (Fragment is depreciated in Android P)

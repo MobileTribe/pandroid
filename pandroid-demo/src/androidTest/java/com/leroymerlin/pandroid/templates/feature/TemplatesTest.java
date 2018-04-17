@@ -47,7 +47,7 @@ public class TemplatesTest {
         fragment.presenter.featureManager = featureManager;
 
         Mockito.when(featureManager.loadData()).thenReturn(Observable.error(new Exception("error")));
-        activity.getFragmentManager()
+        activity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_content_container, fragment)
                 .commit();
