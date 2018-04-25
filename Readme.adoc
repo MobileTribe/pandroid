@@ -22,6 +22,11 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.6.2* - (soon)
+
+*Refactor*
+- Improve RxWrapper to handle completable
+
 ### *2.6.1* - (2018-04-17)
 
 *Fix*
