@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface RxWrapper {
     /**
-     * if true the method will return an Single, otherwise it will be a Observable
+     * if true the wrapper will return a single result and complete, otherwise it will return values until it is explicitly cancelled
      *
      * @return true by default
      */
-    boolean single() default true;
+    boolean singleValue() default true;
 
     /**
      * if true the result will be wrap in a model (use to get multiple error or null response)

@@ -1,5 +1,8 @@
 package com.leroymerlin.pandroid.future;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -18,6 +21,28 @@ public class RxActionDelegate<T> extends CancellableActionDelegate<T> implements
 
     private RxActionDelegate(ActionDelegate<T> delegate) {
         this.wrapDelegate = delegate;
+    }
+
+
+    public static Completable completable(final OnSubscribeAction<Void> subscribe){
+        return Completable.create(new CompletableOnSubscribe() {
+            @Override
+            public void subscribe(final CompletableEmitter emitter) throws Exception {
+                RxActionDelegate<Void> delegate = new RxActionDelegate<>(new ActionDelegate<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        emitter.onComplete();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        emitter.onError(e);
+                    }
+                });
+                emitter.setDisposable(delegate);
+                subscribe.subscribe(delegate);
+            }
+        });
     }
 
     public static <T> Single<T> single(final OnSubscribeAction<T> subscribe) {
