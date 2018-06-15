@@ -27,7 +27,7 @@ public class PandroidLogger implements LogWrapper {
 
     @Override
     public void removeLogger(LogWrapper logWrapper) {
-        loggers.add(logWrapper);
+        loggers.remove(logWrapper);
     }
 
     @Override
