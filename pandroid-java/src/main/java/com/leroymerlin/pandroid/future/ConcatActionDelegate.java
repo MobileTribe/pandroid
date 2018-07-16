@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.future;
 
-import android.util.Log;
+import com.leroymerlin.pandroid.log.LogWrapper;
+import com.leroymerlin.pandroid.log.PandroidLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Stack;
  * Created by paillardf on 08/10/14.
  */
 public  abstract class ConcatActionDelegate<P, W, R> implements ActionDelegate<W> {
+    LogWrapper logWrapper = PandroidLogger.getInstance();
+
     private static final String TAG = ConcatActionDelegate.class.getSimpleName();
     protected final Stack<P> stack;
     protected List<R> result = new ArrayList<R>();
@@ -30,9 +33,8 @@ public  abstract class ConcatActionDelegate<P, W, R> implements ActionDelegate<W
 
     @Override
     public void onError(Exception e) {
-        Log.e(TAG, e.getMessage(), e);
+        logWrapper.e(TAG, e.getMessage(), e);
         next();
-
     }
 
     protected void next(){

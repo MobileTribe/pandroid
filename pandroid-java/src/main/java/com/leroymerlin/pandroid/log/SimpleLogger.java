@@ -1,14 +1,12 @@
 package com.leroymerlin.pandroid.log;
 
-import com.leroymerlin.pandroid.app.PandroidConfig;
-
 public abstract class SimpleLogger implements LogWrapper {
 
-    protected boolean DEBUGGABLE = PandroidConfig.DEBUG;
+    protected boolean debuggable = false;
     protected int logLevel = VERBOSE;
 
     public boolean shouldLog(int i) {
-        return DEBUGGABLE && i >= logLevel;
+        return debuggable && i >= logLevel;
     }
 
     public void setLogLevel(int level) {
@@ -27,7 +25,7 @@ public abstract class SimpleLogger implements LogWrapper {
 
     @Override
     public void setDebug(boolean isDebug) {
-        DEBUGGABLE = isDebug;
+        debuggable = isDebug;
     }
 
     @Override

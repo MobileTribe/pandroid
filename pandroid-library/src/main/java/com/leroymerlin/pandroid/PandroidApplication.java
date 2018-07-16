@@ -62,6 +62,7 @@ public class PandroidApplication extends Application implements PandroidDelegate
     //tag::Logger[]
     protected void initializeLogger() {
         logWrapper = PandroidLogger.getInstance();
+        logWrapper.setDebug(PandroidConfig.DEBUG);
         logWrapper.addLogger(LogcatLogger.getInstance());
         if (PandroidConfig.isLibraryEnable("crashlytics")) {
             logWrapper.addLogger(new CrashlyticsLogger(this));

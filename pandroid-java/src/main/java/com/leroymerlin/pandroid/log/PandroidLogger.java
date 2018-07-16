@@ -6,6 +6,9 @@ import java.util.List;
 
 public class PandroidLogger implements LogWrapper {
 
+    protected boolean debuggable = false;
+    protected int logLevel = VERBOSE;
+
     private static PandroidLogger logger;
 
     public List<LogWrapper> loggers = new ArrayList<>();
@@ -23,6 +26,8 @@ public class PandroidLogger implements LogWrapper {
     @Override
     public void addLogger(LogWrapper logWrapper) {
         loggers.add(logWrapper);
+        logWrapper.setDebug(debuggable);
+        logWrapper.setLogLevel(logLevel);
     }
 
     @Override
@@ -32,6 +37,7 @@ public class PandroidLogger implements LogWrapper {
 
     @Override
     public void setLogLevel(int level) {
+        logLevel = level;
         for (LogWrapper logger : loggers) {
             logger.setLogLevel(level);
         }
@@ -39,6 +45,7 @@ public class PandroidLogger implements LogWrapper {
 
     @Override
     public void setDebug(boolean isDebug) {
+        debuggable = isDebug;
         for (LogWrapper logger : loggers) {
             logger.setDebug(isDebug);
         }
