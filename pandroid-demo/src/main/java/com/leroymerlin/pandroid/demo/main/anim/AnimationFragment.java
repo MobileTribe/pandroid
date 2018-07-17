@@ -54,7 +54,6 @@ public class AnimationFragment extends PandroidFragment<FragmentOpener> {
     @BindView(R.id.animation_tv_title)
     TextView tvTitle;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_animation, container, false);
