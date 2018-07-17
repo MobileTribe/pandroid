@@ -4,9 +4,13 @@ package com.leroymerlin.pandroid.ui.loader;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.graphics.SweepGradient;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -38,6 +42,7 @@ public class ProgressWheel extends View {
     private final int barMaxLength = 270;
 
     private boolean fillRadius = false;
+    private boolean roundStroke = false;
 
     private double timeStartGrowing = 0;
     private double barSpinCycleTime = 460;
@@ -160,6 +165,12 @@ public class ProgressWheel extends View {
      * draw the progress wheel
      */
     private void setupPaints() {
+        if (roundStroke) {
+            barPaint.setDither(true);
+            barPaint.setStrokeCap(Paint.Cap.ROUND);
+            barPaint.setPathEffect(new CornerPathEffect(10) );
+        }
+
         barPaint.setColor(barColor);
         barPaint.setAntiAlias(true);
         barPaint.setStyle(Style.STROKE);
@@ -237,6 +248,8 @@ public class ProgressWheel extends View {
         if (a.getBoolean(R.styleable.ProgressWheel_progressIndeterminate, false)) {
             spin();
         }
+
+        roundStroke = a.getBoolean(R.styleable.ProgressWheel_roundStroke, false);
 
         // Recycle
         a.recycle();
@@ -452,6 +465,7 @@ public class ProgressWheel extends View {
         ss.circleRadius = this.circleRadius;
         ss.linearProgress = this.linearProgress;
         ss.fillRadius = this.fillRadius;
+        ss.roundStroke = this.roundStroke;
 
         return ss;
     }
@@ -477,6 +491,7 @@ public class ProgressWheel extends View {
         this.circleRadius = ss.circleRadius;
         this.linearProgress = ss.linearProgress;
         this.fillRadius = ss.fillRadius;
+        this.roundStroke = ss.roundStroke;
     }
 
     //----------------------------------
@@ -517,6 +532,25 @@ public class ProgressWheel extends View {
      */
     public void setCircleRadius(int circleRadius) {
         this.circleRadius = circleRadius;
+        if (!isSpinning) {
+            invalidate();
+        }
+    }
+
+    /**
+     * @return the state of the stroke
+     */
+    public boolean hasRoundStroke() {
+        return roundStroke;
+    }
+
+    /**
+     * Sets the beginning and ending of the stroke rounded
+     *
+     * @param roundStroke the expected radius, in pixels
+     */
+    public void setRoundStroke(boolean roundStroke) {
+        this.roundStroke = roundStroke;
         if (!isSpinning) {
             invalidate();
         }
@@ -632,6 +666,7 @@ public class ProgressWheel extends View {
         int circleRadius;
         boolean linearProgress;
         boolean fillRadius;
+        boolean roundStroke;
 
         WheelSavedState(Parcelable superState) {
             super(superState);
@@ -650,6 +685,7 @@ public class ProgressWheel extends View {
             this.circleRadius = in.readInt();
             this.linearProgress = in.readByte() != 0;
             this.fillRadius = in.readByte() != 0;
+            this.roundStroke = in.readByte() != 0;
         }
 
         @Override
@@ -666,6 +702,7 @@ public class ProgressWheel extends View {
             out.writeInt(this.circleRadius);
             out.writeByte((byte) (linearProgress ? 1 : 0));
             out.writeByte((byte) (fillRadius ? 1 : 0));
+            out.writeByte((byte) (roundStroke ? 1 : 0));
         }
 
         //required field that makes Parcelables from a Parcel
