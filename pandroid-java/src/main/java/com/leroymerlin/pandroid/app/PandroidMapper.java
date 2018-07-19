@@ -8,12 +8,13 @@ import java.util.List;
 
 public abstract class PandroidMapper {
     private static PandroidMapper instance;
-    public static final String MAPPER_IMPL_NAME = "PandroidMapperImpl";
     public static final String WRAPPER_NAME = "PandroidGeneratedClassWrapper";
     public static final String WRAPPER_GENERATED_METHOD_NAME = "getGeneratedInstances";
     public static final String WRAPPER_INJECT_METHOD_NAME = "injectToTarget";
     public static final String WRAPPER_BASE_COMPONENT = "com.leroymerlin.pandroid.dagger.BaseComponent";
+    public static final String WRAPPER_PACKAGE = "com.leroymerlin.pandroid.generated";
     public static final String MAPPER_PACKAGE = "com.leroymerlin.pandroid";
+    public static final String MAPPER_IMPL_NAME = "PandroidMapperImpl";
     public static final String PACKAGE_ATTR = "PACKAGE";
 
 

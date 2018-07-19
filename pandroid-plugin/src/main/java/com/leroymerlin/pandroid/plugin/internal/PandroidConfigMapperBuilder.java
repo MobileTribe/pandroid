@@ -95,7 +95,7 @@ public class PandroidConfigMapperBuilder {
 
         TypeVariableName t = TypeVariableName.get("T");
         ParameterizedTypeName returnType = ParameterizedTypeName.get(ClassName.get(List.class), t);
-        ClassName wrapperClassName = ClassName.get(PandroidMapper.MAPPER_PACKAGE, PandroidMapper.WRAPPER_NAME);
+        ClassName wrapperClassName = ClassName.get(PandroidMapper.WRAPPER_PACKAGE, PandroidMapper.WRAPPER_NAME);
         result.addMethod(
                 MethodSpec.methodBuilder(PandroidMapper.WRAPPER_GENERATED_METHOD_NAME)
                         .addAnnotation(Override.class)

@@ -2,7 +2,6 @@ package com.leroymerlin.pandroid;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 
@@ -32,8 +31,6 @@ import com.leroymerlin.pandroid.ui.support.PandroidCompatViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 
 /**
