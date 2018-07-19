@@ -63,4 +63,10 @@ delivery {
 
     }
 }
+
 tasks.findByPath('releaseGitStepGenerateVersionFiles').dependsOn += documentationFlow
+
+
+task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java', ':pandroid-kotlin'].collect {
+    project(it)
+}.collect { it.getTasksByName('install', false) });
