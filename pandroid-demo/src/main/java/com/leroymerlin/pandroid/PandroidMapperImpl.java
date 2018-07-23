@@ -5,7 +5,7 @@ package com.leroymerlin.pandroid;
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.demo.BuildConfig;
-import com.leroymerlin.pandroid.PandroidGeneratedClassWrapper;
+import com.leroymerlin.pandroid.generated.PandroidGeneratedClassWrapper;
 
 import java.util.Arrays;
 import java.util.List;

@@ -20,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.TreeMap;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -299,11 +300,22 @@ public final class PandroidCallAdapterFactory extends CallAdapter.Factory {
             super(call, needResponse);
         }
 
+        @Override
         public Single<T> rxEnqueue() {
             return RxActionDelegate.single(new RxActionDelegate.OnSubscribeAction<T>() {
                 @Override
                 public void subscribe(ActionDelegate<T> callback) {
                     RxPandroidCallImpl.this.clone().enqueue(callback);
+                }
+            });
+        }
+
+        @Override
+        public Completable rxCompleteEnqueue() {
+            return RxActionDelegate.completable(new RxActionDelegate.OnSubscribeAction<Void>() {
+                @Override
+                public void subscribe(ActionDelegate<Void> callback) {
+                    RxPandroidCallImpl.this.clone().enqueue((ActionDelegate<T>) callback);
                 }
             });
         }

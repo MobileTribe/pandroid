@@ -1,6 +1,7 @@
 package com.leroymerlin.pandroid.future;
 
-import android.util.Log;
+import com.leroymerlin.pandroid.log.LogWrapper;
+import com.leroymerlin.pandroid.log.PandroidLogger;
 
 /**
  * Created by paillard.f on 21/02/2014.
@@ -8,12 +9,14 @@ import android.util.Log;
 public class NullDelegate<T> implements ActionDelegate<T> {
     private static final String TAG = "NullDelegate";
 
+    LogWrapper logWrapper = PandroidLogger.getInstance();
+
     @Override
     public void onSuccess(T result) {
     }
 
     @Override
     public void onError(Exception ex) {
-        Log.e(TAG, ex.getMessage(), ex);
+        logWrapper.e(TAG, ex.getMessage(), ex);
     }
 }

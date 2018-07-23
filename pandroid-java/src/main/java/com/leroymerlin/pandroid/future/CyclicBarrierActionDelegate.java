@@ -1,12 +1,15 @@
 package com.leroymerlin.pandroid.future;
 
-import com.leroymerlin.pandroid.log.LogcatLogger;
+
+import com.leroymerlin.pandroid.log.LogWrapper;
+import com.leroymerlin.pandroid.log.PandroidLogger;
 
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
 public class CyclicBarrierActionDelegate<T> implements ActionDelegate<T> {
     private static final String TAG = CyclicBarrierActionDelegate.class.getSimpleName();
+    LogWrapper logWrapper = PandroidLogger.getInstance();
 
     private CyclicBarrier barrier = new CyclicBarrier(2);
 
@@ -44,7 +47,7 @@ public class CyclicBarrierActionDelegate<T> implements ActionDelegate<T> {
         try {
             barrier.await();
         } catch (Exception e) {
-            LogcatLogger.getInstance().e(TAG, e.getMessage(), e);
+            logWrapper.e(TAG, e.getMessage(), e);
         }
     }
 

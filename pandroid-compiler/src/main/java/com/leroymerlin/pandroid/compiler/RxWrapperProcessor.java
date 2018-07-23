@@ -44,10 +44,14 @@ class RxWrapperProcessor extends BaseProcessor {
     private static final ClassName CALLABLE_TYPE = ClassName.get("java.util.concurrent", "Callable");
     private static final ClassName SINGLE_TYPE = ClassName.get("io.reactivex", "Single");
     private static final ClassName OBSERVABLE_TYPE = ClassName.get("io.reactivex", "Observable");
+    private static final ClassName COMPLETABLE_TYPE = ClassName.get("io.reactivex", "Completable");
     private static final ClassName RXACTIONDELEGATE_TYPE = ClassName.get("com.leroymerlin.pandroid.future", "RxActionDelegate");
     private static final ClassName RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("OnSubscribeAction");
     private static final ClassName RXACTIONDELEGATE_RESULT_TYPE = RXACTIONDELEGATE_TYPE.nestedClass("Result");
     private TypeMirror ACTIONDELEGATE_TYPE;
+
+    private static final ClassName BOXED_VOID = ClassName.get("java.lang", "Void");
+
 
 
     private static final String TARGET_VAR = "mTarget";
@@ -163,7 +167,7 @@ class RxWrapperProcessor extends BaseProcessor {
                         parameters = parameters + (wasEmpty ? "" : ", ") + renamedParam;
 
                     }
-                    boolean returnValue = !element.equals(TypeName.VOID);
+                    boolean returnValue = !returnType.box().equals(BOXED_VOID);
 
                     builder.addStatement("$L$T.$L($L)", returnValue ? "return " : "", element.getEnclosingElement(), element.getSimpleName().toString(), parameters);
                     modelBuilder.addMethod(builder.build());
@@ -233,17 +237,31 @@ class RxWrapperProcessor extends BaseProcessor {
                     TypeName baseReturnType = methodData.returnType;
                     TypeName returnType = rxWrapperAnnotation.wrapResult() ? ParameterizedTypeName.get(RXACTIONDELEGATE_RESULT_TYPE, baseReturnType) : baseReturnType;
 
-                    boolean single = rxWrapperAnnotation.single();
-                    boolean returnVoid = returnType.equals(TypeName.VOID);
-                    if (returnVoid && methodData.delegateParameter == null) {
-                        throw new IllegalStateException("Method should have an ActionDelegate type in the parameters to be RxWrapped. " + className.toString() + ":" + method.getSimpleName().toString());
-                    }
+                    boolean singleValue = rxWrapperAnnotation.singleValue();
+                    boolean returnVoid = returnType.box().equals(BOXED_VOID);
 
-                    ParameterizedTypeName singleType = ParameterizedTypeName.get(SINGLE_TYPE, returnType);
+                    TypeName rxType;
+                    TypeName rxTypeWithParameters;
+                    String rxTypeMethodName;
+                    if (singleValue && returnVoid) {
+                        rxType = COMPLETABLE_TYPE;
+                        rxTypeWithParameters = COMPLETABLE_TYPE;
+                        rxTypeMethodName = "completable";
+                        if (rxWrapperAnnotation.wrapResult()) {
+                            throw new IllegalStateException("Can't wrap result of method with Void as return type." + className.toString() + ":" + method.getSimpleName().toString());
+                        }
+                    } else if (singleValue) {
+                        rxType = SINGLE_TYPE;
+                        rxTypeWithParameters = ParameterizedTypeName.get(SINGLE_TYPE, returnType);
+                        rxTypeMethodName = "single" + (rxWrapperAnnotation.wrapResult() ? "Wrapped" : "");
+                    } else {
+                        rxType = OBSERVABLE_TYPE;
+                        rxTypeWithParameters = ParameterizedTypeName.get(OBSERVABLE_TYPE, returnType);
+                        rxTypeMethodName = "observable" + (rxWrapperAnnotation.wrapResult() ? "Wrapped" : "");
+                    }
 
                     if (methodData.delegateParameter != null) { //Action delegate replacement
 
-                        ParameterizedTypeName observableType = ParameterizedTypeName.get(OBSERVABLE_TYPE, returnType);
                         ParameterizedTypeName rxSubscribeActionType = ParameterizedTypeName.get(RXACTIONDELEGATE_SUBSCRIBEACTION_TYPE, baseReturnType);
 
 
@@ -264,12 +282,12 @@ class RxWrapperProcessor extends BaseProcessor {
                                 .addExceptions(methodData.exceptions)
                                 .addTypeVariables(methodData.typeVariableNames)
                                 .addParameters(methodData.parameterSpecsWithoutDelegate)
-                                .returns(single ? singleType : observableType)
-                                .addStatement("return $T.$L($L)", RXACTIONDELEGATE_TYPE, (single ? "single" : "observable") + (rxWrapperAnnotation.wrapResult() ? "Wrapped" : ""), onSubscribeActionClass);
+                                .returns(rxTypeWithParameters)
+                                .addStatement("return $T.$L($L)", RXACTIONDELEGATE_TYPE, rxTypeMethodName, onSubscribeActionClass);
 
                         modelBuilder.addMethod(methodBuilder.build());
                     } else { //method replacement
-                        if (!rxWrapperAnnotation.single()) {
+                        if (!rxWrapperAnnotation.singleValue()) {
                             throw new IllegalStateException("Can't wrap a method as Observable. Please remove single or transform method with an ActionDelegate. " + className.toString() + ":" + method.getSimpleName().toString());
                         }
 
@@ -279,7 +297,10 @@ class RxWrapperProcessor extends BaseProcessor {
                                 .addException(Exception.class)
                                 .addModifiers(Modifier.PUBLIC)
                                 .returns(TypeName.OBJECT);
-                        if (rxWrapperAnnotation.wrapResult()) {
+                        if(returnVoid){
+                            callMethodBuilder.addStatement("$L($L)", method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
+                            callMethodBuilder.addStatement("return null");
+                        }else if (rxWrapperAnnotation.wrapResult()) {
                             callMethodBuilder.addStatement("return ($T) $T.wrap($L($L))", returnType, RXACTIONDELEGATE_TYPE, method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
                         } else {
                             callMethodBuilder.addStatement("return ($T) $L($L)", returnType, method.getSimpleName(), toParameterStr(methodData.parameterSpecs));
@@ -294,8 +315,8 @@ class RxWrapperProcessor extends BaseProcessor {
                                 .addModifiers(Modifier.PUBLIC)
                                 .addTypeVariables(methodData.typeVariableNames)
                                 .addParameters(methodData.parameterSpecs)
-                                .returns(singleType)
-                                .addStatement("return $T.fromCallable($L)", SINGLE_TYPE, callableClass);
+                                .returns(rxTypeWithParameters)
+                                .addStatement("return $T.fromCallable($L)", rxType, callableClass);
 
                         modelBuilder.addMethod(methodBuilder.build());
 
@@ -309,7 +330,7 @@ class RxWrapperProcessor extends BaseProcessor {
     private void wrapInterfaceMethod(TypeSpec.Builder modelBuilder, ExecutableElement method) {
         MethodData methodData = new MethodData(method);
         TypeName returnTypeName = TypeName.get(method.getReturnType());
-        boolean returnValue = !returnTypeName.equals(TypeName.VOID);
+        boolean returnValue = !returnTypeName.box().equals(BOXED_VOID);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getSimpleName().toString())
                 .addModifiers(Modifier.PUBLIC)
                 .addExceptions(methodData.exceptions)
@@ -363,7 +384,7 @@ class RxWrapperProcessor extends BaseProcessor {
                 parameterSpecs.add(parameterSpecBuilder.build());
                 if (returnType == null && mTypesUtils.isAssignable(mTypesUtils.erasure(variableElement.asType()), ACTIONDELEGATE_TYPE)) {
                     if (!mTypesUtils.erasure(variableElement.asType()).equals(mTypesUtils.erasure(ACTIONDELEGATE_TYPE))) {
-                        throw new IllegalStateException("Can't wrap a method with a class with parameter type " +mTypesUtils.erasure(variableElement.asType()) + ". Please use ActionDelegate instead in " + method.toString());
+                        throw new IllegalStateException("Can't wrap a method with a class with parameter type " + mTypesUtils.erasure(variableElement.asType()) + ". Please use ActionDelegate instead in " + method.toString());
                     }
 
                     TypeName typeName = ParameterizedTypeName.get(variableElement.asType());

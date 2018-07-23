@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.compiler;
 
 import com.google.common.collect.Lists;
 import com.leroymerlin.pandroid.annotations.PandroidGeneratedClass;
+import com.leroymerlin.pandroid.annotations.PandroidWrapper;
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -145,23 +147,10 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                 library = true;
             }
 
-            String wrapperName;
-            TypeElement lastWrapper = null;
-            int classIndex = 0;
-            do {
-                wrapperName = PandroidMapper.WRAPPER_NAME + "$_" + classIndex++;
+            String wrapperName = PandroidMapper.WRAPPER_NAME;
 
-                TypeElement libWrapper = processingEnvironment.getElementUtils().getTypeElement(PandroidMapper.MAPPER_PACKAGE + "." + wrapperName);
-                if (libWrapper == null) {
-                    break;
-                }
-                lastWrapper = libWrapper;
-            }
-            while (true);
-
-
-            if (!library) {
-                wrapperName = PandroidMapper.WRAPPER_NAME;
+            if (library) {
+                wrapperName = PandroidMapper.WRAPPER_NAME + "$_" + UUID.randomUUID().toString().replaceAll("-", "_");
             }
 
 
@@ -179,16 +168,8 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     .returns(returnType)
                     .addParameter(ParameterizedTypeName.get(ClassName.get(Class.class), t), TYPE_VAR_NAME)
                     .addParameter(TypeName.OBJECT, TARGET_VAR_NAME)
-
                     .addStatement("$T result = new $T()", returnType, ParameterizedTypeName.get(ClassName.get(ArrayList.class), t));
-            if (lastWrapper != null) {
-                methodBuilder.addStatement("result.addAll($T.$L(type, target))", lastWrapper, PandroidMapper.WRAPPER_GENERATED_METHOD_NAME);
-            }
 
-            methodBuilder.addCode(generatedBlocks.toCodeBlock(TYPE_VAR_NAME, null));
-
-            methodBuilder.addStatement("return result");
-            wrapperBuilder.addMethod(methodBuilder.build());
 
             // ##### INJECT METHOD #####
             MethodSpec.Builder injectMethodBuilder = MethodSpec.methodBuilder(PandroidMapper.WRAPPER_INJECT_METHOD_NAME)
@@ -196,15 +177,26 @@ public class GeneratedClassMapperProcessor extends BaseProcessor {
                     .addParameter(TypeName.OBJECT, COMPONENT_VAR_NAME)
                     .addParameter(TypeName.OBJECT, TARGET_VAR_NAME);
 
-            if (lastWrapper != null) {
-                injectMethodBuilder.addStatement("$T.$L(component, $L)", lastWrapper, PandroidMapper.WRAPPER_INJECT_METHOD_NAME, TARGET_VAR_NAME);
+
+            if (!library) {
+                for (Element wrapper : processingEnvironment.getElementUtils().getPackageElement(PandroidMapper.WRAPPER_PACKAGE).getEnclosedElements()) {
+                    PandroidWrapper annotation = wrapper.getAnnotation(PandroidWrapper.class);
+                    if (annotation != null) {
+                        methodBuilder.addStatement("result.addAll($T.$L(type, target))", wrapper, PandroidMapper.WRAPPER_GENERATED_METHOD_NAME);
+                        injectMethodBuilder.addStatement("$T.$L(component, $L)", wrapper, PandroidMapper.WRAPPER_INJECT_METHOD_NAME, TARGET_VAR_NAME);
+                    }
+                }
             }
 
-            CodeBlock codeBlock = componentBlocks.toCodeBlock(COMPONENT_VAR_NAME, null);
-            injectMethodBuilder.addCode(codeBlock);
-            wrapperBuilder.addMethod(injectMethodBuilder.build());
+            methodBuilder.addCode(generatedBlocks.toCodeBlock(TYPE_VAR_NAME, null));
+            methodBuilder.addStatement("return result");
 
-            saveClass(processingEnvironment, PandroidMapper.MAPPER_PACKAGE, wrapperBuilder);
+            injectMethodBuilder.addCode(componentBlocks.toCodeBlock(COMPONENT_VAR_NAME, null));
+
+            wrapperBuilder.addMethod(methodBuilder.build());
+            wrapperBuilder.addMethod(injectMethodBuilder.build());
+            wrapperBuilder.addAnnotation(PandroidWrapper.class);
+            saveClass(processingEnvironment, PandroidMapper.WRAPPER_PACKAGE, wrapperBuilder);
             fileSaved = true;
         }
 

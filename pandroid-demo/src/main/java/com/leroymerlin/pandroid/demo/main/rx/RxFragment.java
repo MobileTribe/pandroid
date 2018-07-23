@@ -67,18 +67,18 @@ public class RxFragment extends RxPandroidFragment<FragmentOpener> {
 
         //tag::RxAndroid[]
         //We can cast to RxPandroidCall if rxandroid is enable in the plugin configuration
-        ((RxPandroidCall) reviewService.getReview("1"))
+        reviewService.getReview("1")
                 .rxEnqueue()
                 //bind observer on lifecycle thanks to RxPandroidFragment
                 .compose(this.<Review>bindLifecycle())
-                .subscribe(new Consumer<Review>() {
-                    @Override
-                    public void accept(@NonNull Review o) throws Exception {
-                        //we can access getActivity() with no check because call will be cancel if our app is paused
-                        toastManager.makeToast(getActivity(), o.getTitle(), null);
-                    }
+                .subscribe(o -> {
+                    //we can access getActivity() with no check because call will be cancel if our app is paused
+                    toastManager.makeToast(getActivity(), o.getTitle(), null);
+                }, throwable -> {
+                    logWrapper.w(TAG, throwable);
                 });
         //end::RxAndroid[]
+
     }
 
 }

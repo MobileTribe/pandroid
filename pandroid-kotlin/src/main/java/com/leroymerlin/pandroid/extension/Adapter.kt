@@ -13,10 +13,9 @@ fun <T : Any> adapter(dsl: AdapterFunctionDsl<T>.() -> Unit) = AdapterFunctionDs
 class KotlinHolderFactory<T : Any> {
     @LayoutRes
     var layout: Int = 0
-    var factory: HolderFactory<T>? = null;
     var holderClass: KClass<out RecyclerHolder<T>>? = null
     var binder: ((view: View, data: T, index: Int) -> Unit)? = null
-    internal var _type: Int = 0
+    var factory: HolderFactory<T>? = null
     var itemType: Any? = null
         set(value) {
             value?.let {
@@ -26,22 +25,19 @@ class KotlinHolderFactory<T : Any> {
                     _type = value.hashCode()
                 }
             }
-
         }
+    internal var _type: Int = 0
 
     internal fun create(): HolderFactory<T> {
-        if (holderClass != null) {
-            if (layout != 0) {
-                factory = HolderFactory.create(layout, holderClass!!.java)
-            } else {
-                factory = HolderFactory.create(holderClass!!.java)
+        factory = factory ?: holderClass?.let {
+            return when (layout) {
+                0 -> HolderFactory.create(it.java)
+                else -> HolderFactory.create(layout, it.java)
             }
-        } else if (binder != null) {
-            factory = HolderFactory.create(layout, binder!!)
-        } else if(factory==null){
-            throw IllegalStateException("Parameters is missing. See HolderFactory impl for details")
-        }
-        return factory!!
+        } ?: binder?.let {
+            return HolderFactory.create(layout, it)
+        } ?: throw IllegalStateException("Parameters is missing. See HolderFactory impl for details")
+        return factory as HolderFactory<T>
     }
 }
 

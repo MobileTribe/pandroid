@@ -6,8 +6,8 @@ dependencies {
 
 plugins.withId('kotlin-android') {
     dependencies {
-        implementation 'androidx.core:core-ktx:0.2'
-        implementation "com.leroymerlin.pandroid.kotlin:pandroid-kotlin:$pandroidVersion"
+        implementation 'androidx.core:core-ktx:0.3'
+        implementation "com.leroymerlin.pandroid:pandroid-kotlin:$pandroidVersion"
     }
 }
 

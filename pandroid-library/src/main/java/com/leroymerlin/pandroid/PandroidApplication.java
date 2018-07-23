@@ -2,7 +2,6 @@ package com.leroymerlin.pandroid;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 
@@ -33,8 +32,6 @@ import com.leroymerlin.pandroid.ui.support.PandroidCompatViewFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 
 /**
  * Created by florian on 04/12/15.
@@ -62,6 +59,7 @@ public class PandroidApplication extends Application implements PandroidDelegate
     //tag::Logger[]
     protected void initializeLogger() {
         logWrapper = PandroidLogger.getInstance();
+        logWrapper.setDebug(PandroidConfig.DEBUG);
         logWrapper.addLogger(LogcatLogger.getInstance());
         if (PandroidConfig.isLibraryEnable("crashlytics")) {
             logWrapper.addLogger(new CrashlyticsLogger(this));

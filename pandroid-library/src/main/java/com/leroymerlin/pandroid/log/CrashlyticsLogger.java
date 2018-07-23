@@ -37,7 +37,7 @@ public class CrashlyticsLogger extends SimpleLogger {
 
     @Override
     public boolean shouldLog(int i) {
-        return !DEBUGGABLE && i >= logLevel && initialized;
+        return !debuggable && i >= logLevel && initialized;
     }
 
     @Override

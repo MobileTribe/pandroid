@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Pandroid v2.6.1-SNAPSHOT, Tue Apr 17 21:37:25 CEST 2018">
+<meta name="author" content="Pandroid v2.6.2, Mon Jul 23 16:23:12 CEST 2018">
 <title>Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -513,7 +513,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="header">
 <h1>Tutorial</h1>
 <div class="details">
-<span id="author" class="author">Pandroid v2.6.1-SNAPSHOT, Tue Apr 17 21:37:25 CEST 2018</span><br>
+<span id="author" class="author">Pandroid v2.6.2, Mon Jul 23 16:23:12 CEST 2018</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1359,6 +1359,7 @@ In your PandroidApplication, the LogcatLogger is added by default to your logger
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">    <span class="directive">protected</span> <span class="type">void</span> initializeLogger() {
         logWrapper = PandroidLogger.getInstance();
+        logWrapper.setDebug(PandroidConfig.DEBUG);
         logWrapper.addLogger(LogcatLogger.getInstance());
         <span class="keyword">if</span> (PandroidConfig.isLibraryEnable(<span class="string"><span class="delimiter">&quot;</span><span class="content">crashlytics</span><span class="delimiter">&quot;</span></span>)) {
             logWrapper.addLogger(<span class="keyword">new</span> CrashlyticsLogger(<span class="local-variable">this</span>));
@@ -1437,16 +1438,15 @@ in order to access useful methods to register you Observable on the app lifecycl
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">        <span class="comment">//We can cast to RxPandroidCall if rxandroid is enable in the plugin configuration</span>
-        ((RxPandroidCall) reviewService.getReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>))
+        reviewService.getReview(<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span>)
                 .rxEnqueue()
                 <span class="comment">//bind observer on lifecycle thanks to RxPandroidFragment</span>
                 .compose(<span class="local-variable">this</span>.&lt;Review&gt;bindLifecycle())
-                .subscribe(<span class="keyword">new</span> Consumer&lt;Review&gt;() {
-                    <span class="annotation">@Override</span>
-                    <span class="directive">public</span> <span class="type">void</span> accept(<span class="annotation">@NonNull</span> Review o) <span class="directive">throws</span> <span class="exception">Exception</span> {
-                        <span class="comment">//we can access getActivity() with no check because call will be cancel if our app is paused</span>
-                        toastManager.makeToast(getActivity(), o.getTitle(), <span class="predefined-constant">null</span>);
-                    }
+                .subscribe(o -&gt; {
+                    <span class="comment">//we can access getActivity() with no check because call will be cancel if our app is paused</span>
+                    toastManager.makeToast(getActivity(), o.getTitle(), <span class="predefined-constant">null</span>);
+                }, throwable -&gt; {
+                    logWrapper.w(TAG, throwable);
                 });</code></pre>
 </div>
 </div>
@@ -1459,11 +1459,11 @@ in order to access useful methods to register you Observable on the app lifecycl
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Target</span>({<span class="predefined-type">ElementType</span>.METHOD, <span class="predefined-type">ElementType</span>.TYPE})
 <span class="directive">public</span> <span class="annotation">@interface</span> RxWrapper {
     <span class="comment">/**
-     * if true the method will return an Single, otherwise it will be a Observable
+     * if true the wrapper will return a single result and complete, otherwise it will return values until it is explicitly cancelled
      *
      * @return true by default
      */</span>
-    <span class="type">boolean</span> single() <span class="keyword">default</span> <span class="predefined-constant">true</span>;
+    <span class="type">boolean</span> singleValue() <span class="keyword">default</span> <span class="predefined-constant">true</span>;
 
     <span class="comment">/**
      * if true the result will be wrap in a model (use to get multiple error or null response)
@@ -2659,7 +2659,7 @@ It can be generated here : <a href="https://developers.google.com/mobile/add" cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2018-04-17 21:37:18 +02:00
+Last updated 2018-03-09 12:21:03 +01:00
 </div>
 </div>
 </body>

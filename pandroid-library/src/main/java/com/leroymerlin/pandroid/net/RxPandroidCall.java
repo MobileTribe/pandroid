@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.net;
 
 import com.leroymerlin.pandroid.future.ActionDelegate;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import retrofit2.Call;
 
@@ -11,6 +12,8 @@ import retrofit2.Call;
 public interface RxPandroidCall<T> extends PandroidCall<T>{
 
     Single<T> rxEnqueue();
+
+    Completable rxCompleteEnqueue();
 
     RxPandroidCall<T> clone();
 }
