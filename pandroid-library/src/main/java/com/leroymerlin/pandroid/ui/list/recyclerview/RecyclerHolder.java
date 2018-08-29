@@ -11,7 +11,7 @@ import com.leroymerlin.pandroid.R;
 /**
  * Created by florian on 19/11/14.
  */
-public abstract class RecyclerHolder<T> extends RecyclerView.ViewHolder {
+public abstract class RecyclerHolder<? extends T> extends RecyclerView.ViewHolder {
 
     /**
      * Constructor used to instantiate the older without layoutId
