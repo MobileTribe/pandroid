@@ -1,10 +1,13 @@
 package com.leroymerlin.pandroid.persistence;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Map;
 
 /**
  * Created by adrienleroy on 05/01/15.
@@ -46,6 +49,32 @@ public class SharedPrefConfigurationManager implements ConfigurationManager {
         }
     }
 
+    /**
+     * Retrieve all values from the preferences.
+     */
+    public Map<String, ?> getAll() {
+        return preferenceFile.getAll();
+
+    }
+
+    /**
+     *  return size of sharedPref
+     * @return
+     */
+    public int getSize() {
+        return preferenceFile.getAll().size();
+    }
+
+    /**
+     *
+     * Clear SharedPreference
+     *
+     */
+    @SuppressLint("CommitPrefEdits")
+    public void clear() {
+        preferenceFile.edit().clear();
+    }
+
     public void setConfig(Config field, Object object) {
         SharedPreferences.Editor editor = preferenceFile.edit();
         if (field.getType() == Integer.class)
@@ -64,7 +93,7 @@ public class SharedPrefConfigurationManager implements ConfigurationManager {
         editor.apply();
     }
 
-    public String objectToString(Object object) {
+    private String objectToString(Object object) {
         if (object == null) {
             return null;
         } else {
@@ -72,13 +101,11 @@ public class SharedPrefConfigurationManager implements ConfigurationManager {
         }
     }
 
-    public <T> T parseString(String value, Class<T> a) {
+    private  <T> T parseString(String value, Class<T> a) {
         if (value == null) {
             return null;
         } else {
             return gsonParser.fromJson(value, a);
         }
     }
-
-
 }
