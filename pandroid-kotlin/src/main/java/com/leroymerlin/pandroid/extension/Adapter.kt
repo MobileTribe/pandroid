@@ -13,9 +13,9 @@ fun <T : Any> adapter(dsl: AdapterFunctionDsl<T>.() -> Unit) = AdapterFunctionDs
 class KotlinHolderFactory<T : Any> {
     @LayoutRes
     var layout: Int = 0
-    var holderClass: KClass<out RecyclerHolder<T>>? = null
+    var holderClass: KClass<out RecyclerHolder<out T>>? = null
     var binder: ((view: View, data: T, index: Int) -> Unit)? = null
-    var factory: HolderFactory<T>? = null
+    var factory: HolderFactory<out T>? = null
     var itemType: Any? = null
         set(value) {
             value?.let {

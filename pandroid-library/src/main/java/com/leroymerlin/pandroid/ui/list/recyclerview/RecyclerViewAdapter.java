@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.ui.list.recyclerview;
 
+import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,11 +19,11 @@ import java.util.List;
 /**
  * Created by florian on 19/11/14.
  */
-public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<T>> implements View.OnClickListener, View.OnLongClickListener, RecyclerView.OnChildAttachStateChangeListener {
+public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<? extends T>> implements View.OnClickListener, View.OnLongClickListener, RecyclerView.OnChildAttachStateChangeListener {
 
     protected static final int VIEW_HOLDER_TAG = R.id.pandroid_holder_tag;
 
-    protected RecyclerFactory<? extends RecyclerHolder<T>> factory;
+    protected RecyclerFactory<? extends RecyclerHolder<? extends T>> factory;
     protected RecyclerView mRecyclerView;
     protected List<T> content = new ArrayList<T>();
 
@@ -34,7 +35,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.mRecyclerView = recyclerView;
         recyclerView.addOnChildAttachStateChangeListener(this);
@@ -42,23 +43,23 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         this.mRecyclerView = null;
         recyclerView.removeOnChildAttachStateChangeListener(this);
     }
 
-    public RecyclerViewAdapter(RecyclerFactory<? extends RecyclerHolder<T>> factory) {
+    public RecyclerViewAdapter(RecyclerFactory<? extends RecyclerHolder<? extends T>> factory) {
         super();
         setFactory(factory);
     }
 
-    public RecyclerViewAdapter(RecyclerFactory<? extends RecyclerHolder<T>> factory, List<T> content) {
+    public RecyclerViewAdapter(RecyclerFactory<? extends RecyclerHolder<? extends T>> factory, List<T> content) {
         this(factory);
         addAll(content);
     }
 
-    public void setFactory(RecyclerFactory<? extends RecyclerHolder<T>> factory) {
+    public void setFactory(RecyclerFactory<? extends RecyclerHolder<? extends T>> factory) {
         this.factory = factory;
     }
 
@@ -172,20 +173,21 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
     }
 
 
+    @NonNull
     @Override
-    public RecyclerHolder<T> onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public RecyclerHolder<? extends T> onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         if (factory == null) {
             throw new IllegalStateException("Holder factory can't be null");
         }
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        RecyclerHolder<T> tRecyclerHolder = factory.create(layoutInflater, viewGroup, i);
+        RecyclerHolder<? extends T> tRecyclerHolder = factory.create(layoutInflater, viewGroup, i);
         tRecyclerHolder.itemView.setTag(VIEW_HOLDER_TAG, tRecyclerHolder);
         return tRecyclerHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerHolder<T> tRecyclerHolder, int i) {
-        tRecyclerHolder.setContent(getItemAt(i), i);
+    public void onBindViewHolder(@NonNull RecyclerHolder<? extends T> tRecyclerHolder, int i) {
+        ((RecyclerHolder) tRecyclerHolder).setContent(getItemAt(i), i);
     }
 
 
@@ -196,7 +198,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
 
     @Override
     public void onClick(View v) {
-        RecyclerHolder<T> tRecyclerHolder = (RecyclerHolder<T>) v.getTag(VIEW_HOLDER_TAG);
+        RecyclerHolder tRecyclerHolder = (RecyclerHolder) v.getTag(VIEW_HOLDER_TAG);
         int position = tRecyclerHolder.getAdapterPosition();
         if (itemClickListener != null)
             itemClickListener.onItemClick(this, v, position, tRecyclerHolder.getItemId());
@@ -218,7 +220,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
 
     @Override
     public boolean onLongClick(View view) {
-        RecyclerHolder<T> tRecyclerHolder = (RecyclerHolder<T>) view.getTag(VIEW_HOLDER_TAG);
+        RecyclerHolder tRecyclerHolder = (RecyclerHolder) view.getTag(VIEW_HOLDER_TAG);
         int position = tRecyclerHolder.getAdapterPosition();
         if (itemLongClickListener != null) {
             itemLongClickListener.onItemLongClick(this, view, position, tRecyclerHolder.getItemId());

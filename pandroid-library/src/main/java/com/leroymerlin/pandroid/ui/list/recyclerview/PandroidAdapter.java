@@ -14,7 +14,7 @@ public class PandroidAdapter<T> extends RecyclerViewAdapter<T> {
 
     public PandroidAdapter(@Nullable SparseArray<HolderFactory<T>> holderFactories) {
         super();
-        factory = (RecyclerFactory<? extends RecyclerHolder<T>>) new SimpleFactory<>();
+        factory = (RecyclerFactory<? extends RecyclerHolder<? extends T>>) new SimpleFactory<>();
         if (holderFactories != null) {
             for (int i = 0; i < holderFactories.size(); i++) {
                 int itemType = holderFactories.keyAt(i);
@@ -60,12 +60,12 @@ public class PandroidAdapter<T> extends RecyclerViewAdapter<T> {
         getFactory().holderFactories.remove(itemType);
     }
 
-    static class SimpleFactory<T> implements RecyclerFactory<RecyclerHolder<T>> {
+    static class SimpleFactory<T> implements RecyclerFactory<RecyclerHolder<? extends T>> {
 
         SparseArray<HolderFactory<T>> holderFactories = new SparseArray<>();
 
         @Override
-        public RecyclerHolder<T> create(LayoutInflater inflater, ViewGroup parent, int viewType) {
+        public RecyclerHolder<? extends T> create(LayoutInflater inflater, ViewGroup parent, int viewType) {
             return holderFactories.get(viewType).createHolder(inflater, parent);
         }
     }
