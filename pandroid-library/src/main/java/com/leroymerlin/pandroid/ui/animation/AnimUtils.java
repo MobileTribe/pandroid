@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.ui.animation;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
@@ -100,6 +101,7 @@ public class AnimUtils {
         view.measure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static float getElevationRelativeTo(@NotNull View view, View root) {
         if (root == null) {

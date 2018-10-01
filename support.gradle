@@ -5,10 +5,10 @@ properties.each { prop ->
 }
 
 ext.optionalLibs = [
-        "com.google.android.gms:play-services-vision:$libraryGmsVersion", //PandroidScannerView
+        "com.google.android.gms:play-services-vision:$libraryGmsVisionVersion", //PandroidScannerView
 
-        "com.google.android.gms:play-services-analytics:$libraryGmsVersion", //GoogleAnalyticsManager
-        "com.google.firebase:firebase-analytics:$libraryGmsVersion", // Firebase Analytics
+        "com.google.android.gms:play-services-analytics:$libraryGmsAnalyticsVersion", //GoogleAnalyticsManager
+        "com.google.firebase:firebase-core:$libraryFirebaseVersion", // Firebase Analytics
 
         "com.github.johnpersano:supertoasts:$librarySupertoastsVersion@aar", //SuperToastManagerImpl
 

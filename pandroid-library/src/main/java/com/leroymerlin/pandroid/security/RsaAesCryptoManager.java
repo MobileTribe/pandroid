@@ -1,5 +1,6 @@
 package com.leroymerlin.pandroid.security;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -146,6 +147,7 @@ public class RsaAesCryptoManager implements CryptoManager {
         }
     }
 
+    @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     protected void initializeKeystore() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // Create new key if needed
@@ -166,6 +168,7 @@ public class RsaAesCryptoManager implements CryptoManager {
         }
     }
 
+    @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.M)
     protected void initializeKeystoreAndroidM() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         // Create new key if needed

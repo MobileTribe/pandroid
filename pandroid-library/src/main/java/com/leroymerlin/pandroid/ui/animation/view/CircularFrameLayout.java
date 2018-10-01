@@ -2,6 +2,7 @@ package com.leroymerlin.pandroid.ui.animation.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -391,6 +392,7 @@ public class CircularFrameLayout extends FrameLayout {
         }
     }
 
+    @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected Animator getAnimation(float from, float to) {
         updateCenterView();

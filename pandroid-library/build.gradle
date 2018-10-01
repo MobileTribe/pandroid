@@ -5,7 +5,6 @@ apply from: file('../delivery.gradle')
 
 android {
     compileSdkVersion Integer.parseInt(androidSdkVersion)
-    buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
         minSdkVersion Integer.parseInt(androidMinSdkVersion)
@@ -50,7 +49,7 @@ dependencies {
 
     //Test
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.5.1"
+    testImplementation "org.robolectric:robolectric:3.8"
 
     testImplementation "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
     testImplementation "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
