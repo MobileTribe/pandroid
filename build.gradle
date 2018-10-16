@@ -23,6 +23,8 @@ allprojects {
         maven { url "https://clojars.org/repo/" }
         google()
     }
+
+    ext.group=group
 }
 
 //SONAR
