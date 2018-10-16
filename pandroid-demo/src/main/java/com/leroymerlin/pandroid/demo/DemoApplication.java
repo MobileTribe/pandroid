@@ -1,6 +1,8 @@
 package com.leroymerlin.pandroid.demo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDex;
 
 import com.google.android.gms.analytics.AnalyticsReceiver;
 import com.leroymerlin.pandroid.PandroidApplication;
@@ -69,4 +71,10 @@ public class DemoApplication extends PandroidApplication {
         return receivers;
     }
     //end::ActivityOpener[]
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

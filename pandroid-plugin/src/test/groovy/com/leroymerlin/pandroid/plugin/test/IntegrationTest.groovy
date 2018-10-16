@@ -19,8 +19,9 @@ class IntegrationTest {
         ProjectConnection connection = connector.connect()
         try {
             BuildLauncher launcher = connection.newBuild()
-            launcher.forTasks(":install")
-            launcher.run()
+                    .forTasks(":install")
+                    .withArguments("-x", "test")
+                    .run()
         } finally {
             connection.close()
         }

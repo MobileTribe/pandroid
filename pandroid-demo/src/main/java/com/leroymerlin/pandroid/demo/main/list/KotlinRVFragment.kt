@@ -63,7 +63,7 @@ class KotlinRVFragment : ListFragment() {
         }
     }
 
-    class CustomHolderFactory() : HolderFactory.SimpleHolderFactory<String>(R.layout.cell_list) {
+    class CustomHolderFactory : HolderFactory.SimpleHolderFactory<String>(R.layout.cell_list) {
         override fun createHolder(cellView: View?): RecyclerHolder<String> {
             return object : RecyclerHolder<String>(cellView) {
                 override fun setContent(content: kotlin.String?, index: kotlin.Int) {

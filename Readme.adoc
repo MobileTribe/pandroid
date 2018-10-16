@@ -22,6 +22,12 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.7.0* - (2018-10-01)
+
+*Refactor*
+- Update libraries versions
+
+
 ### *2.6.2* - (2018-07-19)
 
 *Refactor*

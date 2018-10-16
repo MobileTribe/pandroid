@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlinVersion = '1.2.71'
     apply from: file('support.gradle')
     repositories {
         jcenter()
@@ -9,10 +9,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.3'
-        classpath 'com.leroymerlin.plugins:delivery-plugin:3.1.2'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.leroymerlin.plugins:delivery-plugin:3.2.3'
         classpath 'com.leroymerlin.plugins:android-templates-plugin:1.0.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
@@ -23,6 +23,8 @@ allprojects {
         maven { url "https://clojars.org/repo/" }
         google()
     }
+
+    ext.group=group
 }
 
 //SONAR
@@ -65,8 +67,3 @@ delivery {
 }
 
 tasks.findByPath('releaseGitStepGenerateVersionFiles').dependsOn += documentationFlow
-
-
-task install(dependsOn: [':pandroid-plugin', ':pandroid-library', ':pandroid-compiler', ':pandroid-annotations', ':pandroid-java', ':pandroid-kotlin'].collect {
-    project(it)
-}.collect { it.getTasksByName('install', false) });
