@@ -2,7 +2,7 @@ package com.leroymerlin.pandroid.demo.main.rest;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
+import androidx.fragment.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;

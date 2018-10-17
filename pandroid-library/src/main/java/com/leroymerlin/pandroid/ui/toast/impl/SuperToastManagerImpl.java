@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.github.johnpersano.supertoasts.library.Style;
@@ -18,6 +17,8 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import androidx.core.content.ContextCompat;
 
 
 /**

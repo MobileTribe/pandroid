@@ -3,15 +3,13 @@ package com.leroymerlin.pandroid.ui.support;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.RestrictTo;
-import android.support.v7.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 /**
  * Created by florian on 03/01/2018.

@@ -1,11 +1,11 @@
 package com.leroymerlin.pandroid.ui.support;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 
 import com.leroymerlin.pandroid.R;
+
+import androidx.appcompat.widget.AppCompatButton;
 
 
 public class PandroidCompatButton extends AppCompatButton {

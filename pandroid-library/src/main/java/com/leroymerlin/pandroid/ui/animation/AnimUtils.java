@@ -3,7 +3,6 @@ package com.leroymerlin.pandroid.ui.animation;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.ScrollView;
 

@@ -3,9 +3,11 @@ package com.leroymerlin.pandroid.ui.support;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.content.res.AppCompatResources;
+
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import android.util.AttributeSet;
 import android.widget.TextView;
 

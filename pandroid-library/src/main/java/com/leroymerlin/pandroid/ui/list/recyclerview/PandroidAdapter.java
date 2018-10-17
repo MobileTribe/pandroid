@@ -1,6 +1,5 @@
 package com.leroymerlin.pandroid.ui.list.recyclerview;
 
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

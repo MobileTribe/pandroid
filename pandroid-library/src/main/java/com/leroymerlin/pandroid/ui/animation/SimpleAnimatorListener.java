@@ -1,7 +1,8 @@
 package com.leroymerlin.pandroid.ui.animation;
 
 import android.animation.Animator;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by florian on 21/10/2015.

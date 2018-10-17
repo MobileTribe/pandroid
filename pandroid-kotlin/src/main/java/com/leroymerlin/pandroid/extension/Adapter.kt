@@ -1,7 +1,7 @@
 package com.leroymerlin.pandroid.extension
 
-import android.support.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.leroymerlin.pandroid.ui.list.recyclerview.HolderFactory
 import com.leroymerlin.pandroid.ui.list.recyclerview.PandroidAdapter
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder

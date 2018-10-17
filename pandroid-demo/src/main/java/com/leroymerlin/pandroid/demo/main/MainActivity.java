@@ -1,7 +1,7 @@
 package com.leroymerlin.pandroid.demo.main;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.leroymerlin.pandroid.annotations.EventReceiver;
 import com.leroymerlin.pandroid.app.PandroidDrawerActivity;

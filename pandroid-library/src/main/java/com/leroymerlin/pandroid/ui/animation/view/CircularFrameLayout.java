@@ -12,7 +12,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,8 @@ import android.widget.FrameLayout;
 
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.ui.animation.AnimUtils;
+
+import androidx.annotation.IdRes;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;

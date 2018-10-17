@@ -4,20 +4,21 @@ import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.google.android.material.snackbar.Snackbar;
 import com.leroymerlin.pandroid.R;
 import com.leroymerlin.pandroid.ui.loader.ProgressWheel;
 import com.leroymerlin.pandroid.ui.toast.ToastManager;
 import com.leroymerlin.pandroid.utils.DeviceUtils;
 
 import java.util.Collection;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by florian on 27/09/2016.
@@ -42,8 +43,8 @@ public class SnackbarManager implements ToastManager {
         int buttonTextColor = attributes.getColor(R.styleable.ToastAppearance_toastButtonTextColor, ContextCompat.getColor(activity, R.color.pandroid_green_dark));
         int backgroundColor = attributes.getColor(R.styleable.ToastAppearance_toastBackground, ContextCompat.getColor(activity, R.color.pandroid_green));
         notif.getView().setBackgroundColor(backgroundColor);
-        ((TextView) notif.getView().findViewById(android.support.design.R.id.snackbar_text)).setTextColor(textColor);
-        TextView actionView = ((TextView) notif.getView().findViewById(android.support.design.R.id.snackbar_action));
+        ((TextView) notif.getView().findViewById(com.google.android.material.R.id.snackbar_text)).setTextColor(textColor);
+        TextView actionView = ((TextView) notif.getView().findViewById(com.google.android.material.R.id.snackbar_action));
         actionView.setTextColor(buttonTextColor);
         attributes.recycle();
 

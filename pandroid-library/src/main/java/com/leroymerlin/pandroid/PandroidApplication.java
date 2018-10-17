@@ -2,7 +2,6 @@ package com.leroymerlin.pandroid;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;

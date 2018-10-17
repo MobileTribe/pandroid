@@ -3,8 +3,6 @@ package com.leroymerlin.pandroid.ui.picture;
 
 //end::PictureManager[]
 
-import android.support.annotation.AnimRes;
-import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
 import org.jetbrains.annotations.NotNull;

@@ -1,7 +1,7 @@
 package com.leroymerlin.pandroid.event.opener;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.dagger.BaseComponent;

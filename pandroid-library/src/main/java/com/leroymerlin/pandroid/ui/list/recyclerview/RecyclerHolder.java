@@ -1,12 +1,12 @@
 package com.leroymerlin.pandroid.ui.list.recyclerview;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.leroymerlin.pandroid.R;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by florian on 19/11/14.

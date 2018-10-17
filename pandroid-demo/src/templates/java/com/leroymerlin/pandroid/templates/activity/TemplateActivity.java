@@ -1,7 +1,7 @@
 package com.leroymerlin.pandroid.templates.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.leroymerlin.pandroid.annotations.BindLifeCycleDelegate;
 import com.leroymerlin.pandroid.app.PandroidActivity;

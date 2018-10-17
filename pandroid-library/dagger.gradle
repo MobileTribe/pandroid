@@ -8,8 +8,6 @@ repositories {
 
 dependencies {
     implementation "com.google.dagger:dagger:$libraryDaggerVersion"
-    implementation("com.google.dagger:dagger-android-support:$libraryDaggerVersion"){
-        exclude group: 'com.android.support'
-    }
+    implementation("com.google.dagger:dagger-android-support:$libraryDaggerVersion")
     annotationProcessor "com.google.dagger:dagger-compiler:$libraryDaggerVersion"
 }

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Handler;
-import android.support.annotation.RequiresPermission;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -17,6 +16,8 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.IOException;
+
+import androidx.annotation.RequiresPermission;
 
 /**
  * Created by florian on 09/12/15.

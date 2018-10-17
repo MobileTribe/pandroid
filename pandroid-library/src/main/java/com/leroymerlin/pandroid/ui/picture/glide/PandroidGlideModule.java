@@ -1,12 +1,13 @@
 package com.leroymerlin.pandroid.ui.picture.glide;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.module.GlideModule;
+
+import androidx.annotation.NonNull;
 
 /**
  * Support to autoconfigure glide OkHttpClient if no glide module is declared in client app

@@ -1,6 +1,5 @@
 package com.leroymerlin.pandroid.ui.list.recyclerview;
 
-import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +7,8 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
+
+import androidx.annotation.LayoutRes;
 
 public abstract class HolderFactory<T> {
 

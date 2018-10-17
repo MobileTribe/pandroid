@@ -1,7 +1,6 @@
 package com.leroymerlin.pandroid.ui.list;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by paillardf on 03/03/15.
