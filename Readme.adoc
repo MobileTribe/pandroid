@@ -22,6 +22,11 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.7.1* - (2018-10-18)
+*Fix*
+- Dependency conflict with androidx
+- wrong proguard config
+
 ### *2.7.0* - (2018-10-01)
 
 *Refactor*
