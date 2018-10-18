@@ -52,9 +52,6 @@
   **[] $VALUES;
   public *;
 }
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
 
 # for pandroid use
 -dontwarn com.bumptech.glide.**
