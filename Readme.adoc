@@ -18,7 +18,7 @@ To discover what the panda can do, please see the link:{htmlPath}pandroid-doc/ht
 
 This library was originaly used by Leroy Merlin France mobile teams to develop all their Android applications.
 In february 2015 Pandroid 1 was release for LM internal team. A year later the archetype needed a major refactor to improv the developer experiences. We decided to release and open Pandroid 2
-A presentation is available about the road we traveled : https://prezi.com/xyuwjyycsbsh/mobile-archetype-pandroid-2/
+A presentation is available about the road we traveled : https://slides.com/florianpaillard/opensource
 
 ## Roadmap
 
