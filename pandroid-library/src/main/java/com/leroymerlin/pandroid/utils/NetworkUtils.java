@@ -41,6 +41,8 @@ import javax.net.ssl.TrustManager;
  */
 public class NetworkUtils {
 
+    private static final String DEFAULT_MAC_ADDRESS = "02:00:00:00:00:00";
+
     public static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final LogWrapper logWrapper = PandroidLogger.getInstance();
@@ -258,11 +260,39 @@ public class NetworkUtils {
 
     }
 
+    // Solution proposed to get the MAC Address for android O and more (>= api 26)
     @RequiresPermission(Manifest.permission.ACCESS_WIFI_STATE)
     public static String getWifiMACAddress(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        return wifiInfo.getMacAddress();
+        String macAddress = wifiInfo.getMacAddress();
+
+        if (DEFAULT_MAC_ADDRESS.equals(macAddress)) {
+            try {
+                List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+                for (NetworkInterface nif : all) {
+                    if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                    byte[] macBytes = nif.getHardwareAddress();
+                    if (macBytes == null) {
+                        macAddress = "";
+                    }
+
+                    StringBuilder res1 = new StringBuilder();
+                    for (byte b : macBytes) {
+                        res1.append(String.format("%02X:", b));
+                    }
+
+                    if (res1.length() > 0) {
+                        res1.deleteCharAt(res1.length() - 1);
+                    }
+                    macAddress = res1.toString();
+                }
+            } catch (Exception ex) {
+                // for now eat exceptions
+            }
+        }
+        return macAddress;
     }
 
     /**
