@@ -6,7 +6,11 @@ dependencies {
 
 plugins.withId('kotlin-android') {
     dependencies {
-        implementation 'androidx.core:core-ktx:1.0.0'
+        implementation('androidx.core:core-ktx:1.0.0'){
+            exclude group: 'androidx.core'
+            exclude group: 'androidx.versionedparcelable'
+            exclude group: 'androidx.annotation'
+        }
         implementation "com.leroymerlin.pandroid:pandroid-kotlin:$pandroidVersion"
     }
 }

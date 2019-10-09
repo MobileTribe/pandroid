@@ -22,6 +22,19 @@ A presentation is available about the road we traveled : https://prezi.com/xyuwj
 
 ## Roadmap
 
+### *2.7.2* - (2019-08-01)
+
+*Refactor*
+- Mac address method for Android O devices
+*Fix*
+- RecyclerViewAdapter index error on click
+
+### *2.7.1* - (2018-10-18)
+
+*Fix*
+- Dependency conflict with androidx
+- wrong proguard config
+
 ### *2.7.0* - (2018-10-01)
 
 *Refactor*

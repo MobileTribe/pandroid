@@ -200,7 +200,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
     public void onClick(View v) {
         RecyclerHolder tRecyclerHolder = (RecyclerHolder) v.getTag(VIEW_HOLDER_TAG);
         int position = tRecyclerHolder.getAdapterPosition();
-        if (itemClickListener != null)
+        if (itemClickListener != null && position >= 0)
             itemClickListener.onItemClick(this, v, position, tRecyclerHolder.getItemId());
     }
 
@@ -222,7 +222,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerHolder<
     public boolean onLongClick(View view) {
         RecyclerHolder tRecyclerHolder = (RecyclerHolder) view.getTag(VIEW_HOLDER_TAG);
         int position = tRecyclerHolder.getAdapterPosition();
-        if (itemLongClickListener != null) {
+        if (itemLongClickListener != null && position >= 0) {
             itemLongClickListener.onItemLongClick(this, view, position, tRecyclerHolder.getItemId());
             return true;
         }
