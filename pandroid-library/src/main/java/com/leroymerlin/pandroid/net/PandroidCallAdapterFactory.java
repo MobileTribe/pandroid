@@ -3,7 +3,7 @@ package com.leroymerlin.pandroid.net;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.future.ActionDelegate;

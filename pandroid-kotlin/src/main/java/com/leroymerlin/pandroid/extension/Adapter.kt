@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.leroymerlin.pandroid.ui.list.recyclerview.HolderFactory
 import com.leroymerlin.pandroid.ui.list.recyclerview.PandroidAdapter
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerHolder
+import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 
@@ -18,14 +19,10 @@ class KotlinHolderFactory<T : Any> {
     var factory: HolderFactory<out T>? = null
     var itemType: Any? = null
         set(value) {
-            value?.let {
-                if (value is Int) {
-                    _type = value
-                } else {
-                    _type = value.hashCode()
-                }
-            }
+            _type = value as? Int ?: value?.hashCode() ?: 0
+            field = value
         }
+
     internal var _type: Int = 0
 
     internal fun create(): HolderFactory<T> {
@@ -36,7 +33,8 @@ class KotlinHolderFactory<T : Any> {
             }
         } ?: binder?.let {
             return HolderFactory.create(layout, it)
-        } ?: throw IllegalStateException("Parameters is missing. See HolderFactory impl for details")
+        }
+                ?: throw IllegalStateException("Parameters is missing. See HolderFactory impl for details")
         return factory as HolderFactory<T>
     }
 }

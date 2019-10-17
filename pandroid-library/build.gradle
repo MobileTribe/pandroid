@@ -24,8 +24,8 @@ android {
         disable 'MissingPermission'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
 
@@ -39,8 +39,8 @@ dependencies {
     api project(':pandroid-java')
     annotationProcessor project(':pandroid-compiler')
     compileOnly project(':pandroid-annotations')
-    api "androidx.annotation:annotation:1.0.0"
-    api "androidx.appcompat:appcompat:1.0.0"
+    api "androidx.annotation:annotation:1.1.0"
+    api "androidx.appcompat:appcompat:1.1.0"
     api "androidx.cardview:cardview:1.0.0"
     api "androidx.gridlayout:gridlayout:1.0.0"
     api "androidx.palette:palette:1.0.0"
@@ -49,24 +49,24 @@ dependencies {
 
     //Test
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation 'org.robolectric:robolectric:4.3.1'
 
-    testImplementation "io.reactivex.rxjava2:rxandroid:$libraryRxAndroidVersion"
-    testImplementation "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
+    testImplementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    testImplementation "io.reactivex.rxjava2:rxjava:2.2.13"
 
     //Support to simulate plugin work
     //Optional library have to be declared in pandroid.gradle
     optionalLibs.each {
         libDep ->
             compileOnly(libDep) {
-                transitive = true;
+                transitive = true
             }
     }
-    annotationProcessor "frankiesardo:icepick-processor:$libraryIcepickVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$libraryButterknifeVersion"
-    annotationProcessor "com.github.bumptech.glide:compiler:$libraryGlideVersion"
+    annotationProcessor "frankiesardo:icepick-processor:3.2.0"
+    annotationProcessor "com.jakewharton:butterknife-compiler:10.2.0"
+    annotationProcessor "com.github.bumptech.glide:compiler:4.10.0"
 
-    compileOnly 'org.jetbrains:annotations-java5:15.0'
+    compileOnly 'org.jetbrains:annotations-java5:17.0.0'
 }
 
 //configure template with delivery

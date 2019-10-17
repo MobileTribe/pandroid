@@ -1,6 +1,6 @@
 package com.leroymerlin.pandroid.app.delegate.rx;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegateProvider;
 

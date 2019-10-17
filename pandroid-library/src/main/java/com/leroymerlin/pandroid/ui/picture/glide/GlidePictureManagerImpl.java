@@ -81,7 +81,7 @@ public class GlidePictureManagerImpl implements PictureManager {
                     loadContext = this.loadContext.get();
                 }
                 if (loadContext instanceof Fragment) {
-                    requestManager = Glide.with((Fragment) loadContext);
+                    //requestManager = Glide.with((Fragment) loadContext);
                 } else if (loadContext instanceof Activity) {
                     requestManager = Glide.with((Activity) loadContext);
                 } else {

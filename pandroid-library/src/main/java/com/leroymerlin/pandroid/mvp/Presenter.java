@@ -2,8 +2,8 @@ package com.leroymerlin.pandroid.mvp;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.View;
 

@@ -1,8 +1,9 @@
 package com.leroymerlin.pandroid.demo.main.mvp;
 
 import android.os.Bundle;
-import android.support.annotation.Keep;
 import android.view.View;
+
+import androidx.annotation.Keep;
 
 import com.leroymerlin.pandroid.app.delegate.impl.IcepickLifecycleDelegate;
 import com.leroymerlin.pandroid.demo.globals.model.Review;

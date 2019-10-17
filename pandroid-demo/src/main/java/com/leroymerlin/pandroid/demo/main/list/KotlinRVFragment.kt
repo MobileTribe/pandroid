@@ -1,15 +1,12 @@
 package com.leroymerlin.pandroid.demo.main.list
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.Button
-import android.widget.TextView
-import butterknife.BindView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.leroymerlin.pandroid.demo.R
 import com.leroymerlin.pandroid.extension.adapter
 import com.leroymerlin.pandroid.ui.list.recyclerview.HolderFactory
@@ -51,7 +48,7 @@ class KotlinRVFragment : ListFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rvMenu.apply {
-            this.adapter = rvAdapter;
+            this.adapter = rvAdapter
             this.layoutManager = LinearLayoutManager(activity);
         }
         this.rvAdapter.addAll(data)

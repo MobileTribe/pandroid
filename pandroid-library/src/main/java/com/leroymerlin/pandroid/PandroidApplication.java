@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.view.LayoutInflater;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.leroymerlin.pandroid.app.PandroidConfig;
 import com.leroymerlin.pandroid.app.PandroidMapper;
 import com.leroymerlin.pandroid.app.delegate.PandroidDelegate;

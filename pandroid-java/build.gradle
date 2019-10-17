@@ -10,7 +10,7 @@ apply from: file('../delivery.gradle')
 dependencies {
     compileOnly 'com.google.android:android:4.1.1.4'
 //    compileOnly 'com.android.databinding:baseLibrary:3.0.1'
-    compileOnly "io.reactivex.rxjava2:rxjava:$libraryRxJavaVersion"
+    compileOnly "io.reactivex.rxjava2:rxjava:2.2.13"
 }
 
 targetCompatibility = JavaVersion.VERSION_1_7

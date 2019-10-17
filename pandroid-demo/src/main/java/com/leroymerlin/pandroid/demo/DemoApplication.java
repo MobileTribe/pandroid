@@ -2,17 +2,15 @@ package com.leroymerlin.pandroid.demo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.multidex.MultiDex;
 
-import com.google.android.gms.analytics.AnalyticsReceiver;
+import androidx.multidex.MultiDex;
+
 import com.leroymerlin.pandroid.PandroidApplication;
 import com.leroymerlin.pandroid.dagger.BaseComponent;
 import com.leroymerlin.pandroid.dagger.PandroidModule;
 import com.leroymerlin.pandroid.demo.main.MainActivity;
 import com.leroymerlin.pandroid.demo.main.opener.OpenerActivity;
-import com.leroymerlin.pandroid.event.EventBusManager;
 import com.leroymerlin.pandroid.event.opener.ActivityEventReceiver;
-import com.leroymerlin.pandroid.event.opener.OpenerEventReceiver;
 import com.leroymerlin.pandroid.security.PandroidX509TrustManager;
 
 import java.util.List;

@@ -15,11 +15,11 @@ dependencies {
     implementation localGroovy()
     implementation project(':pandroid-java')
     implementation project(':pandroid-annotations')
-    implementation deps.javapoet
+    implementation 'com.squareup:javapoet:1.11.1'
 
     testImplementation 'junit:junit:4.12'
-    compileOnly "com.android.tools.build:gradle:$androidPluginVersion"
-    testImplementation "com.android.tools.build:gradle:$androidPluginVersion"
+    compileOnly "com.android.tools.build:gradle:3.5.1"
+    testImplementation "com.android.tools.build:gradle:3.5.1"
 }
 
 task(copyLocalProperties, type: Copy) {

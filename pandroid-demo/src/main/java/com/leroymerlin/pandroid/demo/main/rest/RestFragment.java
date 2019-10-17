@@ -1,13 +1,16 @@
 package com.leroymerlin.pandroid.demo.main.rest;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import androidx.fragment.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
@@ -50,7 +53,6 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
 
         pictureManager.loader()
@@ -99,7 +101,7 @@ public class RestFragment extends PandroidFragment<FragmentOpener> {
         //tag::Loader[]
         Bundle b = new Bundle();
         b.putLong("fibonacci", 28);
-        getLoaderManager().initLoader(0, b, new LoaderManager.LoaderCallbacks<Long>() {
+        LoaderManager.getInstance(this).initLoader(0, b, new LoaderManager.LoaderCallbacks<Long>() {
             @Override
             public Loader<Long> onCreateLoader(int id, Bundle args) {
                 final long fibonacci = args.getLong("fibonacci");

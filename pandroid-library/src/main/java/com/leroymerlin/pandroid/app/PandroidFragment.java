@@ -2,7 +2,8 @@ package com.leroymerlin.pandroid.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
+
+import androidx.annotation.CallSuper;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.View;

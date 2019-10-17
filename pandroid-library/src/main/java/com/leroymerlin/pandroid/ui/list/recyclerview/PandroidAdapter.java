@@ -4,6 +4,8 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
 /**
  * Created by florian on 19/11/14.
  */

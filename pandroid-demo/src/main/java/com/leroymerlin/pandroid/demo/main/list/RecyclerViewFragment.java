@@ -1,13 +1,14 @@
 package com.leroymerlin.pandroid.demo.main.list;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.ui.list.recyclerview.RecyclerFactory;
@@ -45,7 +46,7 @@ public class RecyclerViewFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         //tag::RecyclerViewAdapter[]
-        final RecyclerViewAdapter<String> adapter = new RecyclerViewAdapter<String>(new RecyclerFactory<RecyclerHolder<String>>() {
+        final RecyclerViewAdapter<String> adapter = new RecyclerViewAdapter<>(new RecyclerFactory<RecyclerHolder<String>>() {
             @Override
             public RecyclerHolder<String> create(LayoutInflater inflater, ViewGroup parent, int viewType) {
                 //override the adapter getItemType to handle different type of cell
@@ -73,7 +74,10 @@ public class RecyclerViewFragment extends ListFragment {
         SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(adapter) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                toastManager.makeToast(getActivity(), "Item " + viewHolder.getAdapterPosition() + " removed", null, R.style.Toast_Warm);
+                toastManager.makeToast(getActivity(),
+                        "Item " + viewHolder.getAdapterPosition() + " removed",
+                        null,
+                        R.style.Toast_Warm);
                 super.onSwiped(viewHolder, direction);
             }
         };
@@ -82,12 +86,12 @@ public class RecyclerViewFragment extends ListFragment {
         adapter.addAll(getData());
 
         //you can add item click listener and long click listener on you adapter
-        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener<String>() {
-            @Override
-            public void onItemClick(RecyclerViewAdapter<String> parent, View view, int position, long id) {
-                toastManager.makeToast(getActivity(), "Button " + position + " clicked", null, R.style.Toast, getResources().getInteger(R.integer.toast_short_duration));
-            }
-        });
+        adapter.setOnItemClickListener((parent, view1, position, id) ->
+                toastManager.makeToast(getActivity(),
+                        "Button " + position + " clicked",
+                        null,
+                        R.style.Toast,
+                        getResources().getInteger(R.integer.toast_short_duration)));
         rvMenu.setAdapter(adapter);
 
         //end::RecyclerViewAdapter[]
@@ -96,13 +100,7 @@ public class RecyclerViewFragment extends ListFragment {
         LinearLayoutManager layout = new LinearLayoutManager(getActivity());
         layout.setOrientation(LinearLayoutManager.VERTICAL);
         rvMenu.setLayoutManager(layout);
-
-        rvMenu.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                adapter.move(2, 6);
-            }
-        }, 1000);
+        rvMenu.postDelayed(() -> adapter.move(2, 6), 1000);
     }
 
 

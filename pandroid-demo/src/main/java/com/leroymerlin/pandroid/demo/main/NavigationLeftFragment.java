@@ -1,13 +1,13 @@
 package com.leroymerlin.pandroid.demo.main;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.navigation.NavigationView;
 import com.leroymerlin.pandroid.app.PandroidFragment;
 import com.leroymerlin.pandroid.demo.R;
 import com.leroymerlin.pandroid.demo.main.anim.AnimationFragment;

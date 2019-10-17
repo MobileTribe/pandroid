@@ -5,6 +5,9 @@ package com.leroymerlin.pandroid.ui.picture;
 
 import android.widget.ImageView;
 
+import androidx.annotation.AnimRes;
+import androidx.annotation.DrawableRes;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
