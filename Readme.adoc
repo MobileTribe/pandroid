@@ -6,7 +6,7 @@ image:./pandroid-doc/assets/logo.png[Pandroid,120,120,float="right",align="cente
 = Pandroid 2
 :hardbreaks:
 
-image:https://api.bintray.com/packages/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/images/download.svg[link="https://bintray.com/mobiletribe/maven/com.leroymerlin.pandroid:pandroid-plugin/_latestVersion"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
 
 
 ## Note
